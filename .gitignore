@@ -2,6 +2,7 @@
 .env
 .env.*
 *.env
+!.env.example
 secrets/
 credentials/
 
@@ -13,6 +14,31 @@ credentials/
 logs/
 *.log
 *.jsonl
+
+# Claude Code local-only memory/settings
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Browser / visual test generated artifacts
+.playwright-cli/
+.playwright-mcp/
+test-results/
+playwright-report/
+output/
+output/site-check/
+output/playwright/
+
+# Operational CRM test artifacts - keep local
+data/reports/bitrix_close_test_lead_*.json
+
+# Local setup notes with account identifiers - keep local
+MCP_SETUP_RESULT.md
+
+# Local Codex/Claude coordination memory - keep local for public repo
+REPORT.md
+
+# Сгенерированные черновики Agent 4 Publisher
+agents/agent4_publisher/output/
 
 # Python
 __pycache__/
@@ -37,3 +63,29 @@ env/
 
 # Локальные настройки
 .claude/settings.local.json
+
+# Shared secret safety layer - keep in sync with ../PROJECT_SECRET_RULES.md
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+credentials*.json
+client_secrets*.json
+service-account*.json
+token.json
+private_config.json
+*token*
+*secret*
+*key*
+
+# Safety policy/source files are not secrets themselves.
+!docs/secret-handling-policy.md
+!scripts/set_env_secret.py
+
+*.session
+*.session-journal
+sessions.json
+logs/
+*.log
+*.jsonl
