@@ -1,10 +1,20 @@
-from sqlalchemy import create_engine, Column, String, Float, DateTime, Text, Enum as SAEnum
+from sqlalchemy import create_engine, Column, String, Float, DateTime, Text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from datetime import datetime
 from config.settings import DATABASE_URL
 
-engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine)
+# Ленивая инициализация — не падаем при импорте если DATABASE_URL не задан
+engine = None
+Session = None
+
+def _get_engine():
+    global engine, Session
+    if engine is None:
+        if not DATABASE_URL:
+            raise RuntimeError("DATABASE_URL не задан в .env")
+        engine = create_engine(DATABASE_URL)
+        Session = sessionmaker(bind=engine)
+    return engine
 
 
 class Base(DeclarativeBase):
@@ -55,8 +65,14 @@ class AgentLog(Base):
 
 
 def init_db():
-    Base.metadata.create_all(engine)
+    try:
+        eng = _get_engine()
+        Base.metadata.create_all(eng)
+    except Exception as e:
+        from shared.logger import get_logger
+        get_logger("db").warning(f"БД недоступна (продолжаем без PostgreSQL): {e}")
 
 
 def get_session():
+    _get_engine()
     return Session()
