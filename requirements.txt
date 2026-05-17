@@ -13,8 +13,8 @@ asyncpg==0.29.0
 sqlalchemy==2.0.30
 alembic==1.13.1
 
-# Claude API
-anthropic==0.28.0
+# Claude API — нужна версия поддерживающая claude-sonnet-4-6 и claude-haiku-4-5
+anthropic>=0.50.0
 
 # Telegram bot (уведомления менеджеру, Approver)
 python-telegram-bot==21.3
@@ -30,11 +30,25 @@ httpx==0.27.0
 beautifulsoup4==4.12.3
 lxml==5.2.1
 
-# Email (тендеры)
-# imaplib — встроен в Python, не нужен
+# Email (тендеры) — imap_tools: чистая библиотека IMAP, 500+ stars, MIT
+imap-tools==1.6.0
+
+# Bitrix24 CRM — fast_bitrix24: async/sync wrapper, 104 stars, MIT, российский автор
+fast-bitrix24==1.5.12
 
 # Logging
 loguru==0.7.2
 
 # Utils
 python-dateutil==2.9.0
+
+# Контент-движок (Agent 4 Publisher) — бывший sales_ai
+# OpenRouter для текстовых LLM (Claude 3.7 Sonnet) — используется встроенный httpx
+# OpenAI SDK — DALL-E 3 для иллюстраций
+openai>=1.30.0
+# Replicate — Luma Ray и видео-модели
+replicate==0.25.1
+# ElevenLabs — голосовая озвучка постов
+elevenlabs>=1.0.0
+# PIL/Pillow — карусели, стикеры, шрифты, композиция
+Pillow>=10.0.0

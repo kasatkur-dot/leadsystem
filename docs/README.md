@@ -10,6 +10,7 @@
 
 ## Что читать по задачам
 
+- Модульные правила Claude Code по зонам проекта: `../.claude/rules/site.md`, `../.claude/rules/agents-backend.md`, `../.claude/rules/content.md`, `../.claude/rules/data-reports.md`, `../.claude/rules/security.md`.
 - Claude/агентные стартовые правила: `claude-project-rules.md`, `claude-agent-architecture.md`, `claude-content-strategy.md`.
 - Сайт и публичная упаковка: `new-site-structure.md`, `new-site-design-brief.md`, `site-design-upgrade-plan.md`, `site-selling-geo-audit-2026-05-07.md`, `site-visual-assets-safe-review.md`.
 - Многоагентная система: `multi-agent-visual-control-map.md`, `agent-okr-and-checker-map.md`, `agent-system-gap-check.md`, `lesson-05-working-model-lead-chain.md`.

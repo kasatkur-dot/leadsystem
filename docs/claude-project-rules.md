@@ -42,6 +42,25 @@
 
 Если агент работает неправильно, человек не идёт напрямую “к агенту”. Задача ставится через главный оркестратор проекта: сначала читаем `REPORT.md`, потом по правилам `CLAUDE.md` находим нужный агент/модуль, проверяем логи, исправляем точечно, тестируем и снова фиксируем результат в `REPORT.md`.
 
+## Security Agent Control Layer
+
+`agents/Агент безопастности/AGENT_SECURITY.md` — главный файл управления безопасностью AI-агентов. Он не является седьмым продуктовым агентом и не запускает бизнес-процесс. Это контрольный слой, который применяется ко всем 6 агентам, checker/dashboard, внешним сервисам, LLM и MCP/API.
+
+Когда читать обязательно:
+
+- секреты, `.env`, токены, cookies, session-файлы, webhook URL;
+- Bitrix24, Telegram, MAX, VK, email, публикации, outreach;
+- платные API, лимиты, подписки, деплой, production;
+- реальные клиентские данные, CRM-данные, персональные данные;
+- новые MCP/API, браузерные действия, парсинг, внешние LLM-вызовы.
+
+Что он даёт системе:
+
+- красные линии: деньги, продакшен, внешняя коммуникация, секреты и скрытые интеграции только после явного подтверждения;
+- зелёный коридор: локальные dry-run, чтение/правка обычных файлов, локальные тесты и синтетические данные;
+- AI-защиту: prompt injection, lethal trifecta, SSRF, slopsquatting, markdown/image exfiltration, структурированный LLM I/O;
+- чек-лист перед статусом `готово`.
+
 ## Правило ремонта агента
 
 1. Перед тем как чинить, прочитать `REPORT.md` и `CLAUDE.md`.
@@ -84,7 +103,15 @@
 
 ## Стек
 
-Python 3.11+ · APScheduler · Redis (AOF включён) · PostgreSQL · Claude API (claude-sonnet-4-6) · Bitrix24 REST API · Telethon (user account) · python-telegram-bot · vk_api · MAX Bot API.
+Python 3.11+ · APScheduler · Redis (AOF включён) · PostgreSQL · dry-run LLM router для локальной разработки · OpenRouter local free test mode · OpenRouter demo-free server mode · OpenRouter production-router server mode · Bitrix24 REST API · Telethon (user account) · python-telegram-bot · vk_api · MAX Bot API.
+
+Сейчас разработка идёт через Codex/подписку, поэтому продуктовый backend держим в `LLM_RUNTIME_MODE=local_codex`, `LLM_PROVIDER=dry_run` и `AGENT_CONTROL_LIVE_LLM=0`.
+
+Для локальной проверки реального ответа модели до сервера есть режим `LLM_RUNTIME_MODE=openrouter_free_test`: все текстовые LLM-задачи идут через одну бесплатную OpenRouter-модель `LLM_MODEL_DEMO_FREE`; Redis, Bitrix24, Telegram, scheduler и publisher от этого не включаются.
+
+Для показа мастеру на сервере есть временный режим `LLM_RUNTIME_MODE=demo_server_free`: все текстовые LLM-задачи идут через одну бесплатную OpenRouter-модель `LLM_MODEL_DEMO_FREE`.
+
+Для финального продукта есть режим `LLM_RUNTIME_MODE=production_server_router`: обычные задачи — DeepSeek Flash/free, управление агентами — MiniMax 2.7, разработка — Opus 4.7, маркетинг — Google Flash. Реальные вызовы включать только после server deploy, проверки model IDs и стоимости.
 
 ## Два потока лидов
 
