@@ -30,6 +30,15 @@ output/playwright/
 
 # Operational CRM test artifacts - keep local
 data/reports/bitrix_close_test_lead_*.json
+data/reports/bitrix_*.json
+data/reports/agent5_bitrix_*.json
+data/reports/agent5_telegram_*.json
+data/reports/agent5_redis_telegram_*.json
+data/reports/agent5_deal_payload_*.json
+
+# Локальные бэкапы и транскрипты — не коммитим
+backups/
+data/transcripts/
 
 # Local setup notes with account identifiers - keep local
 MCP_SETUP_RESULT.md
