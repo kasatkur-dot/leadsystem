@@ -208,4 +208,3 @@ analytics_reporter -> channels + content_published + deals + ROMI
 4. если обязательные поля не заполнены — не запускать Redis и систему;
 5. обновить REPORT.md.
 ```
-

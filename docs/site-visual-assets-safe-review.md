@@ -282,4 +282,3 @@ hero-engineering-grid.png
 client-path-diagram.png
 og-home.png
 ```
-

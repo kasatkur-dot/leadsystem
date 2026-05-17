@@ -258,4 +258,3 @@ reels_source -> content_idea -> content_publication -> first_touch -> lead -> de
 ```text
 Создать минимальный offline Reels radar для Агента 4 без внешних API и без изменения основной лидовой цепочки.
 ```
-
