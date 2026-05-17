@@ -39,6 +39,27 @@ data/reports/agent5_telegram_*.json
 data/reports/agent5_redis_telegram_*.json
 data/reports/agent5_deal_payload_*.json
 
+# Local dry-run/report artifacts reviewed separately before any public save
+data/channel_costs_mvp.csv
+data/channel_facts_mvp.csv
+data/reports/agent3_*.json
+data/reports/agent4_*.md
+data/reports/agent4_*.json
+data/reports/agent5_*.json
+data/reports/bitrix_reactivation_readonly_plan.md
+data/reports/channel_report_mvp.csv
+data/reports/client_acquisition_pack_dry_run.*
+data/reports/first_inbound_*
+data/reports/first_safe_growth_tests.*
+data/reports/lead-post-*
+data/reports/lecture_growth_source_score.*
+data/reports/max_b2b_*
+data/reports/openrouter_provider_config.json
+data/reports/synthetic_lead_dry_run.json
+data/reports/tender_filter_pack_dry_run.*
+data/reports/three_qualified_leads_sprint.*
+data/reports/vpp_ai_manager_dry_run*
+
 # Локальные бэкапы и транскрипты — не коммитим
 backups/
 data/transcripts/
