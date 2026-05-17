@@ -1,0 +1,1640 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Agent Dashboard — design-studio-lead-engine</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --panel: #fffdf8;
+      --ink: #172026;
+      --muted: #68737d;
+      --line: #d8d3c8;
+      --ok: #116b4f;
+      --ok-bg: #dff3e9;
+      --wait: #8a5c13;
+      --wait-bg: #f5e7c4;
+      --bad: #9b2933;
+      --bad-bg: #f6d8dc;
+      --neutral: #46525c;
+      --neutral-bg: #e8ecef;
+      --accent: #2d5f86;
+      --accent-bg: #dcecf6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.35;
+    }
+    main {
+      width: min(1480px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 18px 0 28px;
+    }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 26px; line-height: 1.1; }
+    h2 { font-size: 18px; }
+    h3 { font-size: 13px; color: var(--muted); text-transform: uppercase; }
+    code { font-family: Menlo, Consolas, monospace; font-size: 12px; overflow-wrap: anywhere; }
+    .top-panel, .lecture-map, .source-map, .workflow-board, .interaction-map, .protocol-map, .dashboard-grid > section, .agent-card, .agent-detail, .event-row, .metric-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .top-panel {
+      display: grid;
+      grid-template-columns: minmax(240px, 1.1fr) minmax(280px, 1.7fr) minmax(220px, .9fr);
+      gap: 14px;
+      padding: 16px;
+    }
+    .top-panel__meta {
+      display: grid;
+      gap: 8px;
+    }
+    .stage-box {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .stage-box span, .muted, .agent-card small, .event-row span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .status-pill, .flag, .lock-chip, .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .is-ok { color: var(--ok); background: var(--ok-bg); }
+    .is-wait { color: var(--wait); background: var(--wait-bg); }
+    .is-bad { color: var(--bad); background: var(--bad-bg); }
+    .is-neutral { color: var(--neutral); background: var(--neutral-bg); }
+    .lock-chip.is-locked { color: var(--bad); background: var(--bad-bg); }
+    .lock-chip.is-open { color: var(--ok); background: var(--ok-bg); }
+    .flag.is-on { color: var(--bad); background: var(--bad-bg); }
+    .flag.is-off { color: var(--ok); background: var(--ok-bg); }
+    .chip-row, .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      color: var(--accent);
+      background: var(--accent-bg);
+      font-weight: 600;
+      white-space: normal;
+    }
+    .tag--guard {
+      color: var(--bad);
+      background: var(--bad-bg);
+    }
+    .safety-list {
+      display: grid;
+      gap: 6px;
+      padding-left: 18px;
+      margin: 0;
+      color: var(--bad);
+      font-size: 13px;
+    }
+    .source-map {
+      margin-top: 14px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .source-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .source-stat-card {
+      display: grid;
+      gap: 3px;
+      min-height: 76px;
+      align-content: center;
+      padding: 10px;
+      border: 1px solid #cbdce5;
+      border-radius: 8px;
+      background: #f8fbfc;
+    }
+    .source-stat-card span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .source-stat-card strong {
+      color: var(--accent);
+      font-size: 24px;
+      line-height: 1;
+    }
+    .source-two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .source-panel, .source-details {
+      display: grid;
+      gap: 9px;
+      padding: 11px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-width: 0;
+    }
+    .source-details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 850;
+    }
+    .source-table-wrap {
+      max-height: 360px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+    .source-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .source-table th, .source-table td {
+      padding: 8px;
+      border-bottom: 1px solid #ece7dd;
+      text-align: left;
+      vertical-align: top;
+    }
+    .source-table th {
+      position: sticky;
+      top: 0;
+      background: #f8fbfc;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      z-index: 1;
+    }
+    .tag--source {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 2px;
+      border-radius: 8px;
+      white-space: normal;
+    }
+    .tag--source small {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .agent-source-panel {
+      display: grid;
+      gap: 9px;
+      padding: 11px;
+      border: 1px solid #cbdce5;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+    .agent-source-panel p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .agent-source-panel h4 {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .source-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .source-mini-grid span {
+      display: grid;
+      gap: 2px;
+      padding: 8px;
+      border: 1px solid #d7e3e8;
+      border-radius: 7px;
+      background: #f8fbfc;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .source-mini-grid strong {
+      color: var(--accent);
+      font-size: 18px;
+      line-height: 1;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(360px, .85fr) minmax(560px, 1.15fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .lecture-map {
+      margin-top: 14px;
+      padding: 14px;
+      display: grid;
+      gap: 14px;
+    }
+    .interaction-map {
+      margin-top: 14px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .protocol-map {
+      margin-top: 14px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .protocol-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .protocol-card {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .protocol-card--wide {
+      grid-column: 1 / -1;
+    }
+    .network-routes {
+      display: grid;
+      gap: 10px;
+    }
+    .network-route {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .network-route__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .network-chain {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .network-node {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: #eef4f7;
+      border: 1px solid #cbdce5;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .network-arrow {
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .network-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .network-meta div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      padding: 8px;
+      border-radius: 6px;
+      background: #f7fafb;
+      border: 1px solid #d7e3e8;
+    }
+    .network-meta span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .network-meta strong {
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .lecture-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, .75fr) minmax(520px, 1.25fr);
+      gap: 14px;
+    }
+    .department-grid, .handoff-list, .control-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .department-card, .flow-step, .handoff-card, .control-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .department-card {
+      display: grid;
+      gap: 6px;
+    }
+    .department-card__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .department-card span, .department-card p, .flow-step em, .flow-step p, .control-card span {
+      color: var(--muted);
+      font-size: 12px;
+      font-style: normal;
+    }
+    .flow-rail {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .flow-step {
+      min-height: 136px;
+      display: grid;
+      align-content: start;
+      gap: 7px;
+      position: relative;
+    }
+    .flow-step > span {
+      width: 28px;
+      height: 28px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 999px;
+      color: #ffffff;
+      background: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .handoff-card {
+      display: grid;
+      gap: 8px;
+    }
+    .handoff-route {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+    }
+    .handoff-route span {
+      color: var(--accent);
+      font-weight: 800;
+    }
+    .handoff-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .handoff-grid div {
+      display: grid;
+      gap: 3px;
+      padding: 7px;
+      background: #f7fafb;
+      border: 1px solid #d7e3e8;
+      border-radius: 6px;
+      min-width: 0;
+    }
+    .handoff-grid span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .handoff-grid strong {
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .control-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .control-card {
+      display: grid;
+      gap: 6px;
+    }
+    .dashboard-grid > section {
+      padding: 14px;
+      min-width: 0;
+    }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .agent-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .agent-card {
+      display: grid;
+      gap: 8px;
+      min-height: 108px;
+      padding: 11px;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      appearance: none;
+      font: inherit;
+    }
+    .agent-card:hover, .agent-card.is-active {
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+    .agent-card__top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .agent-card span:not(.agent-card__top) {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .agent-detail {
+      display: none;
+      padding: 14px;
+    }
+    .agent-detail.is-active {
+      display: grid;
+      gap: 12px;
+    }
+    .lead-text {
+      font-size: 14px;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .main-metric-card, .okr-metric-row {
+      display: grid;
+      gap: 5px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #cbdce5;
+      background: #f8fbfc;
+    }
+    .main-metric-card span, .okr-metric-row span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .main-metric-card strong {
+      color: var(--ink);
+      font-size: 17px;
+    }
+    .main-metric-card em, .okr-metric-row strong {
+      color: var(--accent);
+      font-style: normal;
+      font-weight: 850;
+    }
+    .main-metric-card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .okr-metric-list {
+      display: grid;
+      gap: 6px;
+    }
+    .subrole-grid {
+      display: grid;
+      gap: 7px;
+    }
+    .subrole-card {
+      display: grid;
+      gap: 4px;
+      padding: 9px;
+      border-radius: 8px;
+      border: 1px solid #cbdce5;
+      background: #f8fbfc;
+    }
+    .subrole-card strong {
+      color: var(--ink);
+      font-size: 13px;
+    }
+    .subrole-card span,
+    .subrole-card small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .compact-list {
+      display: grid;
+      gap: 5px;
+      margin: 8px 0 0;
+      padding-left: 18px;
+      font-size: 13px;
+    }
+    .readiness-card {
+      display: grid;
+      gap: 4px;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #eef4f7;
+      border: 1px solid #cbdce5;
+    }
+    .readiness-card strong {
+      color: var(--accent);
+      font-size: 28px;
+      line-height: 1;
+    }
+    .readiness-card span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .next-action {
+      display: grid;
+      gap: 4px;
+      padding: 10px;
+      background: #eef4f7;
+      border: 1px solid #cbdce5;
+      border-radius: 8px;
+    }
+    .next-action span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(420px, 1fr) minmax(420px, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .event-list, .metric-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .event-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      padding: 10px;
+    }
+    .event-row code {
+      grid-column: 1 / -1;
+      color: var(--muted);
+    }
+    .event-row div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    .metric-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .metric-card {
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+    .kv-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .kv-grid.small {
+      grid-template-columns: 1fr;
+    }
+    .kv-item {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+      padding: 7px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+    .kv-item span {
+      color: var(--muted);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+    .kv-item strong {
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .workflow-board {
+      margin-top: 14px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .ghost-button {
+      appearance: none;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      padding: 7px 11px;
+      background: #ffffff;
+      color: var(--accent);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .ghost-button:hover {
+      background: var(--accent-bg);
+    }
+    .workflow-canvas {
+      position: relative;
+      min-height: 760px;
+      overflow: hidden;
+      border: 1px dashed #b8cbd6;
+      border-radius: 12px;
+      background:
+        linear-gradient(90deg, rgba(45, 95, 134, .06) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(45, 95, 134, .06) 1px, transparent 1px),
+        #ffffff;
+      background-size: 34px 34px;
+      touch-action: none;
+    }
+    .workflow-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .workflow-edge {
+      stroke: rgba(45, 95, 134, .44);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 7 7;
+    }
+    .workflow-node {
+      position: absolute;
+      z-index: 2;
+      width: 292px;
+      min-height: 248px;
+      display: grid;
+      align-content: start;
+      gap: 8px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 253, 248, .96);
+      color: inherit;
+      box-shadow: 0 12px 26px rgba(23, 32, 38, .08);
+      cursor: grab;
+      text-align: left;
+      font: inherit;
+      user-select: none;
+      touch-action: none;
+    }
+    .workflow-node:hover,
+    .workflow-node.is-active {
+      border-color: var(--accent);
+      box-shadow: 0 14px 30px rgba(45, 95, 134, .16);
+    }
+    .workflow-node.is-dragging {
+      cursor: grabbing;
+      z-index: 5;
+      box-shadow: 0 18px 38px rgba(23, 32, 38, .2);
+    }
+    .workflow-node--agent {
+      border-color: #a9c4d6;
+    }
+    .workflow-node--chief {
+      width: 324px;
+      min-height: 268px;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(255, 255, 255, .7), transparent 34%),
+        linear-gradient(135deg, #13354a, #2d5f86);
+      color: #ffffff;
+      border-color: #13354a;
+      box-shadow: 0 18px 46px rgba(19, 53, 74, .28);
+    }
+    .workflow-node__kind {
+      width: max-content;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #eef4f7;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .workflow-node strong {
+      font-size: 14px;
+    }
+    .workflow-node--chief strong {
+      font-size: 16px;
+    }
+    .workflow-node small {
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .workflow-node--chief small,
+    .workflow-node--chief .workflow-node__okr,
+    .workflow-node--chief .workflow-node__todo {
+      color: rgba(255, 255, 255, .86);
+    }
+    .workflow-node .status-pill {
+      width: max-content;
+    }
+    .workflow-progress {
+      display: block;
+      width: 100%;
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(45, 95, 134, .14);
+    }
+    .workflow-progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #64a889, #2d5f86);
+    }
+    .workflow-node--chief .workflow-progress {
+      background: rgba(255, 255, 255, .2);
+    }
+    .workflow-node--chief .workflow-progress span {
+      background: linear-gradient(90deg, #f5e7c4, #ffffff);
+    }
+    .workflow-node__okr,
+    .workflow-node__todo {
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .workflow-node__skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .workflow-node__skills .tag {
+      min-height: 20px;
+      padding: 2px 7px;
+      font-size: 11px;
+    }
+    .workflow-node--chief .tag {
+      color: #17364a;
+      background: rgba(255, 255, 255, .86);
+    }
+    .workflow-help {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+      main { width: min(100vw - 20px, 760px); }
+      .top-panel, .lecture-layout, .source-two-col, .dashboard-grid, .lower-grid, .detail-grid, .network-meta {
+        grid-template-columns: 1fr;
+      }
+      .agent-cards, .metric-grid, .kv-grid, .flow-rail, .handoff-grid, .control-grid, .source-stat-grid, .source-mini-grid {
+        grid-template-columns: 1fr;
+      }
+      .workflow-canvas {
+        min-height: 980px;
+      }
+      .workflow-node {
+        width: min(292px, calc(100% - 20px));
+      }
+      .workflow-node--chief {
+        width: min(324px, calc(100% - 20px));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="top-panel" aria-label="Общий статус">
+      <div class="top-panel__meta">
+        <div class="section-heading">
+          <h1>design-studio-lead-engine</h1>
+          <span class="status-pill is-ok">OK</span>
+        </div>
+        <div class="chip-row">
+          <span class="status-pill is-neutral">6 агентов: 6</span>
+          <span class="status-pill is-neutral">JSON: data/reports/agent_dashboard.json</span>
+        </div>
+        <div class="chip-row"><span class="flag is-off">redis: false</span>
+<span class="flag is-off">bitrix24: false</span>
+<span class="flag is-off">telegram_send: false</span>
+<span class="flag is-off">imap: false</span>
+<span class="flag is-off">llm: false</span>
+<span class="flag is-off">scheduler: false</span>
+<span class="flag is-off">publisher: false</span></div>
+      </div>
+
+      <div class="stage-box">
+        <span>Текущий этап</span>
+        <strong>2026-05-17 — Подключён Агент безопасности как контрольный слой системы</strong>
+        <span>Следующий маленький шаг</span>
+        <strong>открыть `data/reports/agent_dashboard.html` и глазами проверить новый блок `Security Agent Control Layer` рядом с управленческими блоками.</strong>
+        <span>Последняя проверка: 2026-05-16T23:16:40Z</span>
+      </div>
+
+      <div class="stage-box" aria-label="Запреты">
+        <span>Запреты</span>
+        <div class="chip-row"><span class="lock-chip is-locked">scheduler: закрыто</span>
+<span class="lock-chip is-locked">массовый сбор: закрыто</span>
+<span class="lock-chip is-locked">реальные публикации: закрыто</span>
+<span class="lock-chip is-locked">реальный outreach: закрыто</span>
+<span class="lock-chip is-open">секреты: скрыты</span></div>
+        <ul class="safety-list">
+          <li>Не запускать scheduler без отдельного подтверждения.</li><li>Не запускать массовый сбор лидов.</li><li>Не публиковать реальные посты.</li><li>Не отправлять outreach-сообщения.</li><li>Не показывать значения секретов.</li><li>Не создавать Agent 7.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="lecture-map" aria-label="Схема по лекции 5">
+      <div class="section-heading">
+        <h2>Схема по лекции 5</h2>
+        <span class="status-pill is-neutral">read_only</span>
+      </div>
+      <p class="lead-text">главный оркестратор -&gt; департаменты -&gt; агенты -&gt; входы/выходы -&gt; проверяемый результат -&gt; метрики -&gt; REPORT</p>
+      <div class="lecture-layout">
+        <div>
+          <div class="section-heading">
+            <h3>Департаменты</h3>
+            <span class="status-pill is-neutral">8</span>
+          </div>
+          <div class="department-grid">
+            <article class="department-card"><div class="department-card__top"><strong>Оркестратор</strong><span class="status-pill is-neutral">active</span></div><span>CLAUDE.md / AGENTS.md / REPORT.md</span><p>держит правила, память проекта, запреты и следующий маленький шаг</p></article>
+<article class="department-card"><div class="department-card__top"><strong>Исследование источников</strong><span class="status-pill is-wait">planned/manual</span></div><span>Agent 1 Scout</span><p>находит источники, боли рынка, конкурентов и передает source cards</p></article>
+<article class="department-card"><div class="department-card__top"><strong>Сбор лидов</strong><span class="status-pill is-wait">partial</span></div><span>Agent 2 Collector</span><p>создает RawLead и передает его в leads:raw</p></article>
+<article class="department-card"><div class="department-card__top"><strong>Квалификация</strong><span class="status-pill is-wait">tested_partial</span></div><span>Agent 3 Processor</span><p>делает flow, enrich, score, offer и QualifiedLead</p></article>
+<article class="department-card"><div class="department-card__top"><strong>Контент и доверие</strong><span class="status-pill is-wait">dry_run/manual</span></div><span>Agent 4 Publisher</span><p>готовит черновики, доверие, сайт и future content events</p></article>
+<article class="department-card"><div class="department-card__top"><strong>CRM и аналитика</strong><span class="status-pill is-ok">tested</span></div><span>Agent 5 CRM</span><p>принимает QualifiedLead/OutreachLead/content events и ведет CRM/отчеты</p></article>
+<article class="department-card"><div class="department-card__top"><strong>Первое касание</strong><span class="status-pill is-wait">planned/locked</span></div><span>Agent 6 Outreach</span><p>готовит human-like replies только через approval</p></article>
+<article class="department-card"><div class="department-card__top"><strong>Checker / QA</strong><span class="status-pill is-neutral">active</span></div><span>scripts/check_agent_okr_contract.py</span><p>сверяет визуальную систему с реальными файлами, OKR, метриками и отчетами</p></article>
+          </div>
+        </div>
+        <div>
+          <div class="section-heading">
+            <h3>Поток результата</h3>
+            <span class="status-pill is-neutral">оркестратор -> REPORT</span>
+          </div>
+          <div class="flow-rail">
+            <article class="flow-step"><span>1</span><strong>Источник</strong><em>Agent 1 / Agent 2</em><p>source card или RawLead</p></article>
+<article class="flow-step"><span>2</span><strong>Квалификация</strong><em>Agent 3</em><p>QualifiedLead: flow, score, offer, next action</p></article>
+<article class="flow-step"><span>3</span><strong>CRM</strong><em>Agent 5</em><p>Bitrix24 lead, Telegram alert, analytics event</p></article>
+<article class="flow-step"><span>4</span><strong>Контент/доверие</strong><em>Agent 4</em><p>drafts, site trust blocks, future content:published</p></article>
+<article class="flow-step"><span>5</span><strong>Проверка</strong><em>Checker</em><p>JSON report + запись в REPORT.md</p></article>
+          </div>
+          <div class="section-heading">
+            <h3>Связи и handoff</h3>
+            <span class="status-pill is-neutral">кто -> кому</span>
+          </div>
+          <div class="handoff-list">
+            <article class="handoff-card"><div class="handoff-route"><strong>Agent 1 Scout</strong><span>-></span><strong>Agent 2 Collector</strong></div><div class="handoff-grid"><div><span>Что передается</span><strong>source card для сбора</strong></div><div><span>Формат</span><strong>future research/table</strong></div><div><span>Где лежит</span><strong>research/* или content/library/sources/*</strong></div><div><span>Кто проверяет</span><strong>REPORT.md + checker по мере появления source cards</strong></div></div></article>
+<article class="handoff-card"><div class="handoff-route"><strong>Agent 1 Scout</strong><span>-></span><strong>Agent 4 Publisher</strong></div><div class="handoff-grid"><div><span>Что передается</span><strong>боли, темы, конкуренты</strong></div><div><span>Формат</span><strong>Markdown/CSV source notes</strong></div><div><span>Где лежит</span><strong>content/library/sources/*, research/*</strong></div><div><span>Кто проверяет</span><strong>docs/multi-agent-visual-control-map.md</strong></div></div></article>
+<article class="handoff-card"><div class="handoff-route"><strong>Agent 2 Collector</strong><span>-></span><strong>Agent 3 Processor</strong></div><div class="handoff-grid"><div><span>Что передается</span><strong>RawLead</strong></div><div><span>Формат</span><strong>shared.models.RawLead</strong></div><div><span>Где лежит</span><strong>Redis leads:raw</strong></div><div><span>Кто проверяет</span><strong>scripts/test_agent3_redis_processing_llm.py</strong></div></div></article>
+<article class="handoff-card"><div class="handoff-route"><strong>Agent 3 Processor</strong><span>-></span><strong>Agent 5 CRM</strong></div><div class="handoff-grid"><div><span>Что передается</span><strong>QualifiedLead</strong></div><div><span>Формат</span><strong>shared.models.QualifiedLead</strong></div><div><span>Где лежит</span><strong>Redis leads:qualified</strong></div><div><span>Кто проверяет</span><strong>scripts/test_agent3_to_agent5_handoff_local.py</strong></div></div></article>
+<article class="handoff-card"><div class="handoff-route"><strong>Agent 4 Publisher</strong><span>-></span><strong>Agent 5 CRM</strong></div><div class="handoff-grid"><div><span>Что передается</span><strong>content_published event</strong></div><div><span>Формат</span><strong>JSON event</strong></div><div><span>Где лежит</span><strong>Redis content:published</strong></div><div><span>Кто проверяет</span><strong>future content event test</strong></div></div></article>
+<article class="handoff-card"><div class="handoff-route"><strong>Agent 6 Outreach</strong><span>-></span><strong>Agent 5 CRM</strong></div><div class="handoff-grid"><div><span>Что передается</span><strong>OutreachLead после интереса</strong></div><div><span>Формат</span><strong>shared.models.OutreachLead -&gt; QualifiedLead</strong></div><div><span>Где лежит</span><strong>Redis leads:outreach</strong></div><div><span>Кто проверяет</span><strong>future approval/outreach test</strong></div></div></article>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-heading">
+          <h3>Read-only команды контроля</h3>
+          <span class="status-pill is-ok">без внешних сервисов</span>
+        </div>
+        <div class="control-grid">
+          <article class="control-card"><strong>Проверить систему</strong><code>.venv/bin/python scripts/check_agent_okr_contract.py</code><span>read_only/local_report / external_calls=False</span></article>
+<article class="control-card"><strong>Обновить JSON</strong><code>.venv/bin/python scripts/build_agent_dashboard.py</code><span>read_only/local_report / external_calls=False</span></article>
+<article class="control-card"><strong>Обновить HTML</strong><code>.venv/bin/python scripts/build_agent_dashboard_viewer.py</code><span>read_only/static_html / external_calls=False</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="source-map" aria-label="Карта источников и OKR источников"><div class="section-heading"><h2>Карта источников</h2><span class="status-pill is-ok">OK</span></div><p class="lead-text">Здесь собраны 17 MVP-каналов, источники первой волны, planned-каналы из дашборда лектора, watchlist конкурентов и backlog-источники.</p><div class="source-stat-grid"><article class="source-stat-card"><span>MVP-каналы</span><strong>17</strong></article>
+<article class="source-stat-card"><span>1-я волна</span><strong>9</strong></article>
+<article class="source-stat-card"><span>2-я волна</span><strong>6</strong></article>
+<article class="source-stat-card"><span>3-я волна</span><strong>2</strong></article>
+<article class="source-stat-card"><span>активные</span><strong>3</strong></article>
+<article class="source-stat-card"><span>ручные</span><strong>6</strong></article>
+<article class="source-stat-card"><span>planned</span><strong>8</strong></article>
+<article class="source-stat-card"><span>watchlist конкурентов</span><strong>15</strong></article>
+<article class="source-stat-card"><span>источники из лекции 15.05</span><strong>12</strong></article>
+<article class="source-stat-card"><span>каналы Яники ждут</span><strong>5</strong></article>
+<article class="source-stat-card"><span>контентные поверхности</span><strong>7</strong></article>
+<article class="source-stat-card"><span>backlog-источники</span><strong>16</strong></article></div><div class="source-two-col"><article class="source-panel"><h3>Кто владеет каналами</h3><div class="kv-grid small"><div class="kv-item"><span>agent2_collector</span><strong>4</strong></div>
+<div class="kv-item"><span>agent4_publisher</span><strong>9</strong></div>
+<div class="kv-item"><span>agent5_crm</span><strong>2</strong></div>
+<div class="kv-item"><span>agent6_outreach</span><strong>2</strong></div></div></article><article class="source-panel"><h3>Контентные поверхности Agent 4</h3><div class="tags"><span class="tag tag--source">MAX-канал СИЛА Проекта</span>
+<span class="tag tag--source">Telegram</span>
+<span class="tag tag--source">VK</span>
+<span class="tag tag--source">Дзен</span>
+<span class="tag tag--source">Яндекс Карты</span>
+<span class="tag tag--source">2GIS</span>
+<span class="tag tag--source">новый сайт / блог</span></div></article></div><details class="source-details" open><summary>Все 17 MVP-каналов</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>Канал</th><th>Волна</th><th>Статус</th><th>Владелец</th><th>Flow</th><th>Заметка</th></tr></thead><tbody><tr><td>Gmail tenders</td><td>wave_1</td><td>active</td><td>agent2_collector</td><td>B</td><td>Current MVP source for engineering tenders</td></tr><tr><td>Telegram chats</td><td>wave_1</td><td>active</td><td>agent6_outreach</td><td>A_B</td><td>Current MVP source for Telegram demand signals</td></tr><tr><td>Outbound manual</td><td>wave_1</td><td>active</td><td>agent6_outreach</td><td>A_B</td><td>Manual and agent-assisted outbound touchpoints</td></tr><tr><td>Avito</td><td>wave_1</td><td>manual</td><td>agent2_collector</td><td>A_B</td><td>Track manually before automation</td></tr><tr><td>Profi.ru</td><td>wave_1</td><td>manual</td><td>agent2_collector</td><td>A</td><td>Track manually before collector</td></tr><tr><td>Yandex Services</td><td>wave_1</td><td>manual</td><td>agent2_collector</td><td>A_B</td><td>Track manually before collector</td></tr><tr><td>Yandex Maps</td><td>wave_1</td><td>manual</td><td>agent4_publisher</td><td>A_B</td><td>Manual calls and messages from map card</td></tr><tr><td>Referrals</td><td>wave_1</td><td>manual</td><td>agent5_crm</td><td>A_B</td><td>Track who referred the client</td></tr><tr><td>Old inquiries</td><td>wave_1</td><td>manual</td><td>agent5_crm</td><td>A_B</td><td>Reactivation of old leads and existing contacts</td></tr><tr><td>Yandex Direct</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Requires landing UTM budget and goals</td></tr><tr><td>Google Ads</td><td>wave_3</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Later after geo and landing decisions</td></tr><tr><td>VK Ads</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Requires landing and UTM</td></tr><tr><td>Meta Ads</td><td>wave_3</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Requires legal and geo check</td></tr><tr><td>Telegram Ads</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Requires UTM or bot entry</td></tr><tr><td>Dzen and RSY</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Separate paid traffic from organic content</td></tr><tr><td>Influencer TG</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Use unique link or promo per placement</td></tr><tr><td>SEO organic</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Needs site or landing pages</td></tr></tbody></table></div></details><div class="source-two-col"><details class="source-details" open><summary>Первая волна: 9 каналов</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>Канал</th><th>Волна</th><th>Статус</th><th>Владелец</th><th>Flow</th><th>Заметка</th></tr></thead><tbody><tr><td>Gmail tenders</td><td>wave_1</td><td>active</td><td>agent2_collector</td><td>B</td><td>Current MVP source for engineering tenders</td></tr><tr><td>Telegram chats</td><td>wave_1</td><td>active</td><td>agent6_outreach</td><td>A_B</td><td>Current MVP source for Telegram demand signals</td></tr><tr><td>Outbound manual</td><td>wave_1</td><td>active</td><td>agent6_outreach</td><td>A_B</td><td>Manual and agent-assisted outbound touchpoints</td></tr><tr><td>Avito</td><td>wave_1</td><td>manual</td><td>agent2_collector</td><td>A_B</td><td>Track manually before automation</td></tr><tr><td>Profi.ru</td><td>wave_1</td><td>manual</td><td>agent2_collector</td><td>A</td><td>Track manually before collector</td></tr><tr><td>Yandex Services</td><td>wave_1</td><td>manual</td><td>agent2_collector</td><td>A_B</td><td>Track manually before collector</td></tr><tr><td>Yandex Maps</td><td>wave_1</td><td>manual</td><td>agent4_publisher</td><td>A_B</td><td>Manual calls and messages from map card</td></tr><tr><td>Referrals</td><td>wave_1</td><td>manual</td><td>agent5_crm</td><td>A_B</td><td>Track who referred the client</td></tr><tr><td>Old inquiries</td><td>wave_1</td><td>manual</td><td>agent5_crm</td><td>A_B</td><td>Reactivation of old leads and existing contacts</td></tr></tbody></table></div></details><details class="source-details" open><summary>Planned-каналы: 8 каналов</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>Канал</th><th>Волна</th><th>Статус</th><th>Владелец</th><th>Flow</th><th>Заметка</th></tr></thead><tbody><tr><td>Yandex Direct</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Requires landing UTM budget and goals</td></tr><tr><td>Google Ads</td><td>wave_3</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Later after geo and landing decisions</td></tr><tr><td>VK Ads</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Requires landing and UTM</td></tr><tr><td>Meta Ads</td><td>wave_3</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Requires legal and geo check</td></tr><tr><td>Telegram Ads</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Requires UTM or bot entry</td></tr><tr><td>Dzen and RSY</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Separate paid traffic from organic content</td></tr><tr><td>Influencer TG</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Use unique link or promo per placement</td></tr><tr><td>SEO organic</td><td>wave_2</td><td>planned</td><td>agent4_publisher</td><td>A_B</td><td>From lecturer dashboard. Needs site or landing pages</td></tr></tbody></table></div></details></div><details class="source-details"><summary>Watchlist конкурентов Agent 1</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>Источник</th><th>Платформа</th><th>Сегмент</th><th>Статус</th><th>Зачем смотреть</th></tr></thead><tbody><tr><td>Проектирование зданий</td><td>telegram</td><td>B</td><td>active_manual</td><td>B2B-аудитория проектировщиков ГИПов и руководителей проектных компаний</td></tr><tr><td>Рупор ГИП</td><td>telegram</td><td>B</td><td>active_manual</td><td>Новости нормы и проектная документация для ГИПов</td></tr><tr><td>ПРОЕКТИРОВАНИЕ ЗДАНИЙ ЧАТ</td><td>telegram</td><td>B</td><td>planned_manual</td><td>Чат проектировщиков и вакансий как источник боли и спроса</td></tr><tr><td>PEREPLAN. Перепланировка и согласование</td><td>telegram</td><td>A</td><td>active_manual</td><td>Крупный B2C/B2B канал по перепланировкам Москвы и Петербурга</td></tr><tr><td>Согласование перепланировки в Москве и МО</td><td>telegram</td><td>A</td><td>active_manual</td><td>Узкая аудитория дизайнеров ремонтников риелторов</td></tr><tr><td>МОСтройпроект</td><td>website</td><td>A</td><td>active_manual</td><td>Сильная упаковка с кейсами сроками стоимостью и документами</td></tr><tr><td>Ресог</td><td>website</td><td>A</td><td>active_manual</td><td>Перепланировки с фокусом на требования 2026 и бывших сотрудников Жилинспекции</td></tr><tr><td>Replan Estate</td><td>website</td><td>A+B</td><td>active_manual</td><td>Нежилые помещения проектная документация согласования ремонт под ключ</td></tr><tr><td>Архитектоника</td><td>website</td><td>A</td><td>active_manual</td><td>Перепланировки под ключ Москва</td></tr><tr><td>Согласуем</td><td>website</td><td>A</td><td>active_manual</td><td>Перепланировки под ключ Москва</td></tr><tr><td>DOCUMENTALL</td><td>vk</td><td>A+B</td><td>planned_manual</td><td>СПб и ЛО перепланировка реконструкция полный цикл</td></tr><tr><td>REPLAN Новосибирск</td><td>vk</td><td>A</td><td>planned_manual</td><td>Региональный конкурент по перепланировкам</td></tr><tr><td>МОСтройпроект VK</td><td>vk</td><td>A</td><td>planned_manual</td><td>VK-упаковка крупного конкурента</td></tr><tr><td>ПКСтрой</td><td>vk</td><td>A</td><td>planned_manual</td><td>Перепланировки Москва опыт с 2008</td></tr><tr><td>Яндекс Недвижимость: перепланировка</td><td>website</td><td>A</td><td>active_manual</td><td>Поисковая статья с понятной структурой для B2C</td></tr></tbody></table></div></details><details class="source-details" open><summary>Growth source map из лекции 15.05</summary><p class="lead-text">Скоринг: OK. Требуют approval или уточнения: 10.</p><div class="source-table-wrap"><table class="source-table"><thead><tr><th>Источник</th><th>Платформа</th><th>Сегмент</th><th>Статус</th><th>Зачем смотреть</th></tr></thead><tbody><tr><td>MAX-канал СИЛА Проекта</td><td>MAX</td><td>all_segments</td><td>approved</td><td>Главная площадка доверия и прогрева после входа из внешних источников</td></tr><tr><td>Telegram-каналы коммерческой недвижимости</td><td>Telegram</td><td>commercial_real_estate</td><td>candidate</td><td>Искать собственников арендаторов УК девелоперов ТЦ БЦ складов</td></tr><tr><td>VK-сообщества предпринимателей и коммерческой недвижимости</td><td>VK</td><td>b2b</td><td>candidate</td><td>Проверять темы аренды ремонта fit-out реконструкции и перепланировок</td></tr><tr><td>Форумы и обсуждения предпринимателей</td><td>Forums</td><td>b2b</td><td>candidate</td><td>Ловить реальные вопросы про открытие магазина офиса склада и согласования</td></tr><tr><td>2GIS карточки и категории</td><td>2GIS</td><td>local_search</td><td>candidate</td><td>Понять спрос по городам и привести карточку к единой аналитике</td></tr><tr><td>Яндекс Карты и Яндекс Бизнес</td><td>Yandex</td><td>local_search</td><td>candidate</td><td>Проверить видимость по проектированию и перепланировке</td></tr><tr><td>Avito Услуги проектирование</td><td>Avito</td><td>private_and_small_business</td><td>candidate</td><td>Вторичный поток вопросов по проектированию и перепланировке</td></tr><tr><td>Коммерческие тендерные площадки</td><td>Tender</td><td>b2b</td><td>candidate</td><td>Искать ПД РД реконструкцию перепланировку обследования для юрлиц</td></tr><tr><td>Сайты девелоперов и УК</td><td>Web</td><td>b2b</td><td>candidate</td><td>Собрать список компаний где могут быть объекты и запросы на проектирование</td></tr><tr><td>Складские операторы и индустриальные парки</td><td>Web</td><td>warehouses</td><td>candidate</td><td>Приоритет для складов ангаров реконструкций и ПД РД</td></tr><tr><td>Ритейл и франчайзи</td><td>Web</td><td>retail_fitout</td><td>candidate</td><td>Магазины ТЦ fit-out перепланировки под арендодателя и УК</td></tr><tr><td>Старые контакты и сделки Bitrix24</td><td>Bitrix24</td><td>crm_base</td><td>approved_readonly</td><td>Найти дубли старые лиды и сегменты для аккуратной реактивации</td></tr></tbody></table></div></details><details class="source-details"><summary>Каналы Яники: 5 строк ждут ссылок</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>Источник</th><th>Платформа</th><th>Сегмент</th><th>Статус</th><th>Зачем смотреть</th></tr></thead><tbody><tr><td></td><td>telegram|vk|max|dzen|website|other</td><td>A|B|A+B</td><td>pending_yanika_input</td><td></td></tr><tr><td></td><td>telegram|vk|max|dzen|website|other</td><td>A|B|A+B</td><td>pending_yanika_input</td><td></td></tr><tr><td></td><td>telegram|vk|max|dzen|website|other</td><td>A|B|A+B</td><td>pending_yanika_input</td><td></td></tr><tr><td></td><td>telegram|vk|max|dzen|website|other</td><td>A|B|A+B</td><td>pending_yanika_input</td><td></td></tr><tr><td></td><td>telegram|vk|max|dzen|website|other</td><td>A|B|A+B</td><td>pending_yanika_input</td><td></td></tr></tbody></table></div></details><article class="source-panel"><h3>Backlog-источники</h3><div class="tags"><span class="tag tag--source">2GIS как отдельный lead/referrer source</span>
+<span class="tag tag--source">VK-группы и обсуждения</span>
+<span class="tag tag--source">коммерческие тендерные площадки</span>
+<span class="tag tag--source">HH.ru вакансии как сигнал спроса на проектирование</span>
+<span class="tag tag--source">партнёры: риелторы, дизайнеры, юристы, кадастровые инженеры</span>
+<span class="tag tag--source">сайт / лендинги / SEO-страницы услуг</span>
+<span class="tag tag--source">лид-магнит ПРОВЕРКА перепланировки</span>
+<span class="tag tag--source">ЕИС и госзакупки</span>
+<span class="tag tag--source">закупки девелоперов и сетевых компаний</span>
+<span class="tag tag--source">каталоги франшиз и коммерческой недвижимости</span>
+<span class="tag tag--source">банки, ипотечные брокеры, оценщики и страховые</span>
+<span class="tag tag--source">БТИ / кадастровые / юридические партнёры</span>
+<span class="tag tag--source">поставщики, подрядчики fit-out и вывесок</span>
+<span class="tag tag--source">форумы, Яндекс Q, TenChat</span>
+<span class="tag tag--source">GEO/AI visibility: ChatGPT, Perplexity, Яндекс/Алиса и нейропоиск</span>
+<span class="tag tag--source">Reels/shorts radar и ROMI по контенту позже</span></div></article></section>
+
+    <section class="source-map" aria-label="Bitrix CRM hygiene"><div class="section-heading"><h2>Bitrix CRM hygiene</h2><span class="status-pill is-neutral">LIMITED_AUDIT</span></div><p class="lead-text">Read-only слой Agent 5: показывает качество CRM-базы, дубли и первую очередь ручной чистки. Dashboard не вызывает Bitrix24.</p><div class="source-stat-grid"><article class="source-stat-card"><span>Контакты</span><strong>150</strong></article><article class="source-stat-card"><span>Лиды</span><strong>150</strong></article><article class="source-stat-card"><span>Активные лиды</span><strong>0</strong></article><article class="source-stat-card"><span>Сделки</span><strong>150</strong></article><article class="source-stat-card"><span>Контакты без связи</span><strong>37</strong></article><article class="source-stat-card"><span>Лиды без связи</span><strong>24</strong></article><article class="source-stat-card"><span>Дубли контактов телефон/email</span><strong>4</strong></article><article class="source-stat-card"><span>Дубли лидов телефон/email</span><strong>7</strong></article></div><div class="source-two-col"><article class="source-panel"><h3>Первая очередь чистки</h3><div class="tags"><span class="tag tag--source">контакты-дубли по телефону</span>
+<span class="tag tag--source">контакты-дубли по обычному email</span>
+<span class="tag tag--source">лиды-дубли по телефону</span>
+<span class="tag tag--source">контакты без телефона/email, у которых нет сделок</span>
+<span class="tag tag--source">расшифровать стадии сделок UC_*</span></div></article><article class="source-panel"><h3>Файл отчёта</h3><div class="kv-grid small"><div class="kv-item"><span>report_file</span><strong>data/reports/bitrix_readonly_audit.json</strong></div>
+<div class="kv-item"><span>generated_at</span><strong>2026-05-14T21:34:41Z</strong></div>
+<div class="kv-item"><span>limited_by_pages</span><strong>true</strong></div></div></article></div><div class="source-two-col"><details class="source-details" open><summary>Источники лидов</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>ID</th><th>Название</th><th>Кол-во</th></tr></thead><tbody><tr><td>CALL</td><td>Звонок</td><td>78</td></tr><tr><td>EMAIL</td><td>Электронная почта</td><td>46</td></tr><tr><td>12|MAX_NUMBER_REDHAM</td><td>Max - Max</td><td>26</td></tr></tbody></table></div></details><details class="source-details" open><summary>Стадии сделок</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>ID</th><th>Название</th><th>Кол-во</th></tr></thead><tbody><tr><td>NEW</td><td></td><td>55</td></tr><tr><td>UC_O7PVUC</td><td></td><td>28</td></tr><tr><td>LOSE</td><td></td><td>12</td></tr><tr><td>UC_L031LQ</td><td></td><td>8</td></tr><tr><td>C4:NEW</td><td></td><td>8</td></tr><tr><td>C2:EXECUTING</td><td></td><td>7</td></tr><tr><td>WON</td><td></td><td>6</td></tr><tr><td>UC_VYUJ7T</td><td></td><td>5</td></tr></tbody></table></div></details></div></section>
+
+    <section class="source-map" aria-label="VPP AI-manager dry-run"><div class="section-heading"><h2>VPP AI-manager dry-run</h2><span class="status-pill is-neutral">READY</span></div><p class="lead-text">Тестовый AI-менеджер разбирает входящее сообщение, определяет сегмент, готовность данных, следующий шаг и preview сделки Bitrix24. Это локальный dry-run, отправок нет.</p><div class="source-stat-grid"><article class="source-stat-card"><span>Сценариев</span><strong>3</strong></article><article class="source-stat-card"><span>Готово к КП</span><strong>1</strong></article><article class="source-stat-card"><span>Нужно уточнить</span><strong>2</strong></article><article class="source-stat-card"><span>Bitrix dry-run</span><strong>3</strong></article></div><div class="network-routes"><article class="network-route"><div class="network-route__head"><h3>Склад / ангар</h3><span class="status-pill is-wait">DRY_RUN_NOT_SENT</span></div><div class="network-meta"><div><span>Сегмент</span><strong>b2b_warehouse_angar</strong></div><div><span>Flow / score</span><strong>B / hot</strong></div><div><span>Данные</span><strong>enough_for_kp</strong></div><div><span>КП за 24 часа</span><strong>true</strong></div><div><span>Следующий шаг</span><strong>kp_prepare</strong></div><div><span>Источник</span><strong>MAX</strong></div><div><span>Лендинг</span><strong>/landing/sklady-angary/</strong></div><div><span>Не хватает</span><strong>нет</strong></div></div><p>Поняла задачу: Склад / ангар. Данных достаточно для первичной подготовки КП. Передам инженеру на проверку состава работ и сроков.</p></article><article class="network-route"><div class="network-route__head"><h3>Коммерческая перепланировка</h3><span class="status-pill is-wait">DRY_RUN_NOT_SENT</span></div><div class="network-meta"><div><span>Сегмент</span><strong>b2b_commercial_replan</strong></div><div><span>Flow / score</span><strong>A / hot</strong></div><div><span>Данные</span><strong>enough_for_review</strong></div><div><span>КП за 24 часа</span><strong>false</strong></div><div><span>Следующий шаг</span><strong>ask_missing_data_then_review</strong></div><div><span>Источник</span><strong>Telegram</strong></div><div><span>Лендинг</span><strong>/landing/pereplanirovka-biznes/</strong></div><div><span>Не хватает</span><strong>город</strong></div></div><p>Поняла задачу: Коммерческая перепланировка. Чтобы понять состав работ и можно ли подготовить КП за 24 часа, нужно уточнить: город.</p></article><article class="network-route"><div class="network-route__head"><h3>Перепланировка квартиры</h3><span class="status-pill is-wait">DRY_RUN_NOT_SENT</span></div><div class="network-meta"><div><span>Сегмент</span><strong>b2c_apartment_replan</strong></div><div><span>Flow / score</span><strong>A / warm</strong></div><div><span>Данные</span><strong>enough_for_review</strong></div><div><span>КП за 24 часа</span><strong>false</strong></div><div><span>Следующий шаг</span><strong>ask_missing_data_then_review</strong></div><div><span>Источник</span><strong>MAX</strong></div><div><span>Лендинг</span><strong>/services/pereplanirovka-kvartiry/</strong></div><div><span>Не хватает</span><strong>город</strong></div></div><p>Поняла задачу: Перепланировка квартиры. Чтобы понять состав работ и можно ли подготовить КП за 24 часа, нужно уточнить: город.</p></article></div><div class="source-two-col"><article class="source-panel"><h3>Файлы</h3><div class="kv-grid small"><div class="kv-item"><span>report_file</span><strong>data/reports/vpp_ai_manager_dry_run.json</strong></div>
+<div class="kv-item"><span>markdown_report</span><strong>data/reports/vpp_ai_manager_dry_run.md</strong></div>
+<div class="kv-item"><span>created_at</span><strong>2026-05-16T09:55:19Z</strong></div></div></article><article class="source-panel"><h3>Внешние вызовы</h3><div class="kv-grid small"><div class="kv-item"><span>redis</span><strong>false</strong></div>
+<div class="kv-item"><span>bitrix24</span><strong>false</strong></div>
+<div class="kv-item"><span>telegram_send</span><strong>false</strong></div>
+<div class="kv-item"><span>max_send</span><strong>false</strong></div>
+<div class="kv-item"><span>imap</span><strong>false</strong></div>
+<div class="kv-item"><span>llm</span><strong>false</strong></div>
+<div class="kv-item"><span>scheduler</span><strong>false</strong></div>
+<div class="kv-item"><span>publisher</span><strong>false</strong></div>
+<div class="kv-item"><span>ads</span><strong>false</strong></div></div></article></div><p class="muted">Это локальный dry-run: контакты заредактированы, Bitrix24/Redis/MAX/Telegram/LLM/реклама не вызывались.</p></section>
+
+    <section class="source-map" aria-label="First safe growth tests"><div class="section-heading"><h2>First Safe Growth Tests</h2><span class="status-pill is-neutral">READY</span></div><p class="lead-text">Первые безопасные тесты после лекции: только read-only или draft-only, без отправок и рекламы.</p><div class="network-routes"><article class="network-route"><div class="network-route__head"><h3>Старые контакты и сделки Bitrix24</h3><span class="status-pill is-wait">read_only</span></div><div class="network-meta"><div><span>Test</span><strong>safe_growth_001</strong></div><div><span>Сегмент</span><strong>crm_base</strong></div><div><span>Владелец</span><strong>agent5_crm</strong></div><div><span>Approval</span><strong>true</strong></div></div><p>Сегментировать старые контакты и сделки, найти дубли и кандидатов на ручную реактивацию.</p><p class="muted">Stop rule: Остановиться до любых изменений карточек, объединения дублей или сообщений клиентам.</p></article><article class="network-route"><div class="network-route__head"><h3>MAX-канал СИЛА Проекта</h3><span class="status-pill is-wait">draft_only</span></div><div class="network-meta"><div><span>Test</span><strong>safe_growth_002</strong></div><div><span>Сегмент</span><strong>all_segments</strong></div><div><span>Владелец</span><strong>agent4_publisher</strong></div><div><span>Approval</span><strong>true</strong></div></div><p>Подготовить 5 B2B-постов первой волны без публикации.</p><p class="muted">Stop rule: Остановиться до публикации, автопостинга или платного продвижения.</p></article><article class="network-route"><div class="network-route__head"><h3>Коммерческие тендерные площадки</h3><span class="status-pill is-wait">read_only</span></div><div class="network-meta"><div><span>Test</span><strong>safe_growth_003</strong></div><div><span>Сегмент</span><strong>b2b</strong></div><div><span>Владелец</span><strong>agent1_scout</strong></div><div><span>Approval</span><strong>true</strong></div></div><p>Подготовить фильтры тендеров и чеклист решения участвовать или нет.</p><p class="muted">Stop rule: Остановиться до регистрации, оплаты агрегатора, подачи заявки или загрузки документов.</p></article></div><article class="source-panel"><h3>Отложено</h3><div class="tags"><span class="tag tag--source">Реактивация старых контактов Bitrix24 только после отдельного approval.</span>
+<span class="tag tag--source">Публикация MAX-постов только после approval.</span>
+<span class="tag tag--source">Регистрация, оплата и подача тендеров только после отдельного решения.</span>
+<span class="tag tag--source">Telegram/VK/форумы только после списка конкретных площадок и проверки правил.</span>
+<span class="tag tag--source">Реклама только после бюджета, UTM, стоп-правил и готового лендинга/поста.</span></div></article></section>
+
+    <section class="source-map" aria-label="Bitrix reactivation readonly plan"><div class="section-heading"><h2>Bitrix Reactivation Readonly Plan</h2><span class="status-pill is-neutral">READY</span></div><p class="lead-text">План чистки и возможной ручной реактивации из локального Bitrix-аудита. Карточки не менялись, сообщения не отправлялись.</p><div class="source-stat-grid"><article class="source-stat-card"><span>Контактов в аудите</span><strong>150</strong></article><article class="source-stat-card"><span>Лидов в аудите</span><strong>150</strong></article><article class="source-stat-card"><span>Сделок в аудите</span><strong>150</strong></article><article class="source-stat-card"><span>Групп дублей</span><strong>11</strong></article></div><p class="muted">Audit limited_by_pages: True</p><details class="source-details" open><summary>Очередь чистки</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>Очередь</th><th>Count</th><th>Priority</th><th>Action</th></tr></thead><tbody><tr><td>Контакты-дубли по телефону</td><td>2</td><td>P1</td><td>Ручная проверка групп дублей. Ничего не объединять автоматически.</td></tr><tr><td>Контакты-дубли по email</td><td>2</td><td>P1</td><td>Проверить, где один клиент создан несколько раз.</td></tr><tr><td>Лиды-дубли по телефону/email</td><td>7</td><td>P2</td><td>Понять, какие лиды можно связать с контактом или сделкой.</td></tr><tr><td>Контакты без телефона/email</td><td>37</td><td>P2</td><td>Отделить полезные карточки от пустых.</td></tr><tr><td>Лиды без телефона/email</td><td>24</td><td>P2</td><td>Понять, есть ли email/телефон в комментариях или связанной сделке.</td></tr><tr><td>Лиды без источника</td><td>0</td><td>P3</td><td>Назначить источник по истории только там, где он очевиден.</td></tr></tbody></table></div></details><article class="source-panel"><h3>Группы реактивации</h3><div class="tags"><span class="tag tag--source">Старые заявки с контактом: NOT_PREPARED_APPROVAL_REQUIRED</span>
+<span class="tag tag--source">Сделки без понятного следующего шага: NOT_PREPARED_APPROVAL_REQUIRED</span>
+<span class="tag tag--source">Лиды без источника, но с контактом: NOT_PREPARED_APPROVAL_REQUIRED</span>
+<span class="tag tag--source">Пустые карточки: DO_NOT_CONTACT</span></div></article><article class="source-panel"><h3>Approval нужен перед</h3><div class="tags"><span class="tag tag--source">merge_duplicates</span>
+<span class="tag tag--source">update_contact</span>
+<span class="tag tag--source">update_lead</span>
+<span class="tag tag--source">close_lead</span>
+<span class="tag tag--source">create_task</span>
+<span class="tag tag--source">send_message</span>
+<span class="tag tag--source">reactivation_campaign</span></div></article></section>
+
+    <section class="source-map" aria-label="Tender filter pack dry run"><div class="section-heading"><h2>Tender Filter Pack</h2><span class="status-pill is-neutral">READY</span></div><p class="lead-text">Read-only фильтры тендеров под проектирование. Площадки не открывались, заявки не подавались.</p><div class="source-stat-grid"><article class="source-stat-card"><span>Фильтров</span><strong>6</strong></article><article class="source-stat-card"><span>Файл</span><strong>content/library/sources/tender-filter-pack-vpp.csv</strong></article></div><details class="source-details" open><summary>Фильтры</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>ID</th><th>Segment</th><th>Priority</th><th>Status</th><th>Stop rule</th></tr></thead><tbody><tr><td>tender_001</td><td>warehouse_design</td><td>P1</td><td>OK</td><td>Не подавать заявку, не оплачивать площадку и не создавать сделку без approval.</td></tr><tr><td>tender_002</td><td>commercial_reconstruction</td><td>P1</td><td>OK</td><td>Не подавать заявку, не оплачивать площадку и не создавать сделку без approval.</td></tr><tr><td>tender_003</td><td>retail_fitout</td><td>P2</td><td>OK</td><td>Не подавать заявку, не оплачивать площадку и не создавать сделку без approval.</td></tr><tr><td>tender_004</td><td>commercial_replan</td><td>P1</td><td>OK</td><td>Не подавать заявку, не оплачивать площадку и не создавать сделку без approval.</td></tr><tr><td>tender_005</td><td>project_sections</td><td>P2</td><td>OK</td><td>Не подавать заявку, не оплачивать площадку и не создавать сделку без approval.</td></tr><tr><td>tender_006</td><td>private_house_secondary</td><td>P3</td><td>OK</td><td>Не подавать заявку, не оплачивать площадку и не создавать сделку без approval.</td></tr></tbody></table></div></details><article class="source-panel"><h3>Approval нужен перед</h3><div class="tags"><span class="tag tag--source">open_paid_aggregator</span>
+<span class="tag tag--source">register_tender_platform</span>
+<span class="tag tag--source">upload_documents</span>
+<span class="tag tag--source">submit_bid</span>
+<span class="tag tag--source">create_bitrix_deal</span>
+<span class="tag tag--source">create_manager_task</span></div></article></section>
+
+    <section class="source-map" aria-label="Client acquisition pack"><div class="section-heading"><h2>Client Acquisition Pack</h2><span class="status-pill is-neutral">READY</span></div><p class="lead-text">Применение техники лектора к ВПП: сегмент, источник, оффер, материал, UTM, Bitrix-метки и approval gate.</p><div class="source-stat-grid"><article class="source-stat-card"><span>Маршрутов</span><strong>6</strong></article><article class="source-stat-card"><span>Approval required</span><strong>6</strong></article></div><details class="source-details" open><summary>Маршруты привлечения</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>Route</th><th>Segment</th><th>Priority</th><th>Source</th><th>Offer</th><th>Approval</th></tr></thead><tbody><tr><td>route_001</td><td>commercial_replan</td><td>P1</td><td>MAX</td><td>Разбор готовности коммерческой перепланировки к КП</td><td>APPROVAL_REQUIRED</td></tr><tr><td>route_002</td><td>warehouse_design</td><td>P1</td><td>Tender</td><td>ПД/РД для склада или ангара после проверки исходных данных</td><td>APPROVAL_REQUIRED</td></tr><tr><td>route_003</td><td>commercial_reconstruction</td><td>P1</td><td>Tender</td><td>Первичная проверка реконструкции: состав работ, обследование, экспертиза</td><td>APPROVAL_REQUIRED</td></tr><tr><td>route_004</td><td>retail_fitout</td><td>P2</td><td>MAX</td><td>Проект для магазина/ТЦ/fit-out под требования арендодателя</td><td>APPROVAL_REQUIRED</td></tr><tr><td>route_005</td><td>project_sections</td><td>P2</td><td>Tender</td><td>Отдельные разделы ПД/РД для юрлиц</td><td>APPROVAL_REQUIRED</td></tr><tr><td>route_006</td><td>private_house_secondary</td><td>P3</td><td>MAX</td><td>Проект дома как вторичный поток после B2B</td><td>APPROVAL_REQUIRED</td></tr></tbody></table></div></details><article class="source-panel"><h3>Supporting assets</h3><div class="tags"><span class="tag tag--source">docs/client-acquisition-operating-system-from-lecture.md</span>
+<span class="tag tag--source">content/growth/approved-only-outreach-templates-vpp.md</span>
+<span class="tag tag--source">site/landing-drafts/b2b-segment-landing-blueprints.md</span>
+<span class="tag tag--source">content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md</span>
+<span class="tag tag--source">docs/tender-readonly-filter-and-decision-pack.md</span></div></article></section>
+
+    <section class="source-map" aria-label="Three qualified leads sprint"><div class="section-heading"><h2>Three Qualified Leads Sprint</h2><span class="status-pill is-neutral">READY</span></div><p class="lead-text">Спринт на первые 3 качественные заявки: перенос механики AI-астрологии в экспертный B2B-вход ВПП.</p><div class="source-stat-grid"><article class="source-stat-card"><span>Target leads</span><strong>3</strong></article><article class="source-stat-card"><span>Sprint items</span><strong>15</strong></article><article class="source-stat-card"><span>Ready/draft</span><strong>7</strong></article><article class="source-stat-card"><span>Approval required</span><strong>12</strong></article></div><article class="source-panel"><h3>Перенос астрометодики</h3><div class="tags"><span class="tag tag--source">expert: ВПП: СРО, 10+ лет, проектирование, перепланировки, реконструкция</span>
+<span class="tag tag--source">product: AI-проверка исходных данных к КП</span>
+<span class="tag tag--source">content_factory: MAX B2B posts + future landing pages + tender filters</span>
+<span class="tag tag--source">traffic_sources: MAX, Tender, Bitrix old base, future Telegram/VK/ABM</span>
+<span class="tag tag--source">warmup: серия экспертных постов и approved-only ответы</span>
+<span class="tag tag--source">conversion: Bitrix24 -&gt; КП -&gt; договор</span></div></article><details class="source-details" open><summary>Sprint items</summary><div class="source-table-wrap"><table class="source-table"><thead><tr><th>ID</th><th>Week</th><th>Segment</th><th>Agent</th><th>Source</th><th>Metric</th><th>Status</th></tr></thead><tbody><tr><td>tql_001</td><td>1</td><td>commercial_replan</td><td>agent4_publisher</td><td>MAX</td><td>content_ready</td><td>published_manual_unverified</td></tr><tr><td>tql_002</td><td>1</td><td>warehouse_design</td><td>agent4_publisher</td><td>MAX</td><td>content_ready</td><td>published_manual_unverified_public</td></tr><tr><td>tql_003</td><td>1</td><td>commercial_reconstruction</td><td>agent4_publisher</td><td>MAX</td><td>content_ready</td><td>approved</td></tr><tr><td>tql_004</td><td>1</td><td>retail_fitout</td><td>agent4_publisher</td><td>MAX</td><td>content_ready</td><td>draft</td></tr><tr><td>tql_005</td><td>1</td><td>b2b_kp_readiness</td><td>agent4_publisher</td><td>MAX</td><td>content_ready</td><td>draft</td></tr><tr><td>tql_006</td><td>1</td><td>all_b2b</td><td>agent5_crm</td><td>Bitrix24</td><td>crm_readiness</td><td>partial_limited_audit</td></tr><tr><td>tql_007</td><td>2</td><td>warehouse_design</td><td>agent1_scout</td><td>Tender</td><td>source_candidates</td><td>ready</td></tr><tr><td>tql_008</td><td>2</td><td>commercial_replan</td><td>agent1_scout</td><td>Tender</td><td>source_candidates</td><td>ready</td></tr><tr><td>tql_009</td><td>2</td><td>retail_fitout</td><td>agent6_outreach</td><td>ABM</td><td>company_shortlist</td><td>planned</td></tr><tr><td>tql_010</td><td>2</td><td>commercial_replan</td><td>agent3_processor</td><td>AI_manager</td><td>qualified_lead_scenario</td><td>ready</td></tr><tr><td>tql_011</td><td>2</td><td>warehouse_design</td><td>agent3_processor</td><td>AI_manager</td><td>qualified_lead_scenario</td><td>ready</td></tr><tr><td>tql_012</td><td>2</td><td>commercial_reconstruction</td><td>agent3_processor</td><td>AI_manager</td><td>qualified_lead_scenario</td><td>planned</td></tr><tr><td>tql_013</td><td>3</td><td>commercial_replan</td><td>agent5_crm</td><td>MAX_OR_Bitrix</td><td>qualified_leads</td><td>planned</td></tr><tr><td>tql_014</td><td>3</td><td>warehouse_design</td><td>agent5_crm</td><td>Tender</td><td>qualified_leads</td><td>planned</td></tr><tr><td>tql_015</td><td>3</td><td>commercial_reconstruction</td><td>agent5_crm</td><td>MAX_OR_Tender</td><td>qualified_leads</td><td>planned</td></tr></tbody></table></div></details></section>
+
+    <section class="workflow-board" aria-label="Перемещаемая карта агентов"><div class="section-heading"><h2>Перемещаемая карта агентов</h2><button class="ghost-button" type="button" data-workflow-reset>Сбросить расположение</button></div><p class="lead-text">В центре главный агент-оркестратор. Вокруг него 6 рабочих агентов, их связи, OKR, скиллы, процент готовности и что нужно доделать.</p><div class="workflow-canvas" id="workflowCanvas"><svg class="workflow-svg" id="workflowSvg" aria-hidden="true"><line class="workflow-edge" data-from="chief_orchestrator" data-to="agent1_scout"></line>
+<line class="workflow-edge" data-from="chief_orchestrator" data-to="agent2_collector"></line>
+<line class="workflow-edge" data-from="chief_orchestrator" data-to="agent3_processor"></line>
+<line class="workflow-edge" data-from="chief_orchestrator" data-to="agent4_publisher"></line>
+<line class="workflow-edge" data-from="chief_orchestrator" data-to="agent5_crm"></line>
+<line class="workflow-edge" data-from="chief_orchestrator" data-to="agent6_outreach"></line>
+<line class="workflow-edge" data-from="agent1_scout" data-to="agent2_collector"></line>
+<line class="workflow-edge" data-from="agent1_scout" data-to="agent4_publisher"></line>
+<line class="workflow-edge" data-from="agent1_scout" data-to="agent5_crm"></line>
+<line class="workflow-edge" data-from="agent2_collector" data-to="agent3_processor"></line>
+<line class="workflow-edge" data-from="agent3_processor" data-to="agent5_crm"></line>
+<line class="workflow-edge" data-from="agent4_publisher" data-to="agent5_crm"></line>
+<line class="workflow-edge" data-from="agent6_outreach" data-to="agent5_crm"></line></svg><button class="workflow-node workflow-node--chief" type="button" data-node-id="chief_orchestrator" data-left="40" data-top="36" aria-label="Переместить узел Главный агент-оркестратор"><span class="workflow-node__kind">главный</span><strong>Главный агент-оркестратор</strong><small>Держит правила проекта, память, порядок шагов и проверку результата.</small><span class="workflow-progress"><span style="width: 90%"></span></span><em class="status-pill is-neutral">готово 90%</em><span class="workflow-node__okr"><b>OKR:</b> Не дать системе расползтись: один следующий шаг, один ответственный агент, одна проверка.</span><span class="workflow-node__todo"><b>Доделать:</b> После каждого шага проверять, закрыт он или нет, и обновлять REPORT.md.</span><span class="workflow-node__okr"><b>KR готовность:</b> 90%</span><span class="workflow-node__skills"><span class="tag">маршрутизация</span>
+<span class="tag">контроль правил</span>
+<span class="tag">handoff</span>
+<span class="tag">escalation</span>
+<span class="tag">обновление REPORT</span></span></button><button class="workflow-node workflow-node--agent" type="button" data-node-id="agent1_scout" data-agent="agent1_scout" data-left="6" data-top="8" aria-label="Переместить узел Agent 1 Scout"><span class="workflow-node__kind">агент</span><strong>Agent 1 Scout</strong><small>Ищет, где могут появляться будущие заказчики и какие темы важны рынку.</small><span class="workflow-progress"><span style="width: 35%"></span></span><em class="status-pill is-wait">готово 35%</em><span class="workflow-node__okr"><b>OKR:</b> Дать системе понятный список перспективных источников и первый следующий шаг по каждому источнику.</span><span class="workflow-node__todo"><b>Доделать:</b> Сделать первую source card для одного выбранного источника и передать её Agent 2.</span><span class="workflow-node__okr"><b>KR готовность:</b> 67%</span><span class="workflow-node__skills"><span class="tag">поиск источников</span>
+<span class="tag">анализ конкурентов</span>
+<span class="tag">анализ отзывов</span>
+<span class="tag">поиск тендерного спроса</span></span></button><button class="workflow-node workflow-node--agent" type="button" data-node-id="agent2_collector" data-agent="agent2_collector" data-left="37" data-top="5" aria-label="Переместить узел Agent 2 Collector"><span class="workflow-node__kind">агент</span><strong>Agent 2 Collector</strong><small>Забирает лиды из разрешённого источника и превращает их в сырые карточки.</small><span class="workflow-progress"><span style="width: 45%"></span></span><em class="status-pill is-wait">готово 45%</em><span class="workflow-node__okr"><b>OKR:</b> Безопасно получить первый тестовый лид из одного источника и передать его на квалификацию.</span><span class="workflow-node__todo"><b>Доделать:</b> Провести один безопасный тест сбора из одного источника без массового парсинга.</span><span class="workflow-node__okr"><b>KR готовность:</b> 50%</span><span class="workflow-node__skills"><span class="tag">разбор писем</span>
+<span class="tag">разметка источника</span>
+<span class="tag">нормализация данных</span></span></button><button class="workflow-node workflow-node--agent" type="button" data-node-id="agent3_processor" data-agent="agent3_processor" data-left="68" data-top="8" aria-label="Переместить узел Agent 3 Processor"><span class="workflow-node__kind">агент</span><strong>Agent 3 Processor</strong><small>Очищает лид, понимает его смысл, ставит приоритет и предлагает следующий шаг.</small><span class="workflow-progress"><span style="width: 70%"></span></span><em class="status-pill is-wait">готово 70%</em><span class="workflow-node__okr"><b>OKR:</b> Отделить сильные заявки от слабых и дать менеджеру понятное действие по каждому лиду.</span><span class="workflow-node__todo"><b>Доделать:</b> Закрыть полный handoff: Agent 3 -&gt; Agent 5 на одном тестовом лиде.</span><span class="workflow-node__okr"><b>KR готовность:</b> 67%</span><span class="workflow-node__skills"><span class="tag">очистка данных</span>
+<span class="tag">выделение сути</span>
+<span class="tag">скоринг лида</span>
+<span class="tag">подготовка оффера</span></span></button><button class="workflow-node workflow-node--agent" type="button" data-node-id="agent4_publisher" data-agent="agent4_publisher" data-left="6" data-top="64" aria-label="Переместить узел Agent 4 Publisher"><span class="workflow-node__kind">агент</span><strong>Agent 4 Publisher</strong><small>Готовит контент, который объясняет экспертизу студии и усиливает доверие.</small><span class="workflow-progress"><span style="width: 40%"></span></span><em class="status-pill is-wait">готово 40%</em><span class="workflow-node__okr"><b>OKR:</b> Стабильно готовить черновики контента и материалы доверия без автопубликации.</span><span class="workflow-node__todo"><b>Доделать:</b> Держать публикации в dry-run и позже связать контент-события с аналитикой Agent 5.</span><span class="workflow-node__okr"><b>KR готовность:</b> 34%</span><span class="workflow-node__skills"><span class="tag">копирайтинг</span>
+<span class="tag">SEO-темы</span>
+<span class="tag">визуальные промпты</span>
+<span class="tag">UTM-логика</span></span></button><button class="workflow-node workflow-node--agent" type="button" data-node-id="agent5_crm" data-agent="agent5_crm" data-left="68" data-top="64" aria-label="Переместить узел Agent 5 CRM"><span class="workflow-node__kind">агент</span><strong>Agent 5 CRM</strong><small>Создаёт лид в CRM, отправляет уведомление и считает результативность каналов.</small><span class="workflow-progress"><span style="width: 80%"></span></span><em class="status-pill is-ok">готово 80%</em><span class="workflow-node__okr"><b>OKR:</b> Довести квалифицированный лид до CRM, уведомления и отчёта по результативности.</span><span class="workflow-node__todo"><b>Доделать:</b> Закрыть один сквозной тест: квалифицированный лид -&gt; Bitrix24 -&gt; Telegram -&gt; отчёт.</span><span class="workflow-node__okr"><b>KR готовность:</b> 81%</span><span class="workflow-node__skills"><span class="tag">Bitrix24</span>
+<span class="tag">воронка CRM</span>
+<span class="tag">сквозная аналитика</span>
+<span class="tag">отчёты</span></span></button><button class="workflow-node workflow-node--agent" type="button" data-node-id="agent6_outreach" data-agent="agent6_outreach" data-left="37" data-top="75" aria-label="Переместить узел Agent 6 Outreach"><span class="workflow-node__kind">агент</span><strong>Agent 6 Outreach</strong><small>Готовит аккуратное первое касание, но не отправляет его без согласования человека.</small><span class="workflow-progress"><span style="width: 25%"></span></span><em class="status-pill is-wait">готово 25%</em><span class="workflow-node__okr"><b>OKR:</b> Подготовить безопасный первый контакт по найденному диалогу, но отправлять только после одобрения.</span><span class="workflow-node__todo"><b>Доделать:</b> Сначала сделать approval-flow на черновике без реальной отправки сообщений.</span><span class="workflow-node__okr"><b>KR готовность:</b> 40%</span><span class="workflow-node__skills"><span class="tag">поиск диалогов</span>
+<span class="tag">текст первого касания</span>
+<span class="tag">согласование</span>
+<span class="tag">продажный диалог</span></span></button></div><p class="workflow-help">Карточки можно двигать как на доске Obsidian. Положение запоминается только на этом компьютере.</p></section>
+
+    <section class="interaction-map" aria-label="Карта взаимодействий агентов">
+      <div class="section-heading">
+        <h2>Карта взаимодействий агентов</h2>
+        <span class="status-pill is-neutral">read_only</span>
+      </div>
+      <p class="lead-text">показать, как агенты взаимодействуют между собой и через какие очереди/файлы передают результат</p>
+      <div class="network-routes">
+        <article class="network-route"><div class="network-route__head"><h3>Основной поток лида</h3><span class="status-pill is-neutral">partly_tested</span></div><div class="network-chain"><span class="network-node">Agent 1 Scout</span><span class="network-arrow">-></span><span class="network-node">Agent 2 Collector</span><span class="network-arrow">-></span><span class="network-node">Redis leads:raw</span><span class="network-arrow">-></span><span class="network-node">Agent 3 Processor</span><span class="network-arrow">-></span><span class="network-node">Redis leads:qualified</span><span class="network-arrow">-></span><span class="network-node">Agent 5 CRM</span><span class="network-arrow">-></span><span class="network-node">Bitrix24 / Telegram / отчёт</span></div><div class="network-meta"><div><span>Что проходит по потоку</span><strong>source card -&gt; RawLead -&gt; QualifiedLead -&gt; CRM record</strong></div><div><span>Ограничение</span><strong>Полный runtime с настоящим LLM и Agent 5 пока запускать только отдельным контролируемым тестом.</strong></div></div></article>
+<article class="network-route"><div class="network-route__head"><h3>Контентный поток</h3><span class="status-pill is-wait">dry_run/manual</span></div><div class="network-chain"><span class="network-node">Agent 1 Scout</span><span class="network-arrow">-></span><span class="network-node">Agent 4 Publisher</span><span class="network-arrow">-></span><span class="network-node">content:published</span><span class="network-arrow">-></span><span class="network-node">Agent 5 CRM</span><span class="network-arrow">-></span><span class="network-node">ROMI / канал-отчёт</span></div><div class="network-meta"><div><span>Что проходит по потоку</span><strong>боли рынка -&gt; черновик/публикация -&gt; событие контента -&gt; аналитика канала</strong></div><div><span>Ограничение</span><strong>Реальные публикации заблокированы без отдельного подтверждения.</strong></div></div></article>
+<article class="network-route"><div class="network-route__head"><h3>Outreach поток</h3><span class="status-pill is-wait">planned/locked</span></div><div class="network-chain"><span class="network-node">Agent 6 Outreach</span><span class="network-arrow">-></span><span class="network-node">approval человека</span><span class="network-arrow">-></span><span class="network-node">leads:outreach</span><span class="network-arrow">-></span><span class="network-node">Agent 5 CRM</span><span class="network-arrow">-></span><span class="network-node">Bitrix24 / следующий шаг</span></div><div class="network-meta"><div><span>Что проходит по потоку</span><strong>кандидат -&gt; одобренный ответ -&gt; заинтересованный диалог -&gt; CRM</strong></div><div><span>Ограничение</span><strong>Отправка сообщений и real outreach заблокированы.</strong></div></div></article>
+<article class="network-route"><div class="network-route__head"><h3>Контрольный поток</h3><span class="status-pill is-neutral">active/read_only</span></div><div class="network-chain"><span class="network-node">REPORT.md</span><span class="network-arrow">-></span><span class="network-node">6 agent files</span><span class="network-arrow">-></span><span class="network-node">scripts/check_agent_okr_contract.py</span><span class="network-arrow">-></span><span class="network-node">agent_dashboard.json</span><span class="network-arrow">-></span><span class="network-node">agent_dashboard.html</span></div><div class="network-meta"><div><span>Что проходит по потоку</span><strong>факты из файлов -&gt; checker report -&gt; визуальная панель</strong></div><div><span>Ограничение</span><strong>Checker только читает локальные файлы и пишет локальный JSON-отчёт.</strong></div></div></article>
+      </div>
+    </section>
+
+    <section class="protocol-map" aria-label="Chief of Staff / Handoff / Escalation / Weekly digest">
+      <div class="section-heading">
+        <h2>Chief of Staff / Handoff / Escalation / Weekly digest</h2>
+        <span class="status-pill is-wait">read_only/planned_runtime_later</span>
+      </div>
+      <p class="lead-text">
+        Управленческий слой без Agent 7: вход задачи -> маршрутизация -> агенты -> QA/checker -> результат -> память.
+      </p>
+      <div class="protocol-grid"><article class="protocol-card protocol-card--wide"><h3>Chief of Staff</h3><p><strong>CLAUDE.md / AGENTS.md / REPORT.md</strong></p><p>режим координации, а не Agent 7</p><p>принять задачу, восстановить контекст, выбрать маршрут, проверить результат и обновить память</p><code>агент = роль / ответственность; skill = действие внутри роли</code></article><article class="protocol-card protocol-card--wide"><h3>Нервная система</h3><div class="network-chain"><span class="network-node">вход задачи</span><span class="network-arrow">-></span><span class="network-node">маршрутизация</span><span class="network-arrow">-></span><span class="network-node">агенты</span><span class="network-arrow">-></span><span class="network-node">QA/checker</span><span class="network-arrow">-></span><span class="network-node">результат</span><span class="network-arrow">-></span><span class="network-node">память</span></div></article><article class="protocol-card"><strong>task-handoff</strong><p>передать задачу от слоя/агента к следующему владельцу</p><div class="tags"><span class="tag">от кого</span>
+<span class="tag">кому</span>
+<span class="tag">цель</span>
+<span class="tag">контекст</span>
+<span class="tag">формат результата</span>
+<span class="tag">риски</span>
+<span class="tag">нужна ли Яника</span></div></article><article class="protocol-card"><strong>agent-result</strong><p>вернуть итог работы агента в едином формате</p><div class="tags"><span class="tag">что сделано</span>
+<span class="tag">что проверено</span>
+<span class="tag">статус</span>
+<span class="tag">отчёты</span>
+<span class="tag">риски</span>
+<span class="tag">следующий шаг</span></div></article><article class="protocol-card"><strong>escalation-to-yana</strong><p>остановиться и вынести решение человеку</p><div class="tags"><span class="tag">ситуация</span>
+<span class="tag">вариант 1</span>
+<span class="tag">плюсы/минусы</span>
+<span class="tag">вариант 2</span>
+<span class="tag">рекомендация</span>
+<span class="tag">что решить Янике</span></div></article><article class="protocol-card"><strong>weekly digest</strong><p>будущий недельный итог Agent 5/dashboard</p><div class="tags"><span class="tag">фокус недели</span>
+<span class="tag">что сделано</span>
+<span class="tag">лиды и CRM</span>
+<span class="tag">контент</span>
+<span class="tag">ROMI</span>
+<span class="tag">блокеры</span>
+<span class="tag">план</span></div></article><article class="protocol-card protocol-card--wide"><h3>Когда эскалировать Янике</h3><ul class="compact-list"><li>платный API или рост бюджета</li><li>реальная публикация</li><li>массовый сбор лидов</li><li>реальная outreach-отправка</li><li>изменение CRM-логики</li><li>персональные данные или юридические обещания</li></ul><p><strong>Weekly digest:</strong> Agent 5 CRM/Analytics + dashboard reports позже</p></article></div>
+    </section>
+
+    <section class="protocol-map" aria-label="MAS reference layer">
+      <div class="section-heading">
+        <h2>MAS reference layer</h2>
+        <span class="status-pill is-neutral">read_only/spec_only</span>
+      </div>
+      <p class="lead-text">
+        Применяем внешний референс как модель управления: инспектор агента, timeline сценариев, артефакты, статусы и OSINT-протокол без Agent 7.
+      </p>
+      <div class="protocol-grid"><article class="protocol-card protocol-card--wide"><h3>О чём модель</h3><p>Внешняя модель описывает операционный центр: входящая задача -&gt; Chief Orchestrator -&gt; департамент -&gt; профильный агент -&gt; сценарий выполнения -&gt; артефакт -&gt; контроль качества -&gt; следующий шаг.</p><p><strong>Правило:</strong> берём принципы управления, но не расширяем систему: остаются 6 агентов + checker, не Agent 7</p><p><strong>Источник:</strong> research/external-mas-ip-analysis-2026-05-15.md</p></article><article class="protocol-card"><strong>Agent Inspector</strong><p>карточка выбранного агента: роль, входы, выходы, правила, KPI, файлы, блокеры</p><p><span class="muted">Где:</span> правая панель dashboard</p><span class="status-pill is-wait">planned</span></article><article class="protocol-card"><strong>Scenario Timeline</strong><p>путь задачи по шагам, чтобы видеть где она находится</p><p><span class="muted">Где:</span> нижняя timeline-панель</p><span class="status-pill is-wait">planned</span></article><article class="protocol-card"><strong>Artifact Tracker</strong><p>каждый этап закрывается только проверяемым артефактом</p><p><span class="muted">Где:</span> детали сценария и event stream</p><span class="status-pill is-wait">planned</span></article><article class="protocol-card"><strong>Status model</strong><p>единые статусы: locked/manual/ready/queued/running/needs_review/failed/done</p><p><span class="muted">Где:</span> карта агентов, event stream, детали агента</p><span class="status-pill is-wait">planned</span></article><article class="protocol-card"><strong>OSINT protocol</strong><p>проверка фактов и рисков по открытым источникам</p><p><span class="muted">Где:</span> Agent 1 Scout и Agent 5 CRM, без нового агента</p><span class="status-pill is-neutral">future_safe_protocol</span></article><article class="protocol-card"><strong>AI Operator Chat</strong><p>чат понимает, какой агент выбран оператором</p><p><span class="muted">Где:</span> future-layer после read-only dashboard</p><span class="status-pill is-bad">later_locked</span></article><article class="protocol-card protocol-card--wide"><h3>Status model</h3><div class="tags"><span class="tag">locked</span>
+<span class="tag">manual</span>
+<span class="tag">ready</span>
+<span class="tag">queued</span>
+<span class="tag">running</span>
+<span class="tag">needs_review</span>
+<span class="tag">failed</span>
+<span class="tag">done</span></div></article><article class="protocol-card protocol-card--wide"><h3>OSINT без Agent 7</h3><ul class="compact-list"><li>важный факт подтверждать 2-3 источниками</li><li>хранить URL, дату проверки и уровень доверия</li><li>не использовать серые методы, взлом, утечки и закрытые персональные данные</li><li>не принимать автоматическое решение по крупной сделке без человека</li><li>для крупной сделки отдавать человеку короткий risk-summary</li></ul></article><article class="protocol-card protocol-card--wide"><h3>Later-locks</h3><ul class="compact-list"><li>AI Operator Chat не запускать до правил доступа и контроля стоимости LLM</li><li>POST /api/chat и /api/chat/audio внешнего референса не тестировать без отдельного решения</li><li>OSINT/MCP-интеграции не подключать до первого MVP и preflight</li></ul></article></div><div class="section-heading section-heading--sub"><h3>Scenario Timeline</h3></div><div class="network-routes"><article class="network-route"><div class="network-route__head"><h3>Первый входящий запрос</h3><span class="status-pill is-wait">planned</span></div><div class="network-chain"><span class="network-node">сайт/MAX/Telegram/email</span><span class="network-arrow">-></span><span class="network-node">AI-менеджер</span><span class="network-arrow">-></span><span class="network-node">Agent 3</span><span class="network-arrow">-></span><span class="network-node">Agent 5</span><span class="network-arrow">-></span><span class="network-node">Bitrix24 сделка</span><span class="network-arrow">-></span><span class="network-node">человек</span></div><div class="network-meta"><div><span>Артефакт</span><strong>intake_card + bitrix_deal</strong></div></div></article><article class="network-route"><div class="network-route__head"><h3>Тендерный лид</h3><span class="status-pill is-wait">planned</span></div><div class="network-chain"><span class="network-node">Gmail tender</span><span class="network-arrow">-></span><span class="network-node">Agent 2</span><span class="network-arrow">-></span><span class="network-node">Agent 3</span><span class="network-arrow">-></span><span class="network-node">Agent 5</span><span class="network-arrow">-></span><span class="network-node">Bitrix24</span><span class="network-arrow">-></span><span class="network-node">analytics</span></div><div class="network-meta"><div><span>Артефакт</span><strong>raw_lead + qualified_lead + crm_event</strong></div></div></article><article class="network-route"><div class="network-route__head"><h3>Контентный сигнал</h3><span class="status-pill is-wait">planned</span></div><div class="network-chain"><span class="network-node">Agent 1 Scout</span><span class="network-arrow">-></span><span class="network-node">Agent 4 Publisher</span><span class="network-arrow">-></span><span class="network-node">content event</span><span class="network-arrow">-></span><span class="network-node">Agent 5</span><span class="network-arrow">-></span><span class="network-node">ROMI later</span></div><div class="network-meta"><div><span>Артефакт</span><strong>source_signal_card + content_draft/content_event</strong></div></div></article><article class="network-route"><div class="network-route__head"><h3>CRM hygiene</h3><span class="status-pill is-wait">planned</span></div><div class="network-chain"><span class="network-node">Bitrix24 audit</span><span class="network-arrow">-></span><span class="network-node">Agent 5</span><span class="network-arrow">-></span><span class="network-node">duplicate queue</span><span class="network-arrow">-></span><span class="network-node">human cleanup</span></div><div class="network-meta"><div><span>Артефакт</span><strong>crm_hygiene_report</strong></div></div></article><article class="network-route"><div class="network-route__head"><h3>ROMI</h3><span class="status-pill is-wait">planned</span></div><div class="network-chain"><span class="network-node">source</span><span class="network-arrow">-></span><span class="network-node">lead</span><span class="network-arrow">-></span><span class="network-node">deal</span><span class="network-arrow">-></span><span class="network-node">revenue</span><span class="network-arrow">-></span><span class="network-node">channel</span><span class="network-arrow">-></span><span class="network-node">profit</span><span class="network-arrow">-></span><span class="network-node">ROMI</span></div><div class="network-meta"><div><span>Артефакт</span><strong>channel_report / romi_report</strong></div></div></article></div><div class="section-heading section-heading--sub"><h3>Artifact Tracker</h3></div><div class="protocol-grid"><article class="protocol-card"><strong>Agent 1 Scout</strong><p>source_signal_card</p></article><article class="protocol-card"><strong>Agent 2 Collector</strong><p>raw_lead</p></article><article class="protocol-card"><strong>Agent 3 Processor</strong><p>qualified_lead</p></article><article class="protocol-card"><strong>AI-менеджер</strong><p>intake_card</p></article><article class="protocol-card"><strong>Agent 4 Publisher</strong><p>content_draft или published_content_event</p></article><article class="protocol-card"><strong>Agent 5 CRM</strong><p>bitrix_deal или crm_hygiene_report</p></article><article class="protocol-card"><strong>Agent 5 Analytics</strong><p>channel_report или romi_report</p></article><article class="protocol-card"><strong>Agent 6 Outreach</strong><p>approved_reply или outreach_lead</p></article><article class="protocol-card"><strong>Checker</strong><p>agent_okr_contract_check.json</p></article></div>
+    </section>
+
+    <section class="protocol-map" aria-label="Security Agent Control Layer">
+      <div class="section-heading">
+        <h2>Security Agent Control Layer</h2>
+        <span class="status-pill is-neutral">ACTIVE</span>
+      </div>
+      <p class="lead-text">
+        AGENT_SECURITY.md подключён как контроль безопасности для всех 6 агентов, checker/dashboard, LLM и MCP/API. Это не Agent 7.
+      </p>
+      <div class="protocol-grid"><article class="protocol-card protocol-card--wide"><h3>AGENT_SECURITY.md</h3><p>единый контроль безопасности для всех 6 агентов, checker/dashboard, LLM, MCP/API и будущих интеграций</p><p><strong>Источник:</strong> agents/Агент безопастности/AGENT_SECURITY.md</p><p><strong>Документ:</strong> docs/security-agent-control-layer.md</p><p><strong>не Agent 7:</strong> True</p></article><article class="protocol-card protocol-card--wide"><h3>Красные линии</h3><ul class="compact-list"><li>деньги, лимиты, подписки и платные API только после явного подтверждения</li><li>production, deploy, реальные публикации, outreach и массовые действия только после approval</li><li>секреты, токены, cookies, session-файлы, PII и CRM-данные не показывать и не отправлять наружу</li><li>новые MCP/API, внешняя telemetry и скрытые фоновые действия только через preflight</li></ul></article><article class="protocol-card protocol-card--wide"><h3>Зелёный коридор</h3><ul class="compact-list"><li>локальные dry-run и read-only проверки</li><li>локальные тесты, compileall, checker и dashboard builder</li><li>синтетические или обезличенные данные</li><li>обычные правки файлов без внешних отправок</li></ul></article><article class="protocol-card protocol-card--wide"><h3>AI-риски</h3><div class="tags"><span class="tag">prompt injection</span>
+<span class="tag">lethal trifecta</span>
+<span class="tag">SSRF</span>
+<span class="tag">slopsquatting</span>
+<span class="tag">markdown/image exfiltration</span>
+<span class="tag">неструктурированный LLM output</span>
+<span class="tag">небезопасные MCP-инструменты</span></div></article><article class="protocol-card protocol-card--wide"><h3>Куда подключён</h3><div class="tags"><span class="tag">CLAUDE.md</span>
+<span class="tag">AGENTS.md</span>
+<span class="tag">.claude/rules/security.md</span>
+<span class="tag">docs/claude-project-rules.md</span>
+<span class="tag">docs/security-agent-control-layer.md</span>
+<span class="tag">scripts/check_agent_okr_contract.py</span>
+<span class="tag">data/reports/agent_dashboard.json</span>
+<span class="tag">data/reports/agent_dashboard.md</span>
+<span class="tag">data/reports/agent_dashboard.html</span></div></article><article class="protocol-card"><strong>Agent 1 Scout</strong><p>только публичные источники, без закрытых персональных данных</p></article><article class="protocol-card"><strong>Agent 2 Collector</strong><p>один источник сначала, без массового сбора и без серых методов</p></article><article class="protocol-card"><strong>Agent 3 Processor</strong><p>structured LLM I/O, prompt injection guard, без PII наружу</p></article><article class="protocol-card"><strong>Agent 4 Publisher</strong><p>нет публикаций без approval, нет неподтверждённых обещаний</p></article><article class="protocol-card"><strong>Agent 5 CRM</strong><p>CRM/Bitrix24/Telegram только по разрешённому сценарию, секреты не выводить</p></article><article class="protocol-card"><strong>Agent 6 Outreach</strong><p>нет массовых отправок и первого касания без approval человека</p></article><article class="protocol-card"><strong>Checker/dashboard</strong><p>read-only, статусы без секретов, без внешних вызовов</p></article></div>
+    </section>
+
+    <section class="protocol-map" aria-label="Scenario Artifact Contract">
+      <div class="section-heading">
+        <h2>Scenario Artifact Contract</h2>
+        <span class="status-pill is-neutral">read_only/local_contract</span>
+      </div>
+      <p class="lead-text">
+        Контракт из урока: сценарий -> шаг -> агент -> суброль -> артефакт -> статус -> проверка -> следующий шаг.
+      </p>
+      <div class="protocol-grid"><article class="protocol-card protocol-card--wide"><h3>Scenario Artifact Contract</h3><p>каждый этап закрыт только если есть вход, выход, статус, next_step и проверяемый артефакт</p><p><strong>Документ:</strong> docs/agent-scenario-artifact-contract.md</p><p><strong>Суброли:</strong> docs/agent-subroles-and-kpi-map.md</p></article><article class="protocol-card protocol-card--wide"><h3>Status model</h3><div class="tags"><span class="tag">locked</span>
+<span class="tag">manual</span>
+<span class="tag">draft</span>
+<span class="tag">approval_ready</span>
+<span class="tag">approved</span>
+<span class="tag">queued</span>
+<span class="tag">running</span>
+<span class="tag">needs_review</span>
+<span class="tag">failed</span>
+<span class="tag">done</span>
+<span class="tag">published_manual_unverified_public</span></div></article><article class="protocol-card protocol-card--wide"><h3>Запреты</h3><ul class="compact-list"><li>не создавать Agent 7</li><li>не запускать scheduler без отдельного подтверждения</li><li>не запускать массовый сбор</li><li>не публиковать и не отправлять outreach без approval</li><li>не показывать секреты</li></ul></article></div><div class="network-routes"><article class="network-route"><div class="network-route__head"><h3>Первый входящий запрос</h3><span class="status-pill is-wait">OK_LOCAL_DRY_RUN_READY_FOR_MANUAL_REVIEW</span></div><div class="network-chain"><span class="network-node">site/MAX/Telegram/email</span><span class="network-arrow">-></span><span class="network-node">intake_card</span><span class="network-arrow">-></span><span class="network-node">Agent 3</span><span class="network-arrow">-></span><span class="network-node">Agent 5</span><span class="network-arrow">-></span><span class="network-node">crm_payload_preview</span><span class="network-arrow">-></span><span class="network-node">human_next_step</span></div><div class="tags"><span class="tag tag--source">intake_card</span>
+<span class="tag tag--source">qualified_lead</span>
+<span class="tag tag--source">crm_payload_preview</span>
+<span class="tag tag--source">human_next_step</span></div></article><article class="network-route"><div class="network-route__head"><h3>Контент даёт лид</h3><span class="status-pill is-neutral">draft/manual</span></div><div class="network-chain"><span class="network-node">SignalCard</span><span class="network-arrow">-></span><span class="network-node">content_brief</span><span class="network-arrow">-></span><span class="network-node">content_draft</span><span class="network-arrow">-></span><span class="network-node">approval_card</span><span class="network-arrow">-></span><span class="network-node">content_metric_event</span><span class="network-arrow">-></span><span class="network-node">Agent 5 analytics</span></div><div class="tags"><span class="tag tag--source">SignalCard</span>
+<span class="tag tag--source">content_brief</span>
+<span class="tag tag--source">content_draft</span>
+<span class="tag tag--source">approval_card</span>
+<span class="tag tag--source">content_metric_event</span></div></article><article class="network-route"><div class="network-route__head"><h3>Тендерный лид</h3><span class="status-pill is-wait">partial_tested</span></div><div class="network-chain"><span class="network-node">Gmail/IMAP tender</span><span class="network-arrow">-></span><span class="network-node">Agent 2</span><span class="network-arrow">-></span><span class="network-node">raw_lead</span><span class="network-arrow">-></span><span class="network-node">Agent 3</span><span class="network-arrow">-></span><span class="network-node">qualified_lead</span><span class="network-arrow">-></span><span class="network-node">Agent 5</span><span class="network-arrow">-></span><span class="network-node">Bitrix24/human</span></div><div class="tags"><span class="tag tag--source">raw_lead</span>
+<span class="tag tag--source">normalized_raw_lead</span>
+<span class="tag tag--source">qualified_lead</span>
+<span class="tag tag--source">crm_payload_preview</span></div></article><article class="network-route"><div class="network-route__head"><h3>ROMI канала</h3><span class="status-pill is-neutral">csv_mvp_exists</span></div><div class="network-chain"><span class="network-node">source</span><span class="network-arrow">-></span><span class="network-node">cost</span><span class="network-arrow">-></span><span class="network-node">lead</span><span class="network-arrow">-></span><span class="network-node">deal</span><span class="network-arrow">-></span><span class="network-node">revenue</span><span class="network-arrow">-></span><span class="network-node">profit</span><span class="network-arrow">-></span><span class="network-node">ROMI</span><span class="network-arrow">-></span><span class="network-node">channel_decision</span></div><div class="tags"><span class="tag tag--source">channel_registry_row</span>
+<span class="tag tag--source">channel_cost_row</span>
+<span class="tag tag--source">channel_fact_row</span>
+<span class="tag tag--source">channel_report</span>
+<span class="tag tag--source">channel_decision</span></div></article></div>
+    </section>
+
+    <div class="dashboard-grid">
+      <section aria-label="Карточки агентов">
+        <div class="section-heading">
+          <h2>6 агентов</h2>
+          <span class="status-pill is-neutral">только просмотр</span>
+        </div>
+        <div class="agent-cards">
+          <button class="agent-card is-active" type="button" data-agent="agent1_scout"><span class="agent-card__top"><strong>Agent 1 Scout</strong><em class="status-pill is-wait">KR 67%</em></span><span>Разведка источников</span><small>Ищет, где могут появляться будущие заказчики и какие темы важны рынку.</small></button>
+<button class="agent-card" type="button" data-agent="agent2_collector"><span class="agent-card__top"><strong>Agent 2 Collector</strong><em class="status-pill is-wait">KR 50%</em></span><span>Сбор лидов</span><small>Забирает лиды из разрешённого источника и превращает их в сырые карточки.</small></button>
+<button class="agent-card" type="button" data-agent="agent3_processor"><span class="agent-card__top"><strong>Agent 3 Processor</strong><em class="status-pill is-wait">KR 67%</em></span><span>Обработка и скоринг</span><small>Очищает лид, понимает его смысл, ставит приоритет и предлагает следующий шаг.</small></button>
+<button class="agent-card" type="button" data-agent="agent4_publisher"><span class="agent-card__top"><strong>Agent 4 Publisher</strong><em class="status-pill is-wait">KR 34%</em></span><span>Контент и доверие</span><small>Готовит контент, который объясняет экспертизу студии и усиливает доверие.</small></button>
+<button class="agent-card" type="button" data-agent="agent5_crm"><span class="agent-card__top"><strong>Agent 5 CRM</strong><em class="status-pill is-ok">KR 81%</em></span><span>CRM и аналитика</span><small>Создаёт лид в CRM, отправляет уведомление и считает результативность каналов.</small></button>
+<button class="agent-card" type="button" data-agent="agent6_outreach"><span class="agent-card__top"><strong>Agent 6 Outreach</strong><em class="status-pill is-wait">KR 40%</em></span><span>Первое касание</span><small>Готовит аккуратное первое касание, но не отправляет его без согласования человека.</small></button>
+        </div>
+      </section>
+
+      <section aria-label="Детали агента">
+        <div class="section-heading">
+          <h2>Детали агента</h2>
+          <span class="status-pill is-ok">checker: OK</span>
+        </div>
+        <article class="agent-detail is-active" data-agent-detail="agent1_scout"><div class="section-heading"><h2>Agent 1 Scout</h2><span class="status-pill is-wait">KR готово на 67%</span></div><p class="lead-text">Ищет, где могут появляться будущие заказчики и какие темы важны рынку.</p><p class="lead-text">Дать системе понятный список перспективных источников и первый следующий шаг по каждому источнику.</p><article class="main-metric-card"><span>Главная метрика</span><strong>Покрытие карты источников</strong><em>17 / 17 каналов</em><p>все каналы системы есть в справочнике и имеют владельца</p></article><div class="agent-source-panel"><h3>Источники по агенту</h3><p>Смотрит весь рынок: 17 системных каналов, конкурентов, каналы Яники и backlog-источники.</p><div class="source-mini-grid"><span><strong>17</strong> основных</span><span><strong>15</strong> watchlist</span><span><strong>5</strong> ждут Янику</span><span><strong>0</strong> поверхностей</span></div><h4>Основные источники</h4><div class="tags"><span class="tag tag--source">Gmail tenders (tender_email)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Telegram chats (tg_chat)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Outbound manual (outbound)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Avito (avito)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Profi.ru (profi)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Services (yandex_services)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Maps (yandex_maps)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Referrals (referral)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Old inquiries (old_inquiry)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Direct (yandex_direct)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Google Ads (google_ads)<small>wave_3 / planned</small></span>
+<span class="tag tag--source">VK Ads (vk_ads)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Meta Ads (meta_ads)<small>wave_3 / planned</small></span>
+<span class="tag tag--source">Telegram Ads (telegram_ads)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Dzen and RSY (dzen_rsy)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Influencer TG (influencer_tg)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">SEO organic (seo_organic)<small>wave_2 / planned</small></span></div><h4>Watchlist / конкуренты</h4><div class="tags"><span class="tag tag--source">Проектирование зданий (tg_prozru)<small>telegram / active_manual</small></span>
+<span class="tag tag--source">Рупор ГИП (tg_rupor_gip)<small>telegram / active_manual</small></span>
+<span class="tag tag--source">ПРОЕКТИРОВАНИЕ ЗДАНИЙ ЧАТ (tg_gipkurs_chat)<small>telegram / planned_manual</small></span>
+<span class="tag tag--source">PEREPLAN. Перепланировка и согласование (tg_pereplan_one)<small>telegram / active_manual</small></span>
+<span class="tag tag--source">Согласование перепланировки в Москве и МО (tg_pereplan_mos_mo)<small>telegram / active_manual</small></span>
+<span class="tag tag--source">МОСтройпроект (site_mostpr)<small>website / active_manual</small></span>
+<span class="tag tag--source">Ресог (site_resog)<small>website / active_manual</small></span>
+<span class="tag tag--source">Replan Estate (site_replanestate)<small>website / active_manual</small></span>
+<span class="tag tag--source">Архитектоника (site_archistrutt)<small>website / active_manual</small></span>
+<span class="tag tag--source">Согласуем (site_soglasuem)<small>website / active_manual</small></span>
+<span class="tag tag--source">DOCUMENTALL (vk_documentall)<small>vk / planned_manual</small></span>
+<span class="tag tag--source">REPLAN Новосибирск (vk_replan54)<small>vk / planned_manual</small></span>
+<span class="tag tag--source">МОСтройпроект VK (vk_mstpr)<small>vk / planned_manual</small></span>
+<span class="tag tag--source">ПКСтрой (vk_pkstroi)<small>vk / planned_manual</small></span>
+<span class="tag tag--source">Яндекс Недвижимость: перепланировка (industry_yandex_realty)<small>website / active_manual</small></span></div><h4>Каналы Яники ждут заполнения</h4><div class="tags"><span class="tag tag--source">yanika_channel_001 (yanika_channel_001)<small>telegram|vk|max|dzen|website|other / pending_yanika_input</small></span>
+<span class="tag tag--source">yanika_channel_002 (yanika_channel_002)<small>telegram|vk|max|dzen|website|other / pending_yanika_input</small></span>
+<span class="tag tag--source">yanika_channel_003 (yanika_channel_003)<small>telegram|vk|max|dzen|website|other / pending_yanika_input</small></span>
+<span class="tag tag--source">yanika_channel_004 (yanika_channel_004)<small>telegram|vk|max|dzen|website|other / pending_yanika_input</small></span>
+<span class="tag tag--source">yanika_channel_005 (yanika_channel_005)<small>telegram|vk|max|dzen|website|other / pending_yanika_input</small></span></div><h4>Backlog-источники</h4><div class="tags"><span class="tag tag--source">2GIS как отдельный lead/referrer source</span>
+<span class="tag tag--source">VK-группы и обсуждения</span>
+<span class="tag tag--source">коммерческие тендерные площадки</span>
+<span class="tag tag--source">HH.ru вакансии как сигнал спроса на проектирование</span>
+<span class="tag tag--source">партнёры: риелторы, дизайнеры, юристы, кадастровые инженеры</span>
+<span class="tag tag--source">сайт / лендинги / SEO-страницы услуг</span>
+<span class="tag tag--source">лид-магнит ПРОВЕРКА перепланировки</span>
+<span class="tag tag--source">ЕИС и госзакупки</span>
+<span class="tag tag--source">закупки девелоперов и сетевых компаний</span>
+<span class="tag tag--source">каталоги франшиз и коммерческой недвижимости</span>
+<span class="tag tag--source">банки, ипотечные брокеры, оценщики и страховые</span>
+<span class="tag tag--source">БТИ / кадастровые / юридические партнёры</span>
+<span class="tag tag--source">поставщики, подрядчики fit-out и вывесок</span>
+<span class="tag tag--source">форумы, Яндекс Q, TenChat</span>
+<span class="tag tag--source">GEO/AI visibility: ChatGPT, Perplexity, Яндекс/Алиса и нейропоиск</span>
+<span class="tag tag--source">Reels/shorts radar и ROMI по контенту позже</span></div></div><div class="detail-grid"><div><h3>OKR/KR метрики</h3><div class="okr-metric-list"><article class="okr-metric-row"><span>Учтены все каналы системы</span><strong>17 / 17 каналов</strong></article>
+<article class="okr-metric-row"><span>Каналы первой волны разложены по агентам</span><strong>9 / 9 каналов</strong></article>
+<article class="okr-metric-row"><span>Planned-каналы из дашборда лектора учтены</span><strong>8 / 8 каналов</strong></article>
+<article class="okr-metric-row"><span>Конкурентные и рыночные источники в watchlist</span><strong>15 / 15 строк</strong></article>
+<article class="okr-metric-row"><span>Source cards первой волны готовы</span><strong>0 / 9 карточек</strong></article>
+<article class="okr-metric-row"><span>Личные каналы Яники заполнены</span><strong>0 / 5 ссылок</strong></article></div></div><div><h3>Защитные метрики</h3><div class="tags"><span class="tag tag--guard">0 источников переводятся в активный сбор без владельца, next_action и проверки риска</span>
+<span class="tag tag--guard">0 неподтверждённых утверждений о конкурентах попадает в итоговые рекомендации</span></div></div></div><div class="detail-grid"><div><h3>Суброли</h3><div class="subrole-grid"><article class="subrole-card"><strong>Market Research Agent</strong><span>рыночный спрос, сегменты, темы</span><small>Артефакт: SignalCard</small><small>KPI: 5+ полезных сигналов перед запуском нового источника</small></article>
+<article class="subrole-card"><strong>Competitor Analyst</strong><span>конкуренты, упаковка, доказательства</span><small>Артефакт: competitor_note</small><small>KPI: у каждого конкурента есть ссылка, сегмент, сильная сторона и risk_notes</small></article>
+<article class="subrole-card"><strong>Source Radar</strong><span>новые каналы лидов и контента</span><small>Артефакт: source_signal_card</small><small>KPI: 100% новых источников имеют owner_agent и next_action</small></article>
+<article class="subrole-card"><strong>Reviews/Maps Monitor</strong><span>карты, отзывы, вопросы клиентов</span><small>Артефакт: review_signal</small><small>KPI: отзывы превращаются в боли, FAQ и темы, без копирования</small></article>
+<article class="subrole-card"><strong>Demand Signal Curator</strong><span>отбор сигналов и handoff</span><small>Артефакт: handoff_recommendation</small><small>KPI: 100% SignalCard имеют recommended_action, handoff_to, risk_notes</small></article></div></div><div><h3>Скиллы</h3><div class="tags"><span class="tag">поиск источников</span>
+<span class="tag">анализ конкурентов</span>
+<span class="tag">анализ отзывов</span>
+<span class="tag">поиск тендерного спроса</span></div></div></div><div class="detail-grid"><div><h3>Готовность</h3><div class="readiness-card"><strong>35%</strong><span>planned/manual</span></div></div></div><div class="next-action"><span>Что доделать</span><strong>Сделать первую source card для одного выбранного источника и передать её Agent 2.</strong></div></article>
+<article class="agent-detail" data-agent-detail="agent2_collector"><div class="section-heading"><h2>Agent 2 Collector</h2><span class="status-pill is-wait">KR готово на 50%</span></div><p class="lead-text">Забирает лиды из разрешённого источника и превращает их в сырые карточки.</p><p class="lead-text">Безопасно получить первый тестовый лид из одного источника и передать его на квалификацию.</p><article class="main-metric-card"><span>Главная метрика</span><strong>Покрытие источников сбора Agent 2</strong><em>1 / 4 источников</em><p>по каждому источнику Agent 2 есть хотя бы один тестовый RawLead или ручной сигнал</p></article><div class="agent-source-panel"><h3>Источники по агенту</h3><p>Собирает входящие лиды из разрешённых площадок первой волны.</p><div class="source-mini-grid"><span><strong>4</strong> основных</span><span><strong>0</strong> watchlist</span><span><strong>0</strong> ждут Янику</span><span><strong>0</strong> поверхностей</span></div><h4>Основные источники</h4><div class="tags"><span class="tag tag--source">Gmail tenders (tender_email)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Avito (avito)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Profi.ru (profi)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Services (yandex_services)<small>wave_1 / manual</small></span></div></div><div class="detail-grid"><div><h3>OKR/KR метрики</h3><div class="okr-metric-list"><article class="okr-metric-row"><span>Источники сбора Agent 2 учтены</span><strong>4 / 4 каналов</strong></article>
+<article class="okr-metric-row"><span>Автоматизированный или проверенный сбор</span><strong>1 / 4 источников</strong></article>
+<article class="okr-metric-row"><span>Тестовые RawLead для покрытия Agent 2</span><strong>1 / 4 лидов</strong></article>
+<article class="okr-metric-row"><span>Месячный пилот сбора</span><strong>0 / 20 RawLead</strong></article>
+<article class="okr-metric-row"><span>Redis-передача RawLead доказана</span><strong>1 / 1 тест</strong></article></div></div><div><h3>Защитные метрики</h3><div class="tags"><span class="tag tag--guard">0 массовых сборов, парсингов и реальных площадок без отдельного подтверждения</span>
+<span class="tag tag--guard">дубли должны отсекаться до передачи дальше; целевой порог дублей после фильтра — 0</span></div></div></div><div class="detail-grid"><div><h3>Суброли</h3><div class="subrole-grid"><article class="subrole-card"><strong>Tender/Email Collector</strong><span>почта и тендерные письма</span><small>Артефакт: raw_lead</small><small>KPI: RawLead создаётся без потери source и raw_text</small></article>
+<article class="subrole-card"><strong>Marketplace Collector</strong><span>Avito, Profi, Яндекс Услуги позже</span><small>Артефакт: marketplace_raw_lead</small><small>KPI: один источник за раз, не все платформы сразу</small></article>
+<article class="subrole-card"><strong>Directory Collector</strong><span>карты и каталоги позже</span><small>Артефакт: directory_signal</small><small>KPI: только разрешённые публичные сигналы</small></article>
+<article class="subrole-card"><strong>Lead Normalizer</strong><span>единый формат RawLead</span><small>Артефакт: normalized_raw_lead</small><small>KPI: 100% RawLead имеют source, flow, raw_text, created_at</small></article>
+<article class="subrole-card"><strong>Duplicate Guard</strong><span>дубли до передачи дальше</span><small>Артефакт: duplicate_decision</small><small>KPI: явные дубли не уходят в Agent 3</small></article></div></div><div><h3>Скиллы</h3><div class="tags"><span class="tag">разбор писем</span>
+<span class="tag">разметка источника</span>
+<span class="tag">нормализация данных</span></div></div></div><div class="detail-grid"><div><h3>Готовность</h3><div class="readiness-card"><strong>45%</strong><span>partial</span></div></div></div><div class="next-action"><span>Что доделать</span><strong>Провести один безопасный тест сбора из одного источника без массового парсинга.</strong></div></article>
+<article class="agent-detail" data-agent-detail="agent3_processor"><div class="section-heading"><h2>Agent 3 Processor</h2><span class="status-pill is-wait">KR готово на 67%</span></div><p class="lead-text">Очищает лид, понимает его смысл, ставит приоритет и предлагает следующий шаг.</p><p class="lead-text">Отделить сильные заявки от слабых и дать менеджеру понятное действие по каждому лиду.</p><article class="main-metric-card"><span>Главная метрика</span><strong>Обработанные тестовые лиды по первой волне</strong><em>1 / 9 лидов</em><p>по одному тестовому лиду из каждого wave_1 канала проходит score и next_action</p></article><div class="agent-source-panel"><h3>Источники по агенту</h3><p>Не ходит наружу: принимает RawLead от Agent 2/6 и должен уметь обработать лиды из всех каналов первой волны.</p><div class="source-mini-grid"><span><strong>9</strong> основных</span><span><strong>0</strong> watchlist</span><span><strong>0</strong> ждут Янику</span><span><strong>0</strong> поверхностей</span></div><h4>Основные источники</h4><div class="tags"><span class="tag tag--source">Gmail tenders (tender_email)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Telegram chats (tg_chat)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Outbound manual (outbound)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Avito (avito)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Profi.ru (profi)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Services (yandex_services)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Maps (yandex_maps)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Referrals (referral)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Old inquiries (old_inquiry)<small>wave_1 / manual</small></span></div><h4>Backlog-источники</h4><div class="tags"><span class="tag tag--source">после MVP обработка всех 17 каналов, а не только wave_1</span></div></div><div class="detail-grid"><div><h3>OKR/KR метрики</h3><div class="okr-metric-list"><article class="okr-metric-row"><span>Сквозной тест лида обработан</span><strong>1 / 1 тест</strong></article>
+<article class="okr-metric-row"><span>Покрытие первой волны источников</span><strong>1 / 9 лидов</strong></article>
+<article class="okr-metric-row"><span>Режимы скоринга проверены</span><strong>2 / 2 режима</strong></article>
+<article class="okr-metric-row"><span>CRM-handoff проверен</span><strong>1 / 1 тест</strong></article>
+<article class="okr-metric-row"><span>Категории score проверены</span><strong>1 / 4 категорий</strong></article></div></div><div><h3>Защитные метрики</h3><div class="tags"><span class="tag tag--guard">ошибочные hot-лиды после появления реальной выборки — не выше 10%</span>
+<span class="tag tag--guard">0 QualifiedLead без source, score_reason и recommended_action</span></div></div></div><div class="detail-grid"><div><h3>Суброли</h3><div class="subrole-grid"><article class="subrole-card"><strong>Cleaner</strong><span>шум, мусор, оффтопик</span><small>Артефакт: clean_lead</small><small>KPI: оффтопик не попадает в CRM</small></article>
+<article class="subrole-card"><strong>Enricher</strong><span>город, объект, площадь, контакт</span><small>Артефакт: lead_enrichment</small><small>KPI: доступные поля извлекаются из текста</small></article>
+<article class="subrole-card"><strong>Scorer</strong><span>hot/warm/cold/off</span><small>Артефакт: score_result</small><small>KPI: каждый score имеет score_reason</small></article>
+<article class="subrole-card"><strong>Offer/Next-Step Architect</strong><span>оффер и следующий шаг</span><small>Артефакт: qualified_lead</small><small>KPI: каждый QualifiedLead имеет recommended_action</small></article>
+<article class="subrole-card"><strong>QA Classifier</strong><span>проверка завышенного score</span><small>Артефакт: processor_quality_note</small><small>KPI: после выборки ошибочные hot-лиды не выше 10%</small></article></div></div><div><h3>Скиллы</h3><div class="tags"><span class="tag">очистка данных</span>
+<span class="tag">выделение сути</span>
+<span class="tag">скоринг лида</span>
+<span class="tag">подготовка оффера</span></div></div></div><div class="detail-grid"><div><h3>Готовность</h3><div class="readiness-card"><strong>70%</strong><span>tested_partial</span></div></div></div><div class="next-action"><span>Что доделать</span><strong>Закрыть полный handoff: Agent 3 -&gt; Agent 5 на одном тестовом лиде.</strong></div></article>
+<article class="agent-detail" data-agent-detail="agent4_publisher"><div class="section-heading"><h2>Agent 4 Publisher</h2><span class="status-pill is-wait">KR готово на 34%</span></div><p class="lead-text">Готовит контент, который объясняет экспертизу студии и усиливает доверие.</p><p class="lead-text">Стабильно готовить черновики контента и материалы доверия без автопубликации.</p><article class="main-metric-card"><span>Главная метрика</span><strong>Контентные поверхности учтены</strong><em>5 / 7 поверхностей</em><p>MAX, Telegram, VK, Дзен, Яндекс Карты, 2GIS и сайт/блог учитываются отдельно</p></article><div class="agent-source-panel"><h3>Источники по агенту</h3><p>Отвечает за каналы доверия, контентные поверхности, сайт, карты и будущие платные/органические источники.</p><div class="source-mini-grid"><span><strong>9</strong> основных</span><span><strong>0</strong> watchlist</span><span><strong>0</strong> ждут Янику</span><span><strong>7</strong> поверхностей</span></div><h4>Основные источники</h4><div class="tags"><span class="tag tag--source">Yandex Maps (yandex_maps)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Direct (yandex_direct)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Google Ads (google_ads)<small>wave_3 / planned</small></span>
+<span class="tag tag--source">VK Ads (vk_ads)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Meta Ads (meta_ads)<small>wave_3 / planned</small></span>
+<span class="tag tag--source">Telegram Ads (telegram_ads)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Dzen and RSY (dzen_rsy)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Influencer TG (influencer_tg)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">SEO organic (seo_organic)<small>wave_2 / planned</small></span></div><h4>Контентные поверхности</h4><div class="tags"><span class="tag tag--source">MAX-канал СИЛА Проекта</span>
+<span class="tag tag--source">Telegram</span>
+<span class="tag tag--source">VK</span>
+<span class="tag tag--source">Дзен</span>
+<span class="tag tag--source">Яндекс Карты</span>
+<span class="tag tag--source">2GIS</span>
+<span class="tag tag--source">новый сайт / блог</span></div><h4>Backlog-источники</h4><div class="tags"><span class="tag tag--source">новый сайт / SEO-страницы</span>
+<span class="tag tag--source">лид-магнит ПРОВЕРКА</span>
+<span class="tag tag--source">GEO/AI visibility</span>
+<span class="tag tag--source">Reels/shorts radar</span>
+<span class="tag tag--source">ROMI по контенту</span></div></div><div class="detail-grid"><div><h3>OKR/KR метрики</h3><div class="okr-metric-list"><article class="okr-metric-row"><span>Контентные поверхности учтены</span><strong>5 / 7 поверхностей</strong></article>
+<article class="okr-metric-row"><span>Черновики первой недели</span><strong>0 / 5 материалов</strong></article>
+<article class="okr-metric-row"><span>Ядро месячного плана</span><strong>0 / 20 тем</strong></article>
+<article class="okr-metric-row"><span>Полный адаптированный план после MVP</span><strong>0 / 52 материала</strong></article>
+<article class="okr-metric-row"><span>Поля согласования в шаблоне</span><strong>3 / 3 поля</strong></article></div></div><div><h3>Защитные метрики</h3><div class="tags"><span class="tag tag--guard">0 реальных публикаций без отдельного подтверждения Яники</span>
+<span class="tag tag--guard">0 материалов с персональными данными или обещаниями без доказательств</span>
+<span class="tag tag--guard">стоимость генерации должна быть заполнена у 100% материалов перед публикацией</span></div></div></div><div class="detail-grid"><div><h3>Суброли</h3><div class="subrole-grid"><article class="subrole-card"><strong>Content Strategist</strong><span>рубрика, формат, этап воронки</span><small>Артефакт: content_brief</small><small>KPI: у каждого материала есть формат, воронка и канал</small></article>
+<article class="subrole-card"><strong>Copywriter</strong><span>черновик в стиле СИЛА Проекта</span><small>Артефакт: content_draft</small><small>KPI: посты не повторяют одну структуру подряд</small></article>
+<article class="subrole-card"><strong>Editor</strong><span>стиль, доказательства, запреты</span><small>Артефакт: editor_check</small><small>KPI: 0 неподтверждённых обещаний и общих рекламных фраз</small></article>
+<article class="subrole-card"><strong>Visual/Media Brief Creator</strong><span>ТЗ на визуал, анимацию, видео позже</span><small>Артефакт: media_brief</small><small>KPI: медиа только как ТЗ или dry-run до approval</small></article>
+<article class="subrole-card"><strong>Approval Coordinator</strong><span>согласование и правки</span><small>Артефакт: approval_card</small><small>KPI: 100% материалов имеют статус, стоимость, причину перегенерации при правках</small></article>
+<article class="subrole-card"><strong>Content Metrics Analyst</strong><span>связь постов с метриками и лидами позже</span><small>Артефакт: content_metric_event</small><small>KPI: каждый опубликованный материал позже получает content_metric_event</small></article></div></div><div><h3>Скиллы</h3><div class="tags"><span class="tag">копирайтинг</span>
+<span class="tag">SEO-темы</span>
+<span class="tag">визуальные промпты</span>
+<span class="tag">UTM-логика</span></div></div></div><div class="detail-grid"><div><h3>Готовность</h3><div class="readiness-card"><strong>40%</strong><span>dry_run/manual</span></div></div></div><div class="next-action"><span>Что доделать</span><strong>Держать публикации в dry-run и позже связать контент-события с аналитикой Agent 5.</strong></div></article>
+<article class="agent-detail" data-agent-detail="agent5_crm"><div class="section-heading"><h2>Agent 5 CRM</h2><span class="status-pill is-ok">KR готово на 81%</span></div><p class="lead-text">Создаёт лид в CRM, отправляет уведомление и считает результативность каналов.</p><p class="lead-text">Довести квалифицированный лид до CRM, уведомления и отчёта по результативности.</p><article class="main-metric-card"><span>Главная метрика</span><strong>Каналы в сквозной аналитике</strong><em>17 / 17 каналов</em><p>каждый канал есть в registry, costs, facts и итоговом channel_report</p></article><div class="agent-source-panel"><h3>Источники по агенту</h3><p>Считает всю сквозную аналитику по 17 каналам и принимает CRM-события.</p><div class="source-mini-grid"><span><strong>17</strong> основных</span><span><strong>0</strong> watchlist</span><span><strong>0</strong> ждут Янику</span><span><strong>0</strong> поверхностей</span></div><h4>Основные источники</h4><div class="tags"><span class="tag tag--source">Gmail tenders (tender_email)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Telegram chats (tg_chat)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Outbound manual (outbound)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Avito (avito)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Profi.ru (profi)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Services (yandex_services)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Maps (yandex_maps)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Referrals (referral)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Old inquiries (old_inquiry)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Yandex Direct (yandex_direct)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Google Ads (google_ads)<small>wave_3 / planned</small></span>
+<span class="tag tag--source">VK Ads (vk_ads)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Meta Ads (meta_ads)<small>wave_3 / planned</small></span>
+<span class="tag tag--source">Telegram Ads (telegram_ads)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Dzen and RSY (dzen_rsy)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">Influencer TG (influencer_tg)<small>wave_2 / planned</small></span>
+<span class="tag tag--source">SEO organic (seo_organic)<small>wave_2 / planned</small></span></div><h4>Прямые источники-владельцы</h4><div class="tags"><span class="tag tag--source">Referrals (referral)<small>wave_1 / manual</small></span>
+<span class="tag tag--source">Old inquiries (old_inquiry)<small>wave_1 / manual</small></span></div><h4>Backlog-источники</h4><div class="tags"><span class="tag tag--source">visit_count</span>
+<span class="tag tag--source">visitor_id</span>
+<span class="tag tag--source">CR visit-&gt;deal</span>
+<span class="tag tag--source">ROMI по контенту</span></div></div><div class="detail-grid"><div><h3>OKR/KR метрики</h3><div class="okr-metric-list"><article class="okr-metric-row"><span>Каналы в сквозной аналитике</span><strong>17 / 17 каналов</strong></article>
+<article class="okr-metric-row"><span>Каналы первой волны отслеживаются</span><strong>9 / 9 каналов</strong></article>
+<article class="okr-metric-row"><span>Сквозной CRM-тест закрыт</span><strong>1 / 1 тест</strong></article>
+<article class="okr-metric-row"><span>CRM-цепочка урока 5 покрыта</span><strong>5 / 6 шагов</strong></article>
+<article class="okr-metric-row"><span>Тестовые Bitrix24-создания</span><strong>4 / 3 теста</strong></article>
+<article class="okr-metric-row"><span>Метрика лектора CR visit-&gt;deal</span><strong>0 / 1 метрика</strong></article></div></div><div><h3>Защитные метрики</h3><div class="tags"><span class="tag tag--guard">0 секретов, webhook и token-значений в отчётах</span>
+<span class="tag tag--guard">0 реальных клиентских данных в тестовых лидах</span>
+<span class="tag tag--guard">доля лидов без source в реальной работе должна быть не выше 10%</span></div></div></div><div class="detail-grid"><div><h3>Суброли</h3><div class="subrole-grid"><article class="subrole-card"><strong>CRM Router</strong><span>Bitrix24 payload для лида/сделки</span><small>Артефакт: crm_payload_preview</small><small>KPI: payload создаётся локально до реальной отправки</small></article>
+<article class="subrole-card"><strong>Notifier</strong><span>уведомление человека</span><small>Артефакт: notification_event</small><small>KPI: уведомления без секретов и лишних персональных данных</small></article>
+<article class="subrole-card"><strong>Attribution Agent</strong><span>first_touch, last_touch, канал, UTM</span><small>Артефакт: attribution_record</small><small>KPI: 100% тестовых лидов имеют first_touch_channel и last_touch_channel</small></article>
+<article class="subrole-card"><strong>ROMI Reporter</strong><span>CPL, CAC, profit, ROMI</span><small>Артефакт: channel_report</small><small>KPI: spend -&gt; leads -&gt; deals -&gt; revenue -&gt; profit -&gt; ROMI</small></article>
+<article class="subrole-card"><strong>CRM Hygiene Analyst</strong><span>дубли, пустые поля, слабые карточки</span><small>Артефакт: crm_hygiene_report</small><small>KPI: дубли и пустые поля попадают в очередь ручной чистки</small></article>
+<article class="subrole-card"><strong>Weekly Digest Owner</strong><span>недельный итог системы позже</span><small>Артефакт: weekly_digest</small><small>KPI: лиды, CRM, контент, ROMI и блокеры раз в неделю</small></article></div></div><div><h3>Скиллы</h3><div class="tags"><span class="tag">Bitrix24</span>
+<span class="tag">воронка CRM</span>
+<span class="tag">сквозная аналитика</span>
+<span class="tag">отчёты</span></div></div></div><div class="detail-grid"><div><h3>Готовность</h3><div class="readiness-card"><strong>80%</strong><span>tested</span></div></div></div><div class="next-action"><span>Что доделать</span><strong>Закрыть один сквозной тест: квалифицированный лид -&gt; Bitrix24 -&gt; Telegram -&gt; отчёт.</strong></div></article>
+<article class="agent-detail" data-agent-detail="agent6_outreach"><div class="section-heading"><h2>Agent 6 Outreach</h2><span class="status-pill is-wait">KR готово на 40%</span></div><p class="lead-text">Готовит аккуратное первое касание, но не отправляет его без согласования человека.</p><p class="lead-text">Подготовить безопасный первый контакт по найденному диалогу, но отправлять только после одобрения.</p><article class="main-metric-card"><span>Главная метрика</span><strong>Outreach-источники первой волны проверены</strong><em>0 / 2 источников</em><p>Telegram-чаты и outbound manual прошли ручной кандидат-тест без отправки спама</p></article><div class="agent-source-panel"><h3>Источники по агенту</h3><p>Готовит первое касание по диалогам и ручному outbound, но ничего не отправляет без approval.</p><div class="source-mini-grid"><span><strong>2</strong> основных</span><span><strong>0</strong> watchlist</span><span><strong>0</strong> ждут Янику</span><span><strong>0</strong> поверхностей</span></div><h4>Основные источники</h4><div class="tags"><span class="tag tag--source">Telegram chats (tg_chat)<small>wave_1 / active</small></span>
+<span class="tag tag--source">Outbound manual (outbound)<small>wave_1 / active</small></span></div></div><div class="detail-grid"><div><h3>OKR/KR метрики</h3><div class="okr-metric-list"><article class="okr-metric-row"><span>Outreach-источники первой волны учтены</span><strong>2 / 2 источника</strong></article>
+<article class="okr-metric-row"><span>Кандидаты для ручной проверки</span><strong>0 / 10 кандидатов</strong></article>
+<article class="okr-metric-row"><span>Черновики первых ответов</span><strong>0 / 5 ответов</strong></article>
+<article class="okr-metric-row"><span>Outreach -&gt; CRM тест</span><strong>0 / 1 тест</strong></article>
+<article class="okr-metric-row"><span>Реальные отправки до approval</span><strong>0 &lt;= 0 сообщений</strong></article></div></div><div><h3>Защитные метрики</h3><div class="tags"><span class="tag tag--guard">0 сообщений без approval</span>
+<span class="tag tag--guard">после разрешения пилотный лимит — не больше 5 отправок в день</span>
+<span class="tag tag--guard">0 жалоб/спам-сигналов</span></div></div></div><div class="detail-grid"><div><h3>Суброли</h3><div class="subrole-grid"><article class="subrole-card"><strong>Social Listening Monitor</strong><span>релевантные обсуждения</span><small>Артефакт: outreach_candidate</small><small>KPI: кандидат не создаётся без URL/контекста и причины релевантности</small></article>
+<article class="subrole-card"><strong>Candidate Qualifier</strong><span>риск спама и релевантность</span><small>Артефакт: outreach_decision</small><small>KPI: спорные кандидаты идут в escalation-to-yana</small></article>
+<article class="subrole-card"><strong>Reply Draft Writer</strong><span>человеческий ответ</span><small>Артефакт: reply_draft</small><small>KPI: ответ полезный, не спамный, без давления</small></article>
+<article class="subrole-card"><strong>Approval Gatekeeper</strong><span>запрет отправки без человека</span><small>Артефакт: approval_required</small><small>KPI: 0 реальных отправок без approval</small></article>
+<article class="subrole-card"><strong>Outreach Sender</strong><span>отправка после approval</span><small>Артефакт: sent_outreach_event</small><small>KPI: после разрешения не больше 5 отправок в день на пилоте</small></article>
+<article class="subrole-card"><strong>Dialog Converter</strong><span>интерес -&gt; OutreachLead</span><small>Артефакт: outreach_lead</small><small>KPI: заинтересованный ответ уходит в Agent 5</small></article></div></div><div><h3>Скиллы</h3><div class="tags"><span class="tag">поиск диалогов</span>
+<span class="tag">текст первого касания</span>
+<span class="tag">согласование</span>
+<span class="tag">продажный диалог</span></div></div></div><div class="detail-grid"><div><h3>Готовность</h3><div class="readiness-card"><strong>25%</strong><span>planned/locked</span></div></div></div><div class="next-action"><span>Что доделать</span><strong>Сначала сделать approval-flow на черновике без реальной отправки сообщений.</strong></div></article>
+      </section>
+    </div>
+
+    <div class="lower-grid">
+      <section aria-label="Последние события">
+        <div class="section-heading">
+          <h2>Последние события</h2>
+          <span class="status-pill is-neutral">12 в JSON</span>
+        </div>
+        <div class="event-list">
+          <article class="event-row"><div><strong>agent_okr_contract_check.json: OK</strong><span>2026-05-16T23:16:40Z</span></div><em class="status-pill is-ok">OK</em><code>data/reports/agent_okr_contract_check.json</code></article>
+<article class="event-row"><div><strong>agent_dashboard.json: OK</strong><span>2026-05-16T23:16:40Z</span></div><em class="status-pill is-ok">OK</em><code>data/reports/agent_dashboard.json</code></article>
+<article class="event-row"><div><strong>first_inbound_scenario_handoff_to_human.json: task-handoff</strong><span>2026-05-16T22:48:40Z</span></div><em class="status-pill is-neutral">task-handoff</em><code>data/reports/first_inbound_scenario_handoff_to_human.json</code></article>
+<article class="event-row"><div><strong>first_inbound_scenario_artifact_check.json: first_inbound_scenario_artifact_check</strong><span>2026-05-16T22:43:44Z</span></div><em class="status-pill is-neutral">first_inbound_scenario_artifact_check</em><code>data/reports/first_inbound_scenario_artifact_check.json</code></article>
+<article class="event-row"><div><strong>content_funnel_contract_check.json: нет данных</strong><span>2026-05-16T22:10:22Z</span></div><em class="status-pill is-neutral">нет данных</em><code>data/reports/content_funnel_contract_check.json</code></article>
+<article class="event-row"><div><strong>three_qualified_leads_sprint.json: нет данных</strong><span>2026-05-16T22:10:22Z</span></div><em class="status-pill is-neutral">нет данных</em><code>data/reports/three_qualified_leads_sprint.json</code></article>
+        </div>
+      </section>
+
+      <section aria-label="Метрики">
+        <div class="section-heading">
+          <h2>Метрики</h2>
+          <span class="status-pill is-neutral">без live API</span>
+        </div>
+        <div class="metric-grid">
+          <article class="metric-card"><h3>agent_health</h3><div class="kv-grid small"><div class="kv-item"><span>agent_contract_status</span><strong>OK</strong></div>
+<div class="kv-item"><span>visual_map_status</span><strong>OK</strong></div>
+<div class="kv-item"><span>admin_dashboard_spec_status</span><strong>OK</strong></div>
+<div class="kv-item"><span>dashboard_viewer_status</span><strong>OK</strong></div>
+<div class="kv-item"><span>agents_count</span><strong>6</strong></div></div></article>
+<article class="metric-card"><h3>system_scope</h3><div class="kv-grid small"><div class="kv-item"><span>total_channels</span><strong>17</strong></div>
+<div class="kv-item"><span>wave_1_channels</span><strong>9</strong></div>
+<div class="kv-item"><span>wave_2_channels</span><strong>6</strong></div>
+<div class="kv-item"><span>wave_3_channels</span><strong>2</strong></div>
+<div class="kv-item"><span>active_channels</span><strong>3</strong></div>
+<div class="kv-item"><span>manual_channels</span><strong>6</strong></div>
+<div class="kv-item"><span>planned_channels</span><strong>8</strong></div>
+<div class="kv-item"><span>competitor_watchlist_sources</span><strong>15</strong></div>
+<div class="kv-item"><span>yanika_pending_sources</span><strong>5</strong></div>
+<div class="kv-item"><span>agent2_collection_channels</span><strong>4</strong></div>
+<div class="kv-item"><span>agent6_outreach_channels</span><strong>2</strong></div>
+<div class="kv-item"><span>content_surfaces_target</span><strong>7</strong></div>
+<div class="kv-item"><span>crm_lesson_5_chain_steps</span><strong>6</strong></div></div></article>
+<article class="metric-card"><h3>lead_funnel</h3><div class="kv-grid small"><div class="kv-item"><span>pipeline_health_test_leads</span><strong>1/1</strong></div>
+<div class="kv-item"><span>wave_1_source_coverage_target</span><strong>1/9</strong></div>
+<div class="kv-item"><span>agent2_source_coverage_target</span><strong>1/4</strong></div>
+<div class="kv-item"><span>monthly_pilot_raw_leads_target</span><strong>0/20</strong></div>
+<div class="kv-item"><span>bitrix_test_creations</span><strong>4</strong></div></div></article>
+<article class="metric-card"><h3>quality</h3><div class="kv-grid small"><div class="kv-item"><span>score_categories_checked</span><strong>1/4</strong></div>
+<div class="kv-item"><span>llm_modes_checked</span><strong>2/2</strong></div>
+<div class="kv-item"><span>max_false_hot_rate_after_real_sample</span><strong>&lt;=10%</strong></div>
+<div class="kv-item"><span>qualified_without_source_target</span><strong>0</strong></div></div></article>
+<article class="metric-card"><h3>crm_sla</h3><div class="kv-grid small"><div class="kv-item"><span>lesson_5_crm_chain_covered</span><strong>5/6</strong></div>
+<div class="kv-item"><span>bitrix24_send_status</span><strong>OK</strong></div>
+<div class="kv-item"><span>telegram_send_status</span><strong>OK</strong></div>
+<div class="kv-item"><span>missing_crm_layer</span><strong>personal КП/landing status + visit_count/visitor_id</strong></div></div></article>
+<article class="metric-card"><h3>crm_hygiene</h3><div class="kv-grid small"><div class="kv-item"><span>status</span><strong>LIMITED_AUDIT</strong></div>
+<div class="kv-item"><span>contacts</span><strong>150</strong></div>
+<div class="kv-item"><span>leads_total</span><strong>150</strong></div>
+<div class="kv-item"><span>leads_active</span><strong>0</strong></div>
+<div class="kv-item"><span>deals_total</span><strong>150</strong></div>
+<div class="kv-item"><span>contacts_without_phone_or_email</span><strong>37</strong></div>
+<div class="kv-item"><span>leads_without_phone_or_email</span><strong>24</strong></div>
+<div class="kv-item"><span>contact_phone_duplicate_groups</span><strong>2</strong></div>
+<div class="kv-item"><span>contact_email_duplicate_groups</span><strong>2</strong></div>
+<div class="kv-item"><span>lead_phone_duplicate_groups</span><strong>3</strong></div>
+<div class="kv-item"><span>lead_email_duplicate_groups</span><strong>4</strong></div>
+<div class="kv-item"><span>report_file</span><strong>data/reports/bitrix_readonly_audit.json</strong></div></div></article>
+<article class="metric-card"><h3>vpp_ai_manager</h3><div class="kv-grid small"><div class="kv-item"><span>status</span><strong>READY</strong></div>
+<div class="kv-item"><span>scenario_count</span><strong>3</strong></div>
+<div class="kv-item"><span>enough_for_kp</span><strong>1</strong></div>
+<div class="kv-item"><span>need_missing_data</span><strong>2</strong></div>
+<div class="kv-item"><span>bitrix_dry_run_not_sent</span><strong>3</strong></div>
+<div class="kv-item"><span>report_file</span><strong>data/reports/vpp_ai_manager_dry_run.json</strong></div></div></article>
+<article class="metric-card"><h3>content</h3><div class="kv-grid small"><div class="kv-item"><span>content_surfaces_tracked_now</span><strong>5/7</strong></div>
+<div class="kv-item"><span>first_week_drafts_target</span><strong>0/5</strong></div>
+<div class="kv-item"><span>monthly_core_topics_target</span><strong>0/20</strong></div>
+<div class="kv-item"><span>monthly_adapted_items_later</span><strong>0/52</strong></div>
+<div class="kv-item"><span>approval_fields_in_template</span><strong>3/3</strong></div></div></article>
+<article class="metric-card"><h3>outreach</h3><div class="kv-grid small"><div class="kv-item"><span>wave_1_outreach_sources</span><strong>2/2</strong></div>
+<div class="kv-item"><span>candidate_review_target</span><strong>0/10</strong></div>
+<div class="kv-item"><span>reply_drafts_target</span><strong>0/5</strong></div>
+<div class="kv-item"><span>outreach_to_crm_test</span><strong>0/1</strong></div>
+<div class="kv-item"><span>real_sends_without_approval</span><strong>0</strong></div></div></article>
+<article class="metric-card"><h3>romi</h3><div class="kv-grid small"><div class="kv-item"><span>status</span><strong>CSV MVP есть; visit-&gt;deal из дашборда лектора ещё не закрыт</strong></div>
+<div class="kv-item"><span>report_file</span><strong>data/reports/channel_report_mvp.csv</strong></div>
+<div class="kv-item"><span>registry_channels</span><strong>17/17</strong></div>
+<div class="kv-item"><span>cost_rows</span><strong>17/17</strong></div>
+<div class="kv-item"><span>fact_rows</span><strong>17/17</strong></div>
+<div class="kv-item"><span>report_rows</span><strong>17/17</strong></div>
+<div class="kv-item"><span>missing_visit_to_deal</span><strong>visit_count + visitor_id + CR_visit_to_deal</strong></div></div></article>
+<article class="metric-card"><h3>safety</h3><div class="kv-grid small"><div class="kv-item"><span>security_agent_status</span><strong>ACTIVE</strong></div>
+<div class="kv-item"><span>security_agent_file</span><strong>agents/Агент безопастности/AGENT_SECURITY.md</strong></div>
+<div class="kv-item"><span>locked_actions</span><strong>[&quot;scheduler&quot;, &quot;mass_collection&quot;, &quot;real_publish&quot;, &quot;real_outreach&quot;]</strong></div></div></article>
+        </div>
+      </section>
+    </div>
+
+    <p class="footer-note">
+      Сгенерировано: 2026-05-16T23:17:05Z. Источник: data/reports/agent_dashboard.json.
+      Redis, Bitrix24, Telegram, IMAP, LLM, scheduler и publisher этим просмотрщиком не запускаются.
+    </p>
+  </main>
+
+  <script>
+    const cards = document.querySelectorAll('[data-agent]');
+    const details = document.querySelectorAll('[data-agent-detail]');
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const id = card.getAttribute('data-agent');
+        cards.forEach((item) => item.classList.toggle('is-active', item === card));
+        details.forEach((item) => item.classList.toggle('is-active', item.getAttribute('data-agent-detail') === id));
+      });
+    });
+
+    function initDraggableWorkflow() {
+      const canvas = document.getElementById('workflowCanvas');
+      const svg = document.getElementById('workflowSvg');
+      if (!canvas || !svg) return;
+
+      const storageKey = 'leadEngineAgentWorkflowPositionsV1';
+      const nodes = Array.from(canvas.querySelectorAll('.workflow-node'));
+      const edges = Array.from(svg.querySelectorAll('.workflow-edge'));
+      const resetButton = document.querySelector('[data-workflow-reset]');
+
+      function readSavedPositions() {
+        try {
+          return JSON.parse(window.localStorage.getItem(storageKey) || '{}');
+        } catch (error) {
+          return {};
+        }
+      }
+
+      function savePositions() {
+        const payload = {};
+        nodes.forEach((node) => {
+          payload[node.dataset.nodeId] = {
+            x: node.offsetLeft,
+            y: node.offsetTop,
+          };
+        });
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(payload));
+        } catch (error) {
+          // localStorage can be unavailable in strict private modes; the board
+          // still works for the current view even without persistence.
+        }
+      }
+
+      function applyPositions(savedPositions) {
+        nodes.forEach((node) => {
+          const saved = savedPositions[node.dataset.nodeId];
+          if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
+            node.style.left = `${saved.x}px`;
+            node.style.top = `${saved.y}px`;
+          } else {
+            node.style.left = `${node.dataset.left}%`;
+            node.style.top = `${node.dataset.top}%`;
+          }
+        });
+      }
+
+      function updateEdges() {
+        const canvasRect = canvas.getBoundingClientRect();
+        edges.forEach((edge) => {
+          const from = canvas.querySelector(`[data-node-id="${edge.dataset.from}"]`);
+          const to = canvas.querySelector(`[data-node-id="${edge.dataset.to}"]`);
+          if (!from || !to) return;
+          const fromRect = from.getBoundingClientRect();
+          const toRect = to.getBoundingClientRect();
+          edge.setAttribute('x1', fromRect.left - canvasRect.left + fromRect.width / 2);
+          edge.setAttribute('y1', fromRect.top - canvasRect.top + fromRect.height / 2);
+          edge.setAttribute('x2', toRect.left - canvasRect.left + toRect.width / 2);
+          edge.setAttribute('y2', toRect.top - canvasRect.top + toRect.height / 2);
+        });
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      nodes.forEach((node) => {
+        node.addEventListener('pointerdown', (event) => {
+          if (event.button !== undefined && event.button !== 0) return;
+          const startX = event.clientX;
+          const startY = event.clientY;
+          const originLeft = node.offsetLeft;
+          const originTop = node.offsetTop;
+
+          node.classList.add('is-dragging');
+          node.setPointerCapture(event.pointerId);
+
+          function onMove(moveEvent) {
+            const maxLeft = canvas.clientWidth - node.offsetWidth - 8;
+            const maxTop = canvas.clientHeight - node.offsetHeight - 8;
+            const nextLeft = clamp(originLeft + moveEvent.clientX - startX, 8, maxLeft);
+            const nextTop = clamp(originTop + moveEvent.clientY - startY, 8, maxTop);
+            node.style.left = `${nextLeft}px`;
+            node.style.top = `${nextTop}px`;
+            updateEdges();
+          }
+
+          function onEnd(endEvent) {
+            node.classList.remove('is-dragging');
+            node.removeEventListener('pointermove', onMove);
+            node.removeEventListener('pointerup', onEnd);
+            node.removeEventListener('pointercancel', onEnd);
+            try {
+              node.releasePointerCapture(endEvent.pointerId);
+            } catch (error) {
+              // If capture was already released, no action is needed.
+            }
+            savePositions();
+            updateEdges();
+          }
+
+          node.addEventListener('pointermove', onMove);
+          node.addEventListener('pointerup', onEnd);
+          node.addEventListener('pointercancel', onEnd);
+          event.preventDefault();
+        });
+      });
+
+      if (resetButton) {
+        resetButton.addEventListener('click', () => {
+          try {
+            window.localStorage.removeItem(storageKey);
+          } catch (error) {
+            // Safe no-op.
+          }
+          applyPositions({});
+          requestAnimationFrame(updateEdges);
+        });
+      }
+
+      applyPositions(readSavedPositions());
+      requestAnimationFrame(updateEdges);
+      window.addEventListener('resize', updateEdges);
+    }
+
+    initDraggableWorkflow();
+  </script>
+</body>
+</html>

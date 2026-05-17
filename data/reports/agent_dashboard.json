@@ -1,0 +1,5583 @@
+{
+  "dashboard_build_status": "OK",
+  "generated_at": "2026-05-16T23:17:05Z",
+  "source_documents": [
+    "REPORT.md",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/admin-dashboard-spec.md",
+    "docs/multi-agent-visual-control-map.md",
+    "docs/agent-okr-and-checker-map.md",
+    "content/library/sources/channel-registry-mvp.csv",
+    "content/library/sources/competitor-channel-watchlist.csv",
+    "content/library/sources/lecture-2026-05-15-growth-source-map.csv",
+    "data/reports/lecture_growth_source_score.json",
+    "data/reports/first_safe_growth_tests.json",
+    "data/reports/bitrix_reactivation_readonly_plan.json",
+    "data/reports/tender_filter_pack_dry_run.json",
+    "content/library/sources/tender-filter-pack-vpp.csv",
+    "data/reports/client_acquisition_pack_dry_run.json",
+    "content/growth/acquisition-route-pack-vpp.csv",
+    "data/reports/three_qualified_leads_sprint.json",
+    "content/growth/three-qualified-leads-sprint.csv",
+    "scripts/check_first_inbound_scenario_artifacts.py",
+    "data/reports/first_inbound_scenario_artifact_check.json",
+    "docs/three-qualified-leads-sprint-from-astrology-method.md",
+    "docs/client-acquisition-operating-system-from-lecture.md",
+    "content/library/sources/yanika-known-channels-template.csv",
+    "docs/lecture-2026-05-15-growth-and-agent-system-for-vpp.md",
+    "research/traffic-and-first-touch-map.md",
+    "research/cross-channel-analytics-romi.md",
+    "research/external-mas-ip-analysis-2026-05-15.md",
+    "docs/lecturer-mas-reference-comparison-2026-05-17.md",
+    "docs/agent-subroles-and-kpi-map.md",
+    "docs/agent-scenario-artifact-contract.md",
+    "agents/Агент безопастности/AGENT_SECURITY.md",
+    "docs/security-agent-control-layer.md",
+    "data/reports/agent_okr_contract_check.json"
+  ],
+  "top_panel": {
+    "project_name": "design-studio-lead-engine",
+    "overall_status": "OK",
+    "current_stage": "2026-05-17 — Подключён Агент безопасности как контрольный слой системы",
+    "last_checked_at": "2026-05-16T23:16:40Z",
+    "next_small_step": "открыть `data/reports/agent_dashboard.html` и глазами проверить новый блок `Security Agent Control Layer` рядом с управленческими блоками.",
+    "locks": {
+      "scheduler_locked": true,
+      "mass_collection_locked": true,
+      "real_publish_locked": true,
+      "real_outreach_locked": true,
+      "secrets_visible": false
+    },
+    "external_calls": {
+      "redis": false,
+      "bitrix24": false,
+      "telegram_send": false,
+      "imap": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    }
+  },
+  "visual_display": {
+    "display_status": "read_only",
+    "lecture_model": "главный оркестратор -> департаменты -> агенты -> входы/выходы -> проверяемый результат -> метрики -> REPORT",
+    "source_lesson_files": [
+      "../../lessons/system/multi-agent-visual-dashboard-description-2026-05-08.md",
+      "../../lessons/system/lesson-5-turnkey-agent-org-chart.md",
+      "../../lessons/system/lesson-5-part-2-product-system-rules-2026-05-07.md"
+    ],
+    "departments": [
+      {
+        "department_id": "orchestrator",
+        "title": "Оркестратор",
+        "owner": "CLAUDE.md / AGENTS.md / REPORT.md",
+        "status": "active",
+        "purpose": "держит правила, память проекта, запреты и следующий маленький шаг"
+      },
+      {
+        "department_id": "research",
+        "title": "Исследование источников",
+        "owner": "Agent 1 Scout",
+        "status": "planned/manual",
+        "purpose": "находит источники, боли рынка, конкурентов и передает source cards"
+      },
+      {
+        "department_id": "lead_collection",
+        "title": "Сбор лидов",
+        "owner": "Agent 2 Collector",
+        "status": "partial",
+        "purpose": "создает RawLead и передает его в leads:raw"
+      },
+      {
+        "department_id": "qualification",
+        "title": "Квалификация",
+        "owner": "Agent 3 Processor",
+        "status": "tested_partial",
+        "purpose": "делает flow, enrich, score, offer и QualifiedLead"
+      },
+      {
+        "department_id": "content_trust",
+        "title": "Контент и доверие",
+        "owner": "Agent 4 Publisher",
+        "status": "dry_run/manual",
+        "purpose": "готовит черновики, доверие, сайт и future content events"
+      },
+      {
+        "department_id": "crm_analytics",
+        "title": "CRM и аналитика",
+        "owner": "Agent 5 CRM",
+        "status": "tested",
+        "purpose": "принимает QualifiedLead/OutreachLead/content events и ведет CRM/отчеты"
+      },
+      {
+        "department_id": "outreach",
+        "title": "Первое касание",
+        "owner": "Agent 6 Outreach",
+        "status": "planned/locked",
+        "purpose": "готовит human-like replies только через approval"
+      },
+      {
+        "department_id": "checker",
+        "title": "Checker / QA",
+        "owner": "scripts/check_agent_okr_contract.py",
+        "status": "active",
+        "purpose": "сверяет визуальную систему с реальными файлами, OKR, метриками и отчетами"
+      }
+    ],
+    "operating_flow": [
+      {
+        "step": "1",
+        "title": "Источник",
+        "owner": "Agent 1 / Agent 2",
+        "result": "source card или RawLead"
+      },
+      {
+        "step": "2",
+        "title": "Квалификация",
+        "owner": "Agent 3",
+        "result": "QualifiedLead: flow, score, offer, next action"
+      },
+      {
+        "step": "3",
+        "title": "CRM",
+        "owner": "Agent 5",
+        "result": "Bitrix24 lead, Telegram alert, analytics event"
+      },
+      {
+        "step": "4",
+        "title": "Контент/доверие",
+        "owner": "Agent 4",
+        "result": "drafts, site trust blocks, future content:published"
+      },
+      {
+        "step": "5",
+        "title": "Проверка",
+        "owner": "Checker",
+        "result": "JSON report + запись в REPORT.md"
+      }
+    ],
+    "handoffs": [
+      {
+        "from": "Agent 1 Scout",
+        "to": "Agent 2 Collector",
+        "payload": "source card для сбора",
+        "format": "future research/table",
+        "storage": "research/* или content/library/sources/*",
+        "checked_by": "REPORT.md + checker по мере появления source cards"
+      },
+      {
+        "from": "Agent 1 Scout",
+        "to": "Agent 4 Publisher",
+        "payload": "боли, темы, конкуренты",
+        "format": "Markdown/CSV source notes",
+        "storage": "content/library/sources/*, research/*",
+        "checked_by": "docs/multi-agent-visual-control-map.md"
+      },
+      {
+        "from": "Agent 2 Collector",
+        "to": "Agent 3 Processor",
+        "payload": "RawLead",
+        "format": "shared.models.RawLead",
+        "storage": "Redis leads:raw",
+        "checked_by": "scripts/test_agent3_redis_processing_llm.py"
+      },
+      {
+        "from": "Agent 3 Processor",
+        "to": "Agent 5 CRM",
+        "payload": "QualifiedLead",
+        "format": "shared.models.QualifiedLead",
+        "storage": "Redis leads:qualified",
+        "checked_by": "scripts/test_agent3_to_agent5_handoff_local.py"
+      },
+      {
+        "from": "Agent 4 Publisher",
+        "to": "Agent 5 CRM",
+        "payload": "content_published event",
+        "format": "JSON event",
+        "storage": "Redis content:published",
+        "checked_by": "future content event test"
+      },
+      {
+        "from": "Agent 6 Outreach",
+        "to": "Agent 5 CRM",
+        "payload": "OutreachLead после интереса",
+        "format": "shared.models.OutreachLead -> QualifiedLead",
+        "storage": "Redis leads:outreach",
+        "checked_by": "future approval/outreach test"
+      }
+    ],
+    "control_blocks": [
+      {
+        "title": "Проверить систему",
+        "command": ".venv/bin/python scripts/check_agent_okr_contract.py",
+        "mode": "read_only/local_report",
+        "external_calls": "False"
+      },
+      {
+        "title": "Обновить JSON",
+        "command": ".venv/bin/python scripts/build_agent_dashboard.py",
+        "mode": "read_only/local_report",
+        "external_calls": "False"
+      },
+      {
+        "title": "Обновить HTML",
+        "command": ".venv/bin/python scripts/build_agent_dashboard_viewer.py",
+        "mode": "read_only/static_html",
+        "external_calls": "False"
+      }
+    ],
+    "safety_note": "Это отображение ничего не запускает: только показывает локальные JSON/Markdown данные."
+  },
+  "source_map": {
+    "source_map_status": "OK",
+    "registry_file": "content/library/sources/channel-registry-mvp.csv",
+    "competitor_watchlist_file": "content/library/sources/competitor-channel-watchlist.csv",
+    "yanika_channels_file": "content/library/sources/yanika-known-channels-template.csv",
+    "summary": {
+      "canonical_mvp_channels": 17,
+      "wave_1_channels": 9,
+      "wave_2_channels": 6,
+      "wave_3_channels": 2,
+      "active_channels": 3,
+      "manual_channels": 6,
+      "planned_channels": 8,
+      "competitor_watchlist_sources": 15,
+      "lecture_growth_sources": 12,
+      "yanika_pending_sources": 5,
+      "content_surfaces": 7,
+      "backlog_sources": 16
+    },
+    "counts_by_owner": {
+      "agent2_collector": 4,
+      "agent4_publisher": 9,
+      "agent5_crm": 2,
+      "agent6_outreach": 2
+    },
+    "counts_by_wave": {
+      "wave_1": 9,
+      "wave_2": 6,
+      "wave_3": 2
+    },
+    "counts_by_status": {
+      "active": 3,
+      "manual": 6,
+      "planned": 8
+    },
+    "canonical_channels": [
+      {
+        "channel_id": "tender_email",
+        "channel_name": "Gmail tenders",
+        "status": "active",
+        "priority_wave": "wave_1",
+        "source_type": "tender",
+        "traffic_channel": "tender",
+        "utm_source": "gmail",
+        "utm_medium": "email",
+        "first_touch": "email",
+        "last_touch": "email",
+        "owner_agent": "agent2_collector",
+        "flow": "B",
+        "notes": "Current MVP source for engineering tenders"
+      },
+      {
+        "channel_id": "tg_chat",
+        "channel_name": "Telegram chats",
+        "status": "active",
+        "priority_wave": "wave_1",
+        "source_type": "outbound",
+        "traffic_channel": "outbound",
+        "utm_source": "telegram",
+        "utm_medium": "social",
+        "first_touch": "public_chat",
+        "last_touch": "private_message",
+        "owner_agent": "agent6_outreach",
+        "flow": "A_B",
+        "notes": "Current MVP source for Telegram demand signals"
+      },
+      {
+        "channel_id": "outbound",
+        "channel_name": "Outbound manual",
+        "status": "active",
+        "priority_wave": "wave_1",
+        "source_type": "outbound",
+        "traffic_channel": "outbound",
+        "utm_source": "manual",
+        "utm_medium": "outbound",
+        "first_touch": "manual_outreach",
+        "last_touch": "reply",
+        "owner_agent": "agent6_outreach",
+        "flow": "A_B",
+        "notes": "Manual and agent-assisted outbound touchpoints"
+      },
+      {
+        "channel_id": "avito",
+        "channel_name": "Avito",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "marketplace",
+        "traffic_channel": "marketplace",
+        "utm_source": "avito",
+        "utm_medium": "marketplace",
+        "first_touch": "marketplace_message",
+        "last_touch": "platform_reply",
+        "owner_agent": "agent2_collector",
+        "flow": "A_B",
+        "notes": "Track manually before automation"
+      },
+      {
+        "channel_id": "profi",
+        "channel_name": "Profi.ru",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "marketplace",
+        "traffic_channel": "marketplace",
+        "utm_source": "profi",
+        "utm_medium": "marketplace",
+        "first_touch": "platform_message",
+        "last_touch": "platform_reply",
+        "owner_agent": "agent2_collector",
+        "flow": "A",
+        "notes": "Track manually before collector"
+      },
+      {
+        "channel_id": "yandex_services",
+        "channel_name": "Yandex Services",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "marketplace",
+        "traffic_channel": "marketplace",
+        "utm_source": "yandex_services",
+        "utm_medium": "marketplace",
+        "first_touch": "platform_message",
+        "last_touch": "platform_reply",
+        "owner_agent": "agent2_collector",
+        "flow": "A_B",
+        "notes": "Track manually before collector"
+      },
+      {
+        "channel_id": "yandex_maps",
+        "channel_name": "Yandex Maps",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "maps",
+        "traffic_channel": "maps",
+        "utm_source": "yandex_maps",
+        "utm_medium": "local_search",
+        "first_touch": "map_card",
+        "last_touch": "call_or_message",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "Manual calls and messages from map card"
+      },
+      {
+        "channel_id": "referral",
+        "channel_name": "Referrals",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "partner",
+        "traffic_channel": "referral",
+        "utm_source": "referral",
+        "utm_medium": "referral",
+        "first_touch": "partner_intro",
+        "last_touch": "manager_contact",
+        "owner_agent": "agent5_crm",
+        "flow": "A_B",
+        "notes": "Track who referred the client"
+      },
+      {
+        "channel_id": "old_inquiry",
+        "channel_name": "Old inquiries",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "owned_base",
+        "traffic_channel": "owned_base",
+        "utm_source": "crm",
+        "utm_medium": "reactivation",
+        "first_touch": "old_lead",
+        "last_touch": "manager_contact",
+        "owner_agent": "agent5_crm",
+        "flow": "A_B",
+        "notes": "Reactivation of old leads and existing contacts"
+      },
+      {
+        "channel_id": "yandex_direct",
+        "channel_name": "Yandex Direct",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "yandex",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Requires landing UTM budget and goals"
+      },
+      {
+        "channel_id": "google_ads",
+        "channel_name": "Google Ads",
+        "status": "planned",
+        "priority_wave": "wave_3",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "google",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Later after geo and landing decisions"
+      },
+      {
+        "channel_id": "vk_ads",
+        "channel_name": "VK Ads",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "vk",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Requires landing and UTM"
+      },
+      {
+        "channel_id": "meta_ads",
+        "channel_name": "Meta Ads",
+        "status": "planned",
+        "priority_wave": "wave_3",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "meta",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Requires legal and geo check"
+      },
+      {
+        "channel_id": "telegram_ads",
+        "channel_name": "Telegram Ads",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "telegram",
+        "utm_medium": "cpc",
+        "first_touch": "landing_or_bot",
+        "last_touch": "form_or_message",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Requires UTM or bot entry"
+      },
+      {
+        "channel_id": "dzen_rsy",
+        "channel_name": "Dzen and RSY",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "dzen",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Separate paid traffic from organic content"
+      },
+      {
+        "channel_id": "influencer_tg",
+        "channel_name": "Influencer TG",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "influencer",
+        "traffic_channel": "paid",
+        "utm_source": "telegram",
+        "utm_medium": "influencer",
+        "first_touch": "influencer_post",
+        "last_touch": "landing_or_message",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Use unique link or promo per placement"
+      },
+      {
+        "channel_id": "seo_organic",
+        "channel_name": "SEO organic",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "organic",
+        "traffic_channel": "organic",
+        "utm_source": "seo",
+        "utm_medium": "organic",
+        "first_touch": "search",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Needs site or landing pages"
+      }
+    ],
+    "first_wave_channels": [
+      {
+        "channel_id": "tender_email",
+        "channel_name": "Gmail tenders",
+        "status": "active",
+        "priority_wave": "wave_1",
+        "source_type": "tender",
+        "traffic_channel": "tender",
+        "utm_source": "gmail",
+        "utm_medium": "email",
+        "first_touch": "email",
+        "last_touch": "email",
+        "owner_agent": "agent2_collector",
+        "flow": "B",
+        "notes": "Current MVP source for engineering tenders"
+      },
+      {
+        "channel_id": "tg_chat",
+        "channel_name": "Telegram chats",
+        "status": "active",
+        "priority_wave": "wave_1",
+        "source_type": "outbound",
+        "traffic_channel": "outbound",
+        "utm_source": "telegram",
+        "utm_medium": "social",
+        "first_touch": "public_chat",
+        "last_touch": "private_message",
+        "owner_agent": "agent6_outreach",
+        "flow": "A_B",
+        "notes": "Current MVP source for Telegram demand signals"
+      },
+      {
+        "channel_id": "outbound",
+        "channel_name": "Outbound manual",
+        "status": "active",
+        "priority_wave": "wave_1",
+        "source_type": "outbound",
+        "traffic_channel": "outbound",
+        "utm_source": "manual",
+        "utm_medium": "outbound",
+        "first_touch": "manual_outreach",
+        "last_touch": "reply",
+        "owner_agent": "agent6_outreach",
+        "flow": "A_B",
+        "notes": "Manual and agent-assisted outbound touchpoints"
+      },
+      {
+        "channel_id": "avito",
+        "channel_name": "Avito",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "marketplace",
+        "traffic_channel": "marketplace",
+        "utm_source": "avito",
+        "utm_medium": "marketplace",
+        "first_touch": "marketplace_message",
+        "last_touch": "platform_reply",
+        "owner_agent": "agent2_collector",
+        "flow": "A_B",
+        "notes": "Track manually before automation"
+      },
+      {
+        "channel_id": "profi",
+        "channel_name": "Profi.ru",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "marketplace",
+        "traffic_channel": "marketplace",
+        "utm_source": "profi",
+        "utm_medium": "marketplace",
+        "first_touch": "platform_message",
+        "last_touch": "platform_reply",
+        "owner_agent": "agent2_collector",
+        "flow": "A",
+        "notes": "Track manually before collector"
+      },
+      {
+        "channel_id": "yandex_services",
+        "channel_name": "Yandex Services",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "marketplace",
+        "traffic_channel": "marketplace",
+        "utm_source": "yandex_services",
+        "utm_medium": "marketplace",
+        "first_touch": "platform_message",
+        "last_touch": "platform_reply",
+        "owner_agent": "agent2_collector",
+        "flow": "A_B",
+        "notes": "Track manually before collector"
+      },
+      {
+        "channel_id": "yandex_maps",
+        "channel_name": "Yandex Maps",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "maps",
+        "traffic_channel": "maps",
+        "utm_source": "yandex_maps",
+        "utm_medium": "local_search",
+        "first_touch": "map_card",
+        "last_touch": "call_or_message",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "Manual calls and messages from map card"
+      },
+      {
+        "channel_id": "referral",
+        "channel_name": "Referrals",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "partner",
+        "traffic_channel": "referral",
+        "utm_source": "referral",
+        "utm_medium": "referral",
+        "first_touch": "partner_intro",
+        "last_touch": "manager_contact",
+        "owner_agent": "agent5_crm",
+        "flow": "A_B",
+        "notes": "Track who referred the client"
+      },
+      {
+        "channel_id": "old_inquiry",
+        "channel_name": "Old inquiries",
+        "status": "manual",
+        "priority_wave": "wave_1",
+        "source_type": "owned_base",
+        "traffic_channel": "owned_base",
+        "utm_source": "crm",
+        "utm_medium": "reactivation",
+        "first_touch": "old_lead",
+        "last_touch": "manager_contact",
+        "owner_agent": "agent5_crm",
+        "flow": "A_B",
+        "notes": "Reactivation of old leads and existing contacts"
+      }
+    ],
+    "planned_channels": [
+      {
+        "channel_id": "yandex_direct",
+        "channel_name": "Yandex Direct",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "yandex",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Requires landing UTM budget and goals"
+      },
+      {
+        "channel_id": "google_ads",
+        "channel_name": "Google Ads",
+        "status": "planned",
+        "priority_wave": "wave_3",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "google",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Later after geo and landing decisions"
+      },
+      {
+        "channel_id": "vk_ads",
+        "channel_name": "VK Ads",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "vk",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Requires landing and UTM"
+      },
+      {
+        "channel_id": "meta_ads",
+        "channel_name": "Meta Ads",
+        "status": "planned",
+        "priority_wave": "wave_3",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "meta",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Requires legal and geo check"
+      },
+      {
+        "channel_id": "telegram_ads",
+        "channel_name": "Telegram Ads",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "telegram",
+        "utm_medium": "cpc",
+        "first_touch": "landing_or_bot",
+        "last_touch": "form_or_message",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Requires UTM or bot entry"
+      },
+      {
+        "channel_id": "dzen_rsy",
+        "channel_name": "Dzen and RSY",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "paid_ads",
+        "traffic_channel": "paid",
+        "utm_source": "dzen",
+        "utm_medium": "cpc",
+        "first_touch": "landing",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Separate paid traffic from organic content"
+      },
+      {
+        "channel_id": "influencer_tg",
+        "channel_name": "Influencer TG",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "influencer",
+        "traffic_channel": "paid",
+        "utm_source": "telegram",
+        "utm_medium": "influencer",
+        "first_touch": "influencer_post",
+        "last_touch": "landing_or_message",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Use unique link or promo per placement"
+      },
+      {
+        "channel_id": "seo_organic",
+        "channel_name": "SEO organic",
+        "status": "planned",
+        "priority_wave": "wave_2",
+        "source_type": "organic",
+        "traffic_channel": "organic",
+        "utm_source": "seo",
+        "utm_medium": "organic",
+        "first_touch": "search",
+        "last_touch": "form",
+        "owner_agent": "agent4_publisher",
+        "flow": "A_B",
+        "notes": "From lecturer dashboard. Needs site or landing pages"
+      }
+    ],
+    "channels_by_owner": {
+      "agent1_scout": [],
+      "agent2_collector": [
+        {
+          "channel_id": "tender_email",
+          "channel_name": "Gmail tenders",
+          "status": "active",
+          "priority_wave": "wave_1",
+          "source_type": "tender",
+          "traffic_channel": "tender",
+          "utm_source": "gmail",
+          "utm_medium": "email",
+          "first_touch": "email",
+          "last_touch": "email",
+          "owner_agent": "agent2_collector",
+          "flow": "B",
+          "notes": "Current MVP source for engineering tenders"
+        },
+        {
+          "channel_id": "avito",
+          "channel_name": "Avito",
+          "status": "manual",
+          "priority_wave": "wave_1",
+          "source_type": "marketplace",
+          "traffic_channel": "marketplace",
+          "utm_source": "avito",
+          "utm_medium": "marketplace",
+          "first_touch": "marketplace_message",
+          "last_touch": "platform_reply",
+          "owner_agent": "agent2_collector",
+          "flow": "A_B",
+          "notes": "Track manually before automation"
+        },
+        {
+          "channel_id": "profi",
+          "channel_name": "Profi.ru",
+          "status": "manual",
+          "priority_wave": "wave_1",
+          "source_type": "marketplace",
+          "traffic_channel": "marketplace",
+          "utm_source": "profi",
+          "utm_medium": "marketplace",
+          "first_touch": "platform_message",
+          "last_touch": "platform_reply",
+          "owner_agent": "agent2_collector",
+          "flow": "A",
+          "notes": "Track manually before collector"
+        },
+        {
+          "channel_id": "yandex_services",
+          "channel_name": "Yandex Services",
+          "status": "manual",
+          "priority_wave": "wave_1",
+          "source_type": "marketplace",
+          "traffic_channel": "marketplace",
+          "utm_source": "yandex_services",
+          "utm_medium": "marketplace",
+          "first_touch": "platform_message",
+          "last_touch": "platform_reply",
+          "owner_agent": "agent2_collector",
+          "flow": "A_B",
+          "notes": "Track manually before collector"
+        }
+      ],
+      "agent3_processor": [],
+      "agent4_publisher": [
+        {
+          "channel_id": "yandex_maps",
+          "channel_name": "Yandex Maps",
+          "status": "manual",
+          "priority_wave": "wave_1",
+          "source_type": "maps",
+          "traffic_channel": "maps",
+          "utm_source": "yandex_maps",
+          "utm_medium": "local_search",
+          "first_touch": "map_card",
+          "last_touch": "call_or_message",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "Manual calls and messages from map card"
+        },
+        {
+          "channel_id": "yandex_direct",
+          "channel_name": "Yandex Direct",
+          "status": "planned",
+          "priority_wave": "wave_2",
+          "source_type": "paid_ads",
+          "traffic_channel": "paid",
+          "utm_source": "yandex",
+          "utm_medium": "cpc",
+          "first_touch": "landing",
+          "last_touch": "form",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "From lecturer dashboard. Requires landing UTM budget and goals"
+        },
+        {
+          "channel_id": "google_ads",
+          "channel_name": "Google Ads",
+          "status": "planned",
+          "priority_wave": "wave_3",
+          "source_type": "paid_ads",
+          "traffic_channel": "paid",
+          "utm_source": "google",
+          "utm_medium": "cpc",
+          "first_touch": "landing",
+          "last_touch": "form",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "From lecturer dashboard. Later after geo and landing decisions"
+        },
+        {
+          "channel_id": "vk_ads",
+          "channel_name": "VK Ads",
+          "status": "planned",
+          "priority_wave": "wave_2",
+          "source_type": "paid_ads",
+          "traffic_channel": "paid",
+          "utm_source": "vk",
+          "utm_medium": "cpc",
+          "first_touch": "landing",
+          "last_touch": "form",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "From lecturer dashboard. Requires landing and UTM"
+        },
+        {
+          "channel_id": "meta_ads",
+          "channel_name": "Meta Ads",
+          "status": "planned",
+          "priority_wave": "wave_3",
+          "source_type": "paid_ads",
+          "traffic_channel": "paid",
+          "utm_source": "meta",
+          "utm_medium": "cpc",
+          "first_touch": "landing",
+          "last_touch": "form",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "From lecturer dashboard. Requires legal and geo check"
+        },
+        {
+          "channel_id": "telegram_ads",
+          "channel_name": "Telegram Ads",
+          "status": "planned",
+          "priority_wave": "wave_2",
+          "source_type": "paid_ads",
+          "traffic_channel": "paid",
+          "utm_source": "telegram",
+          "utm_medium": "cpc",
+          "first_touch": "landing_or_bot",
+          "last_touch": "form_or_message",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "From lecturer dashboard. Requires UTM or bot entry"
+        },
+        {
+          "channel_id": "dzen_rsy",
+          "channel_name": "Dzen and RSY",
+          "status": "planned",
+          "priority_wave": "wave_2",
+          "source_type": "paid_ads",
+          "traffic_channel": "paid",
+          "utm_source": "dzen",
+          "utm_medium": "cpc",
+          "first_touch": "landing",
+          "last_touch": "form",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "From lecturer dashboard. Separate paid traffic from organic content"
+        },
+        {
+          "channel_id": "influencer_tg",
+          "channel_name": "Influencer TG",
+          "status": "planned",
+          "priority_wave": "wave_2",
+          "source_type": "influencer",
+          "traffic_channel": "paid",
+          "utm_source": "telegram",
+          "utm_medium": "influencer",
+          "first_touch": "influencer_post",
+          "last_touch": "landing_or_message",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "From lecturer dashboard. Use unique link or promo per placement"
+        },
+        {
+          "channel_id": "seo_organic",
+          "channel_name": "SEO organic",
+          "status": "planned",
+          "priority_wave": "wave_2",
+          "source_type": "organic",
+          "traffic_channel": "organic",
+          "utm_source": "seo",
+          "utm_medium": "organic",
+          "first_touch": "search",
+          "last_touch": "form",
+          "owner_agent": "agent4_publisher",
+          "flow": "A_B",
+          "notes": "From lecturer dashboard. Needs site or landing pages"
+        }
+      ],
+      "agent5_crm": [
+        {
+          "channel_id": "referral",
+          "channel_name": "Referrals",
+          "status": "manual",
+          "priority_wave": "wave_1",
+          "source_type": "partner",
+          "traffic_channel": "referral",
+          "utm_source": "referral",
+          "utm_medium": "referral",
+          "first_touch": "partner_intro",
+          "last_touch": "manager_contact",
+          "owner_agent": "agent5_crm",
+          "flow": "A_B",
+          "notes": "Track who referred the client"
+        },
+        {
+          "channel_id": "old_inquiry",
+          "channel_name": "Old inquiries",
+          "status": "manual",
+          "priority_wave": "wave_1",
+          "source_type": "owned_base",
+          "traffic_channel": "owned_base",
+          "utm_source": "crm",
+          "utm_medium": "reactivation",
+          "first_touch": "old_lead",
+          "last_touch": "manager_contact",
+          "owner_agent": "agent5_crm",
+          "flow": "A_B",
+          "notes": "Reactivation of old leads and existing contacts"
+        }
+      ],
+      "agent6_outreach": [
+        {
+          "channel_id": "tg_chat",
+          "channel_name": "Telegram chats",
+          "status": "active",
+          "priority_wave": "wave_1",
+          "source_type": "outbound",
+          "traffic_channel": "outbound",
+          "utm_source": "telegram",
+          "utm_medium": "social",
+          "first_touch": "public_chat",
+          "last_touch": "private_message",
+          "owner_agent": "agent6_outreach",
+          "flow": "A_B",
+          "notes": "Current MVP source for Telegram demand signals"
+        },
+        {
+          "channel_id": "outbound",
+          "channel_name": "Outbound manual",
+          "status": "active",
+          "priority_wave": "wave_1",
+          "source_type": "outbound",
+          "traffic_channel": "outbound",
+          "utm_source": "manual",
+          "utm_medium": "outbound",
+          "first_touch": "manual_outreach",
+          "last_touch": "reply",
+          "owner_agent": "agent6_outreach",
+          "flow": "A_B",
+          "notes": "Manual and agent-assisted outbound touchpoints"
+        }
+      ]
+    },
+    "content_surfaces": [
+      "MAX-канал СИЛА Проекта",
+      "Telegram",
+      "VK",
+      "Дзен",
+      "Яндекс Карты",
+      "2GIS",
+      "новый сайт / блог"
+    ],
+    "competitor_watchlist": [
+      {
+        "source_id": "tg_prozru",
+        "source_name": "Проектирование зданий",
+        "source_url": "https://t.me/prozru",
+        "platform": "telegram",
+        "segment": "B",
+        "source_type": "channel",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "B2B-аудитория проектировщиков ГИПов и руководителей проектных компаний"
+      },
+      {
+        "source_id": "tg_rupor_gip",
+        "source_name": "Рупор ГИП",
+        "source_url": "https://t.me/rupor_project",
+        "platform": "telegram",
+        "segment": "B",
+        "source_type": "channel",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Новости нормы и проектная документация для ГИПов"
+      },
+      {
+        "source_id": "tg_gipkurs_chat",
+        "source_name": "ПРОЕКТИРОВАНИЕ ЗДАНИЙ ЧАТ",
+        "source_url": "https://t.me/GIPkurs",
+        "platform": "telegram",
+        "segment": "B",
+        "source_type": "chat",
+        "owner_agent": "agent1_scout",
+        "status": "planned_manual",
+        "why_watch": "Чат проектировщиков и вакансий как источник боли и спроса"
+      },
+      {
+        "source_id": "tg_pereplan_one",
+        "source_name": "PEREPLAN. Перепланировка и согласование",
+        "source_url": "https://t.me/pereplan_one",
+        "platform": "telegram",
+        "segment": "A",
+        "source_type": "channel",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Крупный B2C/B2B канал по перепланировкам Москвы и Петербурга"
+      },
+      {
+        "source_id": "tg_pereplan_mos_mo",
+        "source_name": "Согласование перепланировки в Москве и МО",
+        "source_url": "https://t.me/pereplan_mos_mo",
+        "platform": "telegram",
+        "segment": "A",
+        "source_type": "channel",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Узкая аудитория дизайнеров ремонтников риелторов"
+      },
+      {
+        "source_id": "site_mostpr",
+        "source_name": "МОСтройпроект",
+        "source_url": "https://mostpr.ru/",
+        "platform": "website",
+        "segment": "A",
+        "source_type": "competitor_site",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Сильная упаковка с кейсами сроками стоимостью и документами"
+      },
+      {
+        "source_id": "site_resog",
+        "source_name": "Ресог",
+        "source_url": "https://resog.ru/",
+        "platform": "website",
+        "segment": "A",
+        "source_type": "competitor_site",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Перепланировки с фокусом на требования 2026 и бывших сотрудников Жилинспекции"
+      },
+      {
+        "source_id": "site_replanestate",
+        "source_name": "Replan Estate",
+        "source_url": "https://replanestate.ru/",
+        "platform": "website",
+        "segment": "A+B",
+        "source_type": "competitor_site",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Нежилые помещения проектная документация согласования ремонт под ключ"
+      },
+      {
+        "source_id": "site_archistrutt",
+        "source_name": "Архитектоника",
+        "source_url": "https://archistrutt.ru/",
+        "platform": "website",
+        "segment": "A",
+        "source_type": "competitor_site",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Перепланировки под ключ Москва"
+      },
+      {
+        "source_id": "site_soglasuem",
+        "source_name": "Согласуем",
+        "source_url": "https://soglasuem.com/",
+        "platform": "website",
+        "segment": "A",
+        "source_type": "competitor_site",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Перепланировки под ключ Москва"
+      },
+      {
+        "source_id": "vk_documentall",
+        "source_name": "DOCUMENTALL",
+        "source_url": "https://vk.com/documentall",
+        "platform": "vk",
+        "segment": "A+B",
+        "source_type": "community",
+        "owner_agent": "agent1_scout",
+        "status": "planned_manual",
+        "why_watch": "СПб и ЛО перепланировка реконструкция полный цикл"
+      },
+      {
+        "source_id": "vk_replan54",
+        "source_name": "REPLAN Новосибирск",
+        "source_url": "https://vk.com/replan54",
+        "platform": "vk",
+        "segment": "A",
+        "source_type": "community",
+        "owner_agent": "agent1_scout",
+        "status": "planned_manual",
+        "why_watch": "Региональный конкурент по перепланировкам"
+      },
+      {
+        "source_id": "vk_mstpr",
+        "source_name": "МОСтройпроект VK",
+        "source_url": "https://vk.com/mstpr",
+        "platform": "vk",
+        "segment": "A",
+        "source_type": "community",
+        "owner_agent": "agent1_scout",
+        "status": "planned_manual",
+        "why_watch": "VK-упаковка крупного конкурента"
+      },
+      {
+        "source_id": "vk_pkstroi",
+        "source_name": "ПКСтрой",
+        "source_url": "https://vk.com/pkstroi",
+        "platform": "vk",
+        "segment": "A",
+        "source_type": "community",
+        "owner_agent": "agent1_scout",
+        "status": "planned_manual",
+        "why_watch": "Перепланировки Москва опыт с 2008"
+      },
+      {
+        "source_id": "industry_yandex_realty",
+        "source_name": "Яндекс Недвижимость: перепланировка",
+        "source_url": "https://realty.yandex.ru/journal/post/kak-soglasovat-pereplanirovku-v-kvartire/",
+        "platform": "website",
+        "segment": "A",
+        "source_type": "industry_media",
+        "owner_agent": "agent1_scout",
+        "status": "active_manual",
+        "why_watch": "Поисковая статья с понятной структурой для B2C"
+      }
+    ],
+    "lecture_growth_source_map_file": "content/library/sources/lecture-2026-05-15-growth-source-map.csv",
+    "lecture_growth_source_map": [
+      {
+        "source_id": "lgm_001",
+        "source_name": "MAX-канал СИЛА Проекта",
+        "source_url": "https://max.ru/id100005517_biz",
+        "platform": "MAX",
+        "segment": "all_segments",
+        "source_type": "own_channel",
+        "owner_agent": "agent4_publisher",
+        "status": "approved",
+        "why_watch": "Главная площадка доверия и прогрева после входа из внешних источников"
+      },
+      {
+        "source_id": "lgm_002",
+        "source_name": "Telegram-каналы коммерческой недвижимости",
+        "source_url": "",
+        "platform": "Telegram",
+        "segment": "commercial_real_estate",
+        "source_type": "public_channel_research",
+        "owner_agent": "agent1_scout",
+        "status": "candidate",
+        "why_watch": "Искать собственников арендаторов УК девелоперов ТЦ БЦ складов"
+      },
+      {
+        "source_id": "lgm_003",
+        "source_name": "VK-сообщества предпринимателей и коммерческой недвижимости",
+        "source_url": "",
+        "platform": "VK",
+        "segment": "b2b",
+        "source_type": "public_group_research",
+        "owner_agent": "agent1_scout",
+        "status": "candidate",
+        "why_watch": "Проверять темы аренды ремонта fit-out реконструкции и перепланировок"
+      },
+      {
+        "source_id": "lgm_004",
+        "source_name": "Форумы и обсуждения предпринимателей",
+        "source_url": "",
+        "platform": "Forums",
+        "segment": "b2b",
+        "source_type": "public_forum_research",
+        "owner_agent": "agent1_scout",
+        "status": "candidate",
+        "why_watch": "Ловить реальные вопросы про открытие магазина офиса склада и согласования"
+      },
+      {
+        "source_id": "lgm_005",
+        "source_name": "2GIS карточки и категории",
+        "source_url": "",
+        "platform": "2GIS",
+        "segment": "local_search",
+        "source_type": "listing",
+        "owner_agent": "agent5_crm",
+        "status": "candidate",
+        "why_watch": "Понять спрос по городам и привести карточку к единой аналитике"
+      },
+      {
+        "source_id": "lgm_006",
+        "source_name": "Яндекс Карты и Яндекс Бизнес",
+        "source_url": "",
+        "platform": "Yandex",
+        "segment": "local_search",
+        "source_type": "listing",
+        "owner_agent": "agent5_crm",
+        "status": "candidate",
+        "why_watch": "Проверить видимость по проектированию и перепланировке"
+      },
+      {
+        "source_id": "lgm_007",
+        "source_name": "Avito Услуги проектирование",
+        "source_url": "",
+        "platform": "Avito",
+        "segment": "private_and_small_business",
+        "source_type": "marketplace",
+        "owner_agent": "agent2_collector",
+        "status": "candidate",
+        "why_watch": "Вторичный поток вопросов по проектированию и перепланировке"
+      },
+      {
+        "source_id": "lgm_008",
+        "source_name": "Коммерческие тендерные площадки",
+        "source_url": "",
+        "platform": "Tender",
+        "segment": "b2b",
+        "source_type": "tender_monitoring",
+        "owner_agent": "agent1_scout",
+        "status": "candidate",
+        "why_watch": "Искать ПД РД реконструкцию перепланировку обследования для юрлиц"
+      },
+      {
+        "source_id": "lgm_009",
+        "source_name": "Сайты девелоперов и УК",
+        "source_url": "",
+        "platform": "Web",
+        "segment": "b2b",
+        "source_type": "abm_research",
+        "owner_agent": "agent6_outreach",
+        "status": "candidate",
+        "why_watch": "Собрать список компаний где могут быть объекты и запросы на проектирование"
+      },
+      {
+        "source_id": "lgm_010",
+        "source_name": "Складские операторы и индустриальные парки",
+        "source_url": "",
+        "platform": "Web",
+        "segment": "warehouses",
+        "source_type": "abm_research",
+        "owner_agent": "agent6_outreach",
+        "status": "candidate",
+        "why_watch": "Приоритет для складов ангаров реконструкций и ПД РД"
+      },
+      {
+        "source_id": "lgm_011",
+        "source_name": "Ритейл и франчайзи",
+        "source_url": "",
+        "platform": "Web",
+        "segment": "retail_fitout",
+        "source_type": "abm_research",
+        "owner_agent": "agent6_outreach",
+        "status": "candidate",
+        "why_watch": "Магазины ТЦ fit-out перепланировки под арендодателя и УК"
+      },
+      {
+        "source_id": "lgm_012",
+        "source_name": "Старые контакты и сделки Bitrix24",
+        "source_url": "",
+        "platform": "Bitrix24",
+        "segment": "crm_base",
+        "source_type": "crm_hygiene",
+        "owner_agent": "agent5_crm",
+        "status": "approved_readonly",
+        "why_watch": "Найти дубли старые лиды и сегменты для аккуратной реактивации"
+      }
+    ],
+    "lecture_growth_score_report": "data/reports/lecture_growth_source_score.json",
+    "lecture_growth_score_status": "OK",
+    "lecture_growth_score_summary": {
+      "source_count": 12,
+      "by_priority": {
+        "P1": 5,
+        "P2": 6,
+        "P3": 1
+      },
+      "by_risk": {
+        "low": 5,
+        "medium": 7
+      },
+      "by_owner": {
+        "agent1_scout": 4,
+        "agent2_collector": 1,
+        "agent4_publisher": 1,
+        "agent5_crm": 3,
+        "agent6_outreach": 3
+      },
+      "top_sources": [
+        {
+          "source_id": "lgm_012",
+          "source_name": "Старые контакты и сделки Bitrix24",
+          "priority": "P1",
+          "score": 19
+        },
+        {
+          "source_id": "lgm_001",
+          "source_name": "MAX-канал СИЛА Проекта",
+          "priority": "P1",
+          "score": 17
+        },
+        {
+          "source_id": "lgm_008",
+          "source_name": "Коммерческие тендерные площадки",
+          "priority": "P1",
+          "score": 17
+        },
+        {
+          "source_id": "lgm_005",
+          "source_name": "2GIS карточки и категории",
+          "priority": "P1",
+          "score": 15
+        },
+        {
+          "source_id": "lgm_006",
+          "source_name": "Яндекс Карты и Яндекс Бизнес",
+          "priority": "P1",
+          "score": 15
+        }
+      ],
+      "approval_required_count": 10
+    },
+    "yanika_pending_channels": [
+      {
+        "source_id": "yanika_channel_001",
+        "source_name": "",
+        "source_url": "",
+        "platform": "telegram|vk|max|dzen|website|other",
+        "segment": "A|B|A+B",
+        "source_type": "",
+        "owner_agent": "agent1_scout",
+        "status": "pending_yanika_input",
+        "why_watch": ""
+      },
+      {
+        "source_id": "yanika_channel_002",
+        "source_name": "",
+        "source_url": "",
+        "platform": "telegram|vk|max|dzen|website|other",
+        "segment": "A|B|A+B",
+        "source_type": "",
+        "owner_agent": "agent1_scout",
+        "status": "pending_yanika_input",
+        "why_watch": ""
+      },
+      {
+        "source_id": "yanika_channel_003",
+        "source_name": "",
+        "source_url": "",
+        "platform": "telegram|vk|max|dzen|website|other",
+        "segment": "A|B|A+B",
+        "source_type": "",
+        "owner_agent": "agent1_scout",
+        "status": "pending_yanika_input",
+        "why_watch": ""
+      },
+      {
+        "source_id": "yanika_channel_004",
+        "source_name": "",
+        "source_url": "",
+        "platform": "telegram|vk|max|dzen|website|other",
+        "segment": "A|B|A+B",
+        "source_type": "",
+        "owner_agent": "agent1_scout",
+        "status": "pending_yanika_input",
+        "why_watch": ""
+      },
+      {
+        "source_id": "yanika_channel_005",
+        "source_name": "",
+        "source_url": "",
+        "platform": "telegram|vk|max|dzen|website|other",
+        "segment": "A|B|A+B",
+        "source_type": "",
+        "owner_agent": "agent1_scout",
+        "status": "pending_yanika_input",
+        "why_watch": ""
+      }
+    ],
+    "backlog_sources": [
+      "2GIS как отдельный lead/referrer source",
+      "VK-группы и обсуждения",
+      "коммерческие тендерные площадки",
+      "HH.ru вакансии как сигнал спроса на проектирование",
+      "партнёры: риелторы, дизайнеры, юристы, кадастровые инженеры",
+      "сайт / лендинги / SEO-страницы услуг",
+      "лид-магнит ПРОВЕРКА перепланировки",
+      "ЕИС и госзакупки",
+      "закупки девелоперов и сетевых компаний",
+      "каталоги франшиз и коммерческой недвижимости",
+      "банки, ипотечные брокеры, оценщики и страховые",
+      "БТИ / кадастровые / юридические партнёры",
+      "поставщики, подрядчики fit-out и вывесок",
+      "форумы, Яндекс Q, TenChat",
+      "GEO/AI visibility: ChatGPT, Perplexity, Яндекс/Алиса и нейропоиск",
+      "Reels/shorts radar и ROMI по контенту позже"
+    ]
+  },
+  "bitrix_crm_hygiene": {
+    "status": "LIMITED_AUDIT",
+    "report_file": "data/reports/bitrix_readonly_audit.json",
+    "generated_at": "2026-05-14T21:34:41Z",
+    "readonly": true,
+    "limited_by_pages": true,
+    "counts": {
+      "contacts": 150,
+      "leads_total": 150,
+      "leads_active": 0,
+      "deals_total": 150,
+      "statuses": 5,
+      "sources": 24
+    },
+    "quality_flags": {
+      "leads_without_source": 0,
+      "leads_without_phone_or_email": 24,
+      "contacts_without_phone_or_email": 37
+    },
+    "duplicate_groups": {
+      "contacts_by_phone": 2,
+      "contacts_by_email": 2,
+      "contacts_by_name_hash": 4,
+      "leads_by_phone": 3,
+      "leads_by_email": 4,
+      "strong_groups_to_review_first": 4,
+      "total_phone_email_groups": 11
+    },
+    "lead_statuses": [
+      {
+        "status_id": "CONVERTED",
+        "name": "Качественный лид",
+        "count": 146
+      },
+      {
+        "status_id": "JUNK",
+        "name": "Некачественный лид",
+        "count": 4
+      }
+    ],
+    "lead_sources": [
+      {
+        "source_id": "CALL",
+        "name": "Звонок",
+        "count": 78
+      },
+      {
+        "source_id": "EMAIL",
+        "name": "Электронная почта",
+        "count": 46
+      },
+      {
+        "source_id": "12|MAX_NUMBER_REDHAM",
+        "name": "Max - Max",
+        "count": 26
+      }
+    ],
+    "deal_stages": [
+      {
+        "stage_id": "NEW",
+        "count": 55
+      },
+      {
+        "stage_id": "UC_O7PVUC",
+        "count": 28
+      },
+      {
+        "stage_id": "LOSE",
+        "count": 12
+      },
+      {
+        "stage_id": "UC_L031LQ",
+        "count": 8
+      },
+      {
+        "stage_id": "C4:NEW",
+        "count": 8
+      },
+      {
+        "stage_id": "C2:EXECUTING",
+        "count": 7
+      },
+      {
+        "stage_id": "WON",
+        "count": 6
+      },
+      {
+        "stage_id": "UC_VYUJ7T",
+        "count": 5
+      },
+      {
+        "stage_id": "UC_8VSK99",
+        "count": 3
+      },
+      {
+        "stage_id": "UC_B696WE",
+        "count": 3
+      },
+      {
+        "stage_id": "C2:PREPAYMENT_INVOICE",
+        "count": 2
+      },
+      {
+        "stage_id": "C2:NEW",
+        "count": 2
+      },
+      {
+        "stage_id": "UC_1V6LRZ",
+        "count": 2
+      },
+      {
+        "stage_id": "UC_V0ZO49",
+        "count": 2
+      },
+      {
+        "stage_id": "C2:WON",
+        "count": 2
+      },
+      {
+        "stage_id": "C2:UC_D3X4M2",
+        "count": 1
+      },
+      {
+        "stage_id": "C2:PREPARATION",
+        "count": 1
+      },
+      {
+        "stage_id": "C4:UC_AKB0D9",
+        "count": 1
+      },
+      {
+        "stage_id": "C4:UC_J8FY8Z",
+        "count": 1
+      },
+      {
+        "stage_id": "UC_GU3SJ8",
+        "count": 1
+      }
+    ],
+    "first_cleanup_queue": [
+      "контакты-дубли по телефону",
+      "контакты-дубли по обычному email",
+      "лиды-дубли по телефону",
+      "контакты без телефона/email, у которых нет сделок",
+      "расшифровать стадии сделок UC_*"
+    ],
+    "safety_note": "Только локальный отчёт; dashboard не вызывает Bitrix24 и не объединяет записи. Если limited_by_pages=true, это не вся CRM.",
+    "external_calls": {
+      "bitrix24": false
+    }
+  },
+  "vpp_ai_manager_dry_run": {
+    "status": "READY",
+    "test_type": "vpp_ai_manager_dry_run",
+    "dry_run": true,
+    "created_at": "2026-05-16T09:55:19Z",
+    "scenario_count": 3,
+    "summary": {
+      "scenarios_ready": 3,
+      "enough_for_kp": 1,
+      "need_missing_data": 2,
+      "missing_data_total": 2,
+      "bitrix_dry_run_not_sent": 3
+    },
+    "scenarios": [
+      {
+        "scenario_id": "warehouse_angar",
+        "title": "Склад / ангар",
+        "segment": "b2b_warehouse_angar",
+        "flow": "B",
+        "score": "hot",
+        "client_type": "ООО / ИП / девелопер",
+        "data_completeness": "enough_for_kp",
+        "missing_data": [],
+        "next_action": "kp_prepare",
+        "kp_24h_allowed": true,
+        "human_control_required": true,
+        "source": "site_max",
+        "first_touch_channel": "MAX",
+        "landing_page": "/landing/sklady-angary/",
+        "bitrix_send_status": "DRY_RUN_NOT_SENT",
+        "first_reply": "Поняла задачу: Склад / ангар. Данных достаточно для первичной подготовки КП. Передам инженеру на проверку состава работ и сроков.",
+        "artifact_file": "data/reports/vpp_ai_manager_dry_run/warehouse_angar.json"
+      },
+      {
+        "scenario_id": "commercial_replan",
+        "title": "Коммерческая перепланировка",
+        "segment": "b2b_commercial_replan",
+        "flow": "A",
+        "score": "hot",
+        "client_type": "ООО / ИП / арендатор",
+        "data_completeness": "enough_for_review",
+        "missing_data": [
+          "город"
+        ],
+        "next_action": "ask_missing_data_then_review",
+        "kp_24h_allowed": false,
+        "human_control_required": true,
+        "source": "site_telegram",
+        "first_touch_channel": "Telegram",
+        "landing_page": "/landing/pereplanirovka-biznes/",
+        "bitrix_send_status": "DRY_RUN_NOT_SENT",
+        "first_reply": "Поняла задачу: Коммерческая перепланировка. Чтобы понять состав работ и можно ли подготовить КП за 24 часа, нужно уточнить: город.",
+        "artifact_file": "data/reports/vpp_ai_manager_dry_run/commercial_replan.json"
+      },
+      {
+        "scenario_id": "apartment_replan",
+        "title": "Перепланировка квартиры",
+        "segment": "b2c_apartment_replan",
+        "flow": "A",
+        "score": "warm",
+        "client_type": "физлицо",
+        "data_completeness": "enough_for_review",
+        "missing_data": [
+          "город"
+        ],
+        "next_action": "ask_missing_data_then_review",
+        "kp_24h_allowed": false,
+        "human_control_required": true,
+        "source": "site_max",
+        "first_touch_channel": "MAX",
+        "landing_page": "/services/pereplanirovka-kvartiry/",
+        "bitrix_send_status": "DRY_RUN_NOT_SENT",
+        "first_reply": "Поняла задачу: Перепланировка квартиры. Чтобы понять состав работ и можно ли подготовить КП за 24 часа, нужно уточнить: город.",
+        "artifact_file": "data/reports/vpp_ai_manager_dry_run/apartment_replan.json"
+      }
+    ],
+    "report_file": "data/reports/vpp_ai_manager_dry_run.json",
+    "markdown_report": "data/reports/vpp_ai_manager_dry_run.md",
+    "next_action": "после проверки Яникой выбрать один сценарий и разрешить только следующий безопасный тест",
+    "safety_note": "Это локальный dry-run: контакты заредактированы, Bitrix24/Redis/MAX/Telegram/LLM/реклама не вызывались.",
+    "external_calls": {
+      "redis": false,
+      "bitrix24": false,
+      "telegram_send": false,
+      "max_send": false,
+      "imap": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false,
+      "ads": false
+    }
+  },
+  "first_safe_growth_tests": {
+    "status": "READY",
+    "generated_at": "2026-05-16T11:41:58Z",
+    "source_doc": "docs/first-safe-growth-tests-from-lecture-2026-05-15.md",
+    "readonly": true,
+    "tests_count": 3,
+    "tests": [
+      {
+        "test_id": "safe_growth_001",
+        "source_id": "lgm_012",
+        "source_name": "Старые контакты и сделки Bitrix24",
+        "segment": "crm_base",
+        "owner_agent": "agent5_crm",
+        "mode": "read_only",
+        "proposed_action": "Сегментировать старые контакты и сделки, найти дубли и кандидатов на ручную реактивацию.",
+        "content_or_material": "CRM hygiene and reactivation candidate report",
+        "bitrix_tags": [
+          "source:bitrix24",
+          "segment:crm_base",
+          "risk:low",
+          "mode:read_only"
+        ],
+        "utm": {
+          "utm_source": "bitrix24",
+          "utm_campaign": "old_base_readonly",
+          "utm_medium": "crm"
+        },
+        "approval_required": true,
+        "stop_rule": "Остановиться до любых изменений карточек, объединения дублей или сообщений клиентам.",
+        "success_metric": "reactivation_candidates найден, но action_status остается DRY_RUN_NOT_SENT."
+      },
+      {
+        "test_id": "safe_growth_002",
+        "source_id": "lgm_001",
+        "source_name": "MAX-канал СИЛА Проекта",
+        "segment": "all_segments",
+        "owner_agent": "agent4_publisher",
+        "mode": "draft_only",
+        "proposed_action": "Подготовить 5 B2B-постов первой волны без публикации.",
+        "content_or_material": "content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md",
+        "bitrix_tags": [
+          "source:max",
+          "segment:b2b",
+          "risk:low",
+          "mode:draft_only"
+        ],
+        "utm": {
+          "utm_source": "max",
+          "utm_campaign": "b2b_first_wave",
+          "utm_medium": "organic"
+        },
+        "approval_required": true,
+        "stop_rule": "Остановиться до публикации, автопостинга или платного продвижения.",
+        "success_metric": "5 черновиков готовы и имеют segment, CTA, approval_status=draft."
+      },
+      {
+        "test_id": "safe_growth_003",
+        "source_id": "lgm_008",
+        "source_name": "Коммерческие тендерные площадки",
+        "segment": "b2b",
+        "owner_agent": "agent1_scout",
+        "mode": "read_only",
+        "proposed_action": "Подготовить фильтры тендеров и чеклист решения участвовать или нет.",
+        "content_or_material": "tender filters and bid decision checklist",
+        "bitrix_tags": [
+          "source:tender",
+          "segment:b2b",
+          "risk:low",
+          "mode:read_only"
+        ],
+        "utm": {
+          "utm_source": "tender",
+          "utm_campaign": "commercial_design_monitoring",
+          "utm_medium": "manual"
+        },
+        "approval_required": true,
+        "stop_rule": "Остановиться до регистрации, оплаты агрегатора, подачи заявки или загрузки документов.",
+        "success_metric": "Фильтры и чеклист готовы; bid_status=NOT_SUBMITTED."
+      }
+    ],
+    "deferred_items": [
+      "Реактивация старых контактов Bitrix24 только после отдельного approval.",
+      "Публикация MAX-постов только после approval.",
+      "Регистрация, оплата и подача тендеров только после отдельного решения.",
+      "Telegram/VK/форумы только после списка конкретных площадок и проверки правил.",
+      "Реклама только после бюджета, UTM, стоп-правил и готового лендинга/поста."
+    ],
+    "external_calls": {
+      "redis": false,
+      "bitrix24": false,
+      "telegram_send": false,
+      "max": false,
+      "vk": false,
+      "ads": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    },
+    "report_file": "data/reports/first_safe_growth_tests.json"
+  },
+  "bitrix_reactivation_readonly_plan": {
+    "status": "READY",
+    "generated_at": "2026-05-16T13:55:17Z",
+    "source_audit_file": "data/reports/bitrix_readonly_audit.json",
+    "readonly": true,
+    "limited_by_pages": true,
+    "summary": {
+      "contacts": 150,
+      "leads_total": 150,
+      "leads_active": 0,
+      "deals_total": 150,
+      "total_duplicate_groups": 11,
+      "contacts_without_phone_or_email": 37,
+      "leads_without_phone_or_email": 24,
+      "leads_without_source": 0
+    },
+    "cleanup_queue": [
+      {
+        "queue_id": "cleanup_001",
+        "title": "Контакты-дубли по телефону",
+        "count": 2,
+        "priority": "P1",
+        "action": "Ручная проверка групп дублей. Ничего не объединять автоматически.",
+        "stop_rule": "Перед merge нужен backup и ручное решение по каждой группе."
+      },
+      {
+        "queue_id": "cleanup_002",
+        "title": "Контакты-дубли по email",
+        "count": 2,
+        "priority": "P1",
+        "action": "Проверить, где один клиент создан несколько раз.",
+        "stop_rule": "Не объединять разные юрлица только из-за одного домена или общей почты."
+      },
+      {
+        "queue_id": "cleanup_003",
+        "title": "Лиды-дубли по телефону/email",
+        "count": 7,
+        "priority": "P2",
+        "action": "Понять, какие лиды можно связать с контактом или сделкой.",
+        "stop_rule": "Не закрывать лиды без проверки истории и ответственного."
+      },
+      {
+        "queue_id": "cleanup_004",
+        "title": "Контакты без телефона/email",
+        "count": 37,
+        "priority": "P2",
+        "action": "Отделить полезные карточки от пустых.",
+        "stop_rule": "Не удалять карточки автоматически."
+      },
+      {
+        "queue_id": "cleanup_005",
+        "title": "Лиды без телефона/email",
+        "count": 24,
+        "priority": "P2",
+        "action": "Понять, есть ли email/телефон в комментариях или связанной сделке.",
+        "stop_rule": "Не списывать как мусор без проверки источника."
+      },
+      {
+        "queue_id": "cleanup_006",
+        "title": "Лиды без источника",
+        "count": 0,
+        "priority": "P3",
+        "action": "Назначить источник по истории только там, где он очевиден.",
+        "stop_rule": "Не придумывать источник, если данных нет."
+      }
+    ],
+    "reactivation_buckets": [
+      {
+        "bucket_id": "reactivation_001",
+        "title": "Старые заявки с контактом",
+        "basis": "после ручной проверки дублей и истории",
+        "priority": "P1",
+        "first_message_status": "NOT_PREPARED_APPROVAL_REQUIRED"
+      },
+      {
+        "bucket_id": "reactivation_002",
+        "title": "Сделки без понятного следующего шага",
+        "basis": "по стадиям сделок и дате изменения",
+        "priority": "P1",
+        "first_message_status": "NOT_PREPARED_APPROVAL_REQUIRED"
+      },
+      {
+        "bucket_id": "reactivation_003",
+        "title": "Лиды без источника, но с контактом",
+        "basis": "восстановить источник или пометить unknown",
+        "priority": "P2",
+        "first_message_status": "NOT_PREPARED_APPROVAL_REQUIRED"
+      },
+      {
+        "bucket_id": "reactivation_004",
+        "title": "Пустые карточки",
+        "basis": "нет телефона/email",
+        "priority": "P4",
+        "first_message_status": "DO_NOT_CONTACT"
+      }
+    ],
+    "top_lead_sources": [
+      {
+        "source_id": "CALL",
+        "name": "Звонок",
+        "count": 78
+      },
+      {
+        "source_id": "EMAIL",
+        "name": "Электронная почта",
+        "count": 46
+      },
+      {
+        "source_id": "12|MAX_NUMBER_REDHAM",
+        "name": "Max - Max",
+        "count": 26
+      }
+    ],
+    "top_lead_statuses": [
+      {
+        "status_id": "CONVERTED",
+        "name": "Качественный лид",
+        "count": 146
+      },
+      {
+        "status_id": "JUNK",
+        "name": "Некачественный лид",
+        "count": 4
+      }
+    ],
+    "top_deal_stages": [
+      {
+        "stage_id": "NEW",
+        "name": "",
+        "count": 55
+      },
+      {
+        "stage_id": "UC_O7PVUC",
+        "name": "",
+        "count": 28
+      },
+      {
+        "stage_id": "LOSE",
+        "name": "",
+        "count": 12
+      },
+      {
+        "stage_id": "UC_L031LQ",
+        "name": "",
+        "count": 8
+      },
+      {
+        "stage_id": "C4:NEW",
+        "name": "",
+        "count": 8
+      },
+      {
+        "stage_id": "C2:EXECUTING",
+        "name": "",
+        "count": 7
+      },
+      {
+        "stage_id": "WON",
+        "name": "",
+        "count": 6
+      },
+      {
+        "stage_id": "UC_VYUJ7T",
+        "name": "",
+        "count": 5
+      },
+      {
+        "stage_id": "UC_8VSK99",
+        "name": "",
+        "count": 3
+      },
+      {
+        "stage_id": "UC_B696WE",
+        "name": "",
+        "count": 3
+      }
+    ],
+    "recent_active_leads_preview": [],
+    "approval_required_before": [
+      "merge_duplicates",
+      "update_contact",
+      "update_lead",
+      "close_lead",
+      "create_task",
+      "send_message",
+      "reactivation_campaign"
+    ],
+    "external_calls": {
+      "bitrix24": false,
+      "telegram_send": false,
+      "max": false,
+      "vk": false,
+      "ads": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    },
+    "report_file": "data/reports/bitrix_reactivation_readonly_plan.json"
+  },
+  "tender_filter_pack_dry_run": {
+    "status": "READY",
+    "generated_at": "2026-05-16T13:57:37Z",
+    "filter_file": "content/library/sources/tender-filter-pack-vpp.csv",
+    "filter_count": 6,
+    "checks": [
+      {
+        "filter_id": "tender_001",
+        "segment": "warehouse_design",
+        "priority": "P1",
+        "status": "OK",
+        "missing_fields": [],
+        "bitrix_tags": [
+          "source:tender",
+          "segment:warehouse_design",
+          "priority:P1",
+          "mode:read_only"
+        ],
+        "stop_rule": "Не подавать заявку, не оплачивать площадку и не создавать сделку без approval."
+      },
+      {
+        "filter_id": "tender_002",
+        "segment": "commercial_reconstruction",
+        "priority": "P1",
+        "status": "OK",
+        "missing_fields": [],
+        "bitrix_tags": [
+          "source:tender",
+          "segment:commercial_reconstruction",
+          "priority:P1",
+          "mode:read_only"
+        ],
+        "stop_rule": "Не подавать заявку, не оплачивать площадку и не создавать сделку без approval."
+      },
+      {
+        "filter_id": "tender_003",
+        "segment": "retail_fitout",
+        "priority": "P2",
+        "status": "OK",
+        "missing_fields": [],
+        "bitrix_tags": [
+          "source:tender",
+          "segment:retail_fitout",
+          "priority:P2",
+          "mode:read_only"
+        ],
+        "stop_rule": "Не подавать заявку, не оплачивать площадку и не создавать сделку без approval."
+      },
+      {
+        "filter_id": "tender_004",
+        "segment": "commercial_replan",
+        "priority": "P1",
+        "status": "OK",
+        "missing_fields": [],
+        "bitrix_tags": [
+          "source:tender",
+          "segment:commercial_replan",
+          "priority:P1",
+          "mode:read_only"
+        ],
+        "stop_rule": "Не подавать заявку, не оплачивать площадку и не создавать сделку без approval."
+      },
+      {
+        "filter_id": "tender_005",
+        "segment": "project_sections",
+        "priority": "P2",
+        "status": "OK",
+        "missing_fields": [],
+        "bitrix_tags": [
+          "source:tender",
+          "segment:project_sections",
+          "priority:P2",
+          "mode:read_only"
+        ],
+        "stop_rule": "Не подавать заявку, не оплачивать площадку и не создавать сделку без approval."
+      },
+      {
+        "filter_id": "tender_006",
+        "segment": "private_house_secondary",
+        "priority": "P3",
+        "status": "OK",
+        "missing_fields": [],
+        "bitrix_tags": [
+          "source:tender",
+          "segment:private_house_secondary",
+          "priority:P3",
+          "mode:read_only"
+        ],
+        "stop_rule": "Не подавать заявку, не оплачивать площадку и не создавать сделку без approval."
+      }
+    ],
+    "approval_required_before": [
+      "open_paid_aggregator",
+      "register_tender_platform",
+      "upload_documents",
+      "submit_bid",
+      "create_bitrix_deal",
+      "create_manager_task"
+    ],
+    "external_calls": {
+      "tender_platform": false,
+      "bitrix24": false,
+      "ads": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    },
+    "report_file": "data/reports/tender_filter_pack_dry_run.json"
+  },
+  "client_acquisition_pack_dry_run": {
+    "status": "READY",
+    "generated_at": "2026-05-16T14:07:17Z",
+    "route_file": "content/growth/acquisition-route-pack-vpp.csv",
+    "route_count": 6,
+    "summary": {
+      "by_priority": {
+        "P1": 3,
+        "P2": 2,
+        "P3": 1
+      },
+      "by_primary_source": {
+        "MAX": 3,
+        "Tender": 3
+      },
+      "approval_required_routes": 6
+    },
+    "routes": [
+      {
+        "route_id": "route_001",
+        "segment": "commercial_replan",
+        "priority": "P1",
+        "primary_source": "MAX",
+        "secondary_source": "Bitrix24_old_base",
+        "offer": "Разбор готовности коммерческой перепланировки к КП",
+        "asset": "content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md#MAX-B2B-001",
+        "next_step": "Проверить исходные данные: план, требования УК/арендодателя, что меняется",
+        "utm_source": "max",
+        "utm_campaign": "b2b_first_wave",
+        "bitrix_tags": "segment:commercial_replan;source:max;kp_readiness",
+        "approval_required": "yes",
+        "stop_rule": "Не публиковать и не писать клиентам без approval",
+        "status": "OK",
+        "approval_gate": "APPROVAL_REQUIRED",
+        "external_action_status": "NOT_STARTED"
+      },
+      {
+        "route_id": "route_002",
+        "segment": "warehouse_design",
+        "priority": "P1",
+        "primary_source": "Tender",
+        "secondary_source": "ABM_web",
+        "offer": "ПД/РД для склада или ангара после проверки исходных данных",
+        "asset": "docs/tender-readonly-filter-and-decision-pack.md",
+        "next_step": "Подготовить фильтр и checklist участия",
+        "utm_source": "tender",
+        "utm_campaign": "commercial_design_monitoring",
+        "bitrix_tags": "segment:warehouse;source:tender;deal_type:tender_candidate",
+        "approval_required": "yes",
+        "stop_rule": "Не регистрироваться и не подавать заявку без approval",
+        "status": "OK",
+        "approval_gate": "APPROVAL_REQUIRED",
+        "external_action_status": "NOT_STARTED"
+      },
+      {
+        "route_id": "route_003",
+        "segment": "commercial_reconstruction",
+        "priority": "P1",
+        "primary_source": "Tender",
+        "secondary_source": "MAX",
+        "offer": "Первичная проверка реконструкции: состав работ, обследование, экспертиза",
+        "asset": "content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md#MAX-B2B-003",
+        "next_step": "Собрать старый проект, обмеры, описание изменений",
+        "utm_source": "max",
+        "utm_campaign": "b2b_first_wave",
+        "bitrix_tags": "segment:reconstruction;source:max;risk_check",
+        "approval_required": "yes",
+        "stop_rule": "Не обещать цену и сроки без исходных данных",
+        "status": "OK",
+        "approval_gate": "APPROVAL_REQUIRED",
+        "external_action_status": "NOT_STARTED"
+      },
+      {
+        "route_id": "route_004",
+        "segment": "retail_fitout",
+        "priority": "P2",
+        "primary_source": "MAX",
+        "secondary_source": "VK_public_groups",
+        "offer": "Проект для магазина/ТЦ/fit-out под требования арендодателя",
+        "asset": "content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md#MAX-B2B-004",
+        "next_step": "Собрать требования ТЦ/УК, план, инженерные изменения",
+        "utm_source": "max",
+        "utm_campaign": "b2b_first_wave",
+        "bitrix_tags": "segment:retail_fitout;source:max;landlord_requirements",
+        "approval_required": "yes",
+        "stop_rule": "Не писать в группы и личные сообщения без approval",
+        "status": "OK",
+        "approval_gate": "APPROVAL_REQUIRED",
+        "external_action_status": "NOT_STARTED"
+      },
+      {
+        "route_id": "route_005",
+        "segment": "project_sections",
+        "priority": "P2",
+        "primary_source": "Tender",
+        "secondary_source": "ABM_web",
+        "offer": "Отдельные разделы ПД/РД для юрлиц",
+        "asset": "content/library/sources/tender-filter-pack-vpp.csv#tender_005",
+        "next_step": "Проверить разделы, сроки, СРО, состав документации",
+        "utm_source": "tender",
+        "utm_campaign": "project_sections_monitoring",
+        "bitrix_tags": "segment:project_sections;source:tender;documents_ready",
+        "approval_required": "yes",
+        "stop_rule": "Не создавать сделку и задачу менеджеру без approval",
+        "status": "OK",
+        "approval_gate": "APPROVAL_REQUIRED",
+        "external_action_status": "NOT_STARTED"
+      },
+      {
+        "route_id": "route_006",
+        "segment": "private_house_secondary",
+        "priority": "P3",
+        "primary_source": "MAX",
+        "secondary_source": "SEO_future",
+        "offer": "Проект дома как вторичный поток после B2B",
+        "asset": "content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md",
+        "next_step": "Не мешать B2B; использовать только органический контент",
+        "utm_source": "max",
+        "utm_campaign": "secondary_private_house",
+        "bitrix_tags": "segment:private_house;source:max;secondary",
+        "approval_required": "yes",
+        "stop_rule": "Не перераспределять фокус с B2B без решения",
+        "status": "OK",
+        "approval_gate": "APPROVAL_REQUIRED",
+        "external_action_status": "NOT_STARTED"
+      }
+    ],
+    "supporting_assets": [
+      "docs/client-acquisition-operating-system-from-lecture.md",
+      "content/growth/approved-only-outreach-templates-vpp.md",
+      "site/landing-drafts/b2b-segment-landing-blueprints.md",
+      "content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md",
+      "docs/tender-readonly-filter-and-decision-pack.md"
+    ],
+    "external_calls": {
+      "bitrix24": false,
+      "max": false,
+      "telegram_send": false,
+      "vk": false,
+      "tender_platform": false,
+      "ads": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    },
+    "report_file": "data/reports/client_acquisition_pack_dry_run.json"
+  },
+  "three_qualified_leads_sprint": {
+    "status": "READY",
+    "generated_at": "2026-05-16T22:10:22Z",
+    "sprint_file": "content/growth/three-qualified-leads-sprint.csv",
+    "goal": "3 qualified leads",
+    "sprint_items_count": 15,
+    "qualified_lead_target_count": 3,
+    "ready_or_draft_items": 7,
+    "approval_required_items": 12,
+    "by_week": {
+      "1": 6,
+      "2": 6,
+      "3": 3
+    },
+    "by_segment": {
+      "all_b2b": 1,
+      "b2b_kp_readiness": 1,
+      "commercial_reconstruction": 3,
+      "commercial_replan": 4,
+      "retail_fitout": 2,
+      "warehouse_design": 4
+    },
+    "by_agent": {
+      "agent1_scout": 2,
+      "agent3_processor": 3,
+      "agent4_publisher": 5,
+      "agent5_crm": 4,
+      "agent6_outreach": 1
+    },
+    "items": [
+      {
+        "sprint_item_id": "tql_001",
+        "week": "1",
+        "segment": "commercial_replan",
+        "agent_owner": "agent4_publisher",
+        "source": "MAX",
+        "asset": "content/pipeline/approval/max-b2b-001-commercial-replan-approval-card.md",
+        "goal_metric": "content_ready",
+        "target_count": "1",
+        "status": "published_manual_unverified",
+        "approval_required": "yes",
+        "next_action": "collect_post_url_and_first_reactions",
+        "stop_rule": "Не менять Bitrix и не писать людям первыми без отдельного approval"
+      },
+      {
+        "sprint_item_id": "tql_002",
+        "week": "1",
+        "segment": "warehouse_design",
+        "agent_owner": "agent4_publisher",
+        "source": "MAX",
+        "asset": "content/pipeline/approval/max-b2b-002-warehouse-approval-card.md",
+        "goal_metric": "content_ready",
+        "target_count": "1",
+        "status": "published_manual_unverified_public",
+        "approval_required": "yes",
+        "next_action": "collect_exact_post_url_or_wait_maxstat_index",
+        "stop_rule": "Публикация вручную подтверждена Яникой; не создавать лиды/сделки без входящего обращения и отдельного approval"
+      },
+      {
+        "sprint_item_id": "tql_003",
+        "week": "1",
+        "segment": "commercial_reconstruction",
+        "agent_owner": "agent4_publisher",
+        "source": "MAX",
+        "asset": "content/pipeline/approval/max-b2b-003-reconstruction-error-approval-card.md",
+        "goal_metric": "content_ready",
+        "target_count": "1",
+        "status": "approved",
+        "approval_required": "yes",
+        "next_action": "prepare_manual_publication",
+        "stop_rule": "Не публиковать автоматически; только ручная публикация или отдельная команда Яники"
+      },
+      {
+        "sprint_item_id": "tql_004",
+        "week": "1",
+        "segment": "retail_fitout",
+        "agent_owner": "agent4_publisher",
+        "source": "MAX",
+        "asset": "content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md#MAX-B2B-004",
+        "goal_metric": "content_ready",
+        "target_count": "1",
+        "status": "draft",
+        "approval_required": "yes",
+        "next_action": "prepare_final_post",
+        "stop_rule": "Не публиковать без approval"
+      },
+      {
+        "sprint_item_id": "tql_005",
+        "week": "1",
+        "segment": "b2b_kp_readiness",
+        "agent_owner": "agent4_publisher",
+        "source": "MAX",
+        "asset": "content/pipeline/drafts/max-b2b-first-wave-2026-05-16.md#MAX-B2B-005",
+        "goal_metric": "content_ready",
+        "target_count": "1",
+        "status": "draft",
+        "approval_required": "yes",
+        "next_action": "prepare_final_post",
+        "stop_rule": "Не публиковать без approval"
+      },
+      {
+        "sprint_item_id": "tql_006",
+        "week": "1",
+        "segment": "all_b2b",
+        "agent_owner": "agent5_crm",
+        "source": "Bitrix24",
+        "asset": "data/reports/bitrix_reactivation_readonly_plan.md",
+        "goal_metric": "crm_readiness",
+        "target_count": "1",
+        "status": "partial_limited_audit",
+        "approval_required": "yes",
+        "next_action": "need_full_audit",
+        "stop_rule": "Не менять CRM без approval"
+      },
+      {
+        "sprint_item_id": "tql_007",
+        "week": "2",
+        "segment": "warehouse_design",
+        "agent_owner": "agent1_scout",
+        "source": "Tender",
+        "asset": "content/library/sources/tender-filter-pack-vpp.csv#tender_001",
+        "goal_metric": "source_candidates",
+        "target_count": "3",
+        "status": "ready",
+        "approval_required": "yes",
+        "next_action": "find_candidates_when_network_available",
+        "stop_rule": "Не регистрироваться и не подавать без approval"
+      },
+      {
+        "sprint_item_id": "tql_008",
+        "week": "2",
+        "segment": "commercial_replan",
+        "agent_owner": "agent1_scout",
+        "source": "Tender",
+        "asset": "content/library/sources/tender-filter-pack-vpp.csv#tender_004",
+        "goal_metric": "source_candidates",
+        "target_count": "3",
+        "status": "ready",
+        "approval_required": "yes",
+        "next_action": "find_candidates_when_network_available",
+        "stop_rule": "Не регистрироваться и не подавать без approval"
+      },
+      {
+        "sprint_item_id": "tql_009",
+        "week": "2",
+        "segment": "retail_fitout",
+        "agent_owner": "agent6_outreach",
+        "source": "ABM",
+        "asset": "content/growth/approved-only-outreach-templates-vpp.md",
+        "goal_metric": "company_shortlist",
+        "target_count": "10",
+        "status": "planned",
+        "approval_required": "yes",
+        "next_action": "prepare_shortlist",
+        "stop_rule": "Не отправлять письма без approval"
+      },
+      {
+        "sprint_item_id": "tql_010",
+        "week": "2",
+        "segment": "commercial_replan",
+        "agent_owner": "agent3_processor",
+        "source": "AI_manager",
+        "asset": "data/reports/vpp_ai_manager_dry_run.md",
+        "goal_metric": "qualified_lead_scenario",
+        "target_count": "1",
+        "status": "ready",
+        "approval_required": "no",
+        "next_action": "use_existing_scenario",
+        "stop_rule": "Не создавать Bitrix-сделку без approval"
+      },
+      {
+        "sprint_item_id": "tql_011",
+        "week": "2",
+        "segment": "warehouse_design",
+        "agent_owner": "agent3_processor",
+        "source": "AI_manager",
+        "asset": "data/reports/vpp_ai_manager_dry_run.md",
+        "goal_metric": "qualified_lead_scenario",
+        "target_count": "1",
+        "status": "ready",
+        "approval_required": "no",
+        "next_action": "use_existing_scenario",
+        "stop_rule": "Не создавать Bitrix-сделку без approval"
+      },
+      {
+        "sprint_item_id": "tql_012",
+        "week": "2",
+        "segment": "commercial_reconstruction",
+        "agent_owner": "agent3_processor",
+        "source": "AI_manager",
+        "asset": "data/reports/vpp_ai_manager_dry_run.md",
+        "goal_metric": "qualified_lead_scenario",
+        "target_count": "1",
+        "status": "planned",
+        "approval_required": "no",
+        "next_action": "add_reconstruction_scenario",
+        "stop_rule": "Не создавать Bitrix-сделку без approval"
+      },
+      {
+        "sprint_item_id": "tql_013",
+        "week": "3",
+        "segment": "commercial_replan",
+        "agent_owner": "agent5_crm",
+        "source": "MAX_OR_Bitrix",
+        "asset": "content/growth/acquisition-route-pack-vpp.csv#route_001",
+        "goal_metric": "qualified_leads",
+        "target_count": "1",
+        "status": "planned",
+        "approval_required": "yes",
+        "next_action": "manual_test_after_approval",
+        "stop_rule": "Остановиться после первого входящего вопроса и зафиксировать качество"
+      },
+      {
+        "sprint_item_id": "tql_014",
+        "week": "3",
+        "segment": "warehouse_design",
+        "agent_owner": "agent5_crm",
+        "source": "Tender",
+        "asset": "content/growth/acquisition-route-pack-vpp.csv#route_002",
+        "goal_metric": "qualified_leads",
+        "target_count": "1",
+        "status": "planned",
+        "approval_required": "yes",
+        "next_action": "manual_test_after_approval",
+        "stop_rule": "Остановиться до подачи заявки"
+      },
+      {
+        "sprint_item_id": "tql_015",
+        "week": "3",
+        "segment": "commercial_reconstruction",
+        "agent_owner": "agent5_crm",
+        "source": "MAX_OR_Tender",
+        "asset": "content/growth/acquisition-route-pack-vpp.csv#route_003",
+        "goal_metric": "qualified_leads",
+        "target_count": "1",
+        "status": "planned",
+        "approval_required": "yes",
+        "next_action": "manual_test_after_approval",
+        "stop_rule": "Не обещать цену без исходных данных"
+      }
+    ],
+    "astrology_method_mapping": {
+      "expert": "ВПП: СРО, 10+ лет, проектирование, перепланировки, реконструкция",
+      "product": "AI-проверка исходных данных к КП",
+      "content_factory": "MAX B2B posts + future landing pages + tender filters",
+      "traffic_sources": "MAX, Tender, Bitrix old base, future Telegram/VK/ABM",
+      "warmup": "серия экспертных постов и approved-only ответы",
+      "conversion": "Bitrix24 -> КП -> договор"
+    },
+    "external_calls": {
+      "bitrix24": false,
+      "max": false,
+      "telegram_send": false,
+      "vk": false,
+      "tender_platform": false,
+      "ads": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    },
+    "report_file": "data/reports/three_qualified_leads_sprint.json"
+  },
+  "interaction_graph": {
+    "graph_status": "read_only",
+    "purpose": "показать, как агенты взаимодействуют между собой и через какие очереди/файлы передают результат",
+    "routes": [
+      {
+        "route_id": "lead_flow",
+        "title": "Основной поток лида",
+        "status": "partly_tested",
+        "nodes": [
+          "Agent 1 Scout",
+          "Agent 2 Collector",
+          "Redis leads:raw",
+          "Agent 3 Processor",
+          "Redis leads:qualified",
+          "Agent 5 CRM",
+          "Bitrix24 / Telegram / отчёт"
+        ],
+        "payload": "source card -> RawLead -> QualifiedLead -> CRM record",
+        "safe_note": "Полный runtime с настоящим LLM и Agent 5 пока запускать только отдельным контролируемым тестом."
+      },
+      {
+        "route_id": "content_flow",
+        "title": "Контентный поток",
+        "status": "dry_run/manual",
+        "nodes": [
+          "Agent 1 Scout",
+          "Agent 4 Publisher",
+          "content:published",
+          "Agent 5 CRM",
+          "ROMI / канал-отчёт"
+        ],
+        "payload": "боли рынка -> черновик/публикация -> событие контента -> аналитика канала",
+        "safe_note": "Реальные публикации заблокированы без отдельного подтверждения."
+      },
+      {
+        "route_id": "outreach_flow",
+        "title": "Outreach поток",
+        "status": "planned/locked",
+        "nodes": [
+          "Agent 6 Outreach",
+          "approval человека",
+          "leads:outreach",
+          "Agent 5 CRM",
+          "Bitrix24 / следующий шаг"
+        ],
+        "payload": "кандидат -> одобренный ответ -> заинтересованный диалог -> CRM",
+        "safe_note": "Отправка сообщений и real outreach заблокированы."
+      },
+      {
+        "route_id": "checker_flow",
+        "title": "Контрольный поток",
+        "status": "active/read_only",
+        "nodes": [
+          "REPORT.md",
+          "6 agent files",
+          "scripts/check_agent_okr_contract.py",
+          "agent_dashboard.json",
+          "agent_dashboard.html"
+        ],
+        "payload": "факты из файлов -> checker report -> визуальная панель",
+        "safe_note": "Checker только читает локальные файлы и пишет локальный JSON-отчёт."
+      }
+    ],
+    "external_calls": {
+      "redis": false,
+      "bitrix24": false,
+      "telegram_send": false,
+      "imap": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    }
+  },
+  "management_protocol": {
+    "protocol_status": "read_only/planned_runtime_later",
+    "title": "Chief of Staff / Handoff / Escalation / Weekly digest",
+    "source_doc": "docs/chief-of-staff-handoff-protocol.md",
+    "rule": "агент = роль / ответственность; skill = действие внутри роли",
+    "chief_of_staff": {
+      "owner": "CLAUDE.md / AGENTS.md / REPORT.md",
+      "meaning": "режим координации, а не Agent 7",
+      "responsibility": "принять задачу, восстановить контекст, выбрать маршрут, проверить результат и обновить память"
+    },
+    "nervous_system": [
+      "вход задачи",
+      "маршрутизация",
+      "агенты",
+      "QA/checker",
+      "результат",
+      "память"
+    ],
+    "templates": [
+      {
+        "name": "task-handoff",
+        "purpose": "передать задачу от слоя/агента к следующему владельцу",
+        "fields": [
+          "от кого",
+          "кому",
+          "цель",
+          "контекст",
+          "формат результата",
+          "риски",
+          "нужна ли Яника"
+        ]
+      },
+      {
+        "name": "agent-result",
+        "purpose": "вернуть итог работы агента в едином формате",
+        "fields": [
+          "что сделано",
+          "что проверено",
+          "статус",
+          "отчёты",
+          "риски",
+          "следующий шаг"
+        ]
+      },
+      {
+        "name": "escalation-to-yana",
+        "purpose": "остановиться и вынести решение человеку",
+        "fields": [
+          "ситуация",
+          "вариант 1",
+          "плюсы/минусы",
+          "вариант 2",
+          "рекомендация",
+          "что решить Янике"
+        ]
+      },
+      {
+        "name": "weekly digest",
+        "purpose": "будущий недельный итог Agent 5/dashboard",
+        "fields": [
+          "фокус недели",
+          "что сделано",
+          "лиды и CRM",
+          "контент",
+          "ROMI",
+          "блокеры",
+          "план"
+        ]
+      }
+    ],
+    "escalation_rules": [
+      "платный API или рост бюджета",
+      "реальная публикация",
+      "массовый сбор лидов",
+      "реальная outreach-отправка",
+      "изменение CRM-логики",
+      "персональные данные или юридические обещания"
+    ],
+    "weekly_digest_owner": "Agent 5 CRM/Analytics + dashboard reports позже",
+    "external_calls": {
+      "redis": false,
+      "bitrix24": false,
+      "telegram_send": false,
+      "imap": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    }
+  },
+  "mas_reference_layer": {
+    "status": "read_only/spec_only",
+    "title": "MAS reference layer from 193.233.131.92",
+    "source_doc": "research/external-mas-ip-analysis-2026-05-15.md",
+    "reference_url": "http://193.233.131.92/",
+    "model_summary": "Внешняя модель описывает операционный центр: входящая задача -> Chief Orchestrator -> департамент -> профильный агент -> сценарий выполнения -> артефакт -> контроль качества -> следующий шаг.",
+    "application_rule": "берём принципы управления, но не расширяем систему: остаются 6 агентов + checker, не Agent 7",
+    "adopted_blocks": [
+      {
+        "name": "Agent Inspector",
+        "meaning": "карточка выбранного агента: роль, входы, выходы, правила, KPI, файлы, блокеры",
+        "where": "правая панель dashboard",
+        "mvp_status": "planned"
+      },
+      {
+        "name": "Scenario Timeline",
+        "meaning": "путь задачи по шагам, чтобы видеть где она находится",
+        "where": "нижняя timeline-панель",
+        "mvp_status": "planned"
+      },
+      {
+        "name": "Artifact Tracker",
+        "meaning": "каждый этап закрывается только проверяемым артефактом",
+        "where": "детали сценария и event stream",
+        "mvp_status": "planned"
+      },
+      {
+        "name": "Status model",
+        "meaning": "единые статусы: locked/manual/ready/queued/running/needs_review/failed/done",
+        "where": "карта агентов, event stream, детали агента",
+        "mvp_status": "planned"
+      },
+      {
+        "name": "OSINT protocol",
+        "meaning": "проверка фактов и рисков по открытым источникам",
+        "where": "Agent 1 Scout и Agent 5 CRM, без нового агента",
+        "mvp_status": "future_safe_protocol"
+      },
+      {
+        "name": "AI Operator Chat",
+        "meaning": "чат понимает, какой агент выбран оператором",
+        "where": "future-layer после read-only dashboard",
+        "mvp_status": "later_locked"
+      }
+    ],
+    "scenario_timelines": [
+      {
+        "name": "Первый входящий запрос",
+        "steps": [
+          "сайт/MAX/Telegram/email",
+          "AI-менеджер",
+          "Agent 3",
+          "Agent 5",
+          "Bitrix24 сделка",
+          "человек"
+        ],
+        "artifact": "intake_card + bitrix_deal"
+      },
+      {
+        "name": "Тендерный лид",
+        "steps": [
+          "Gmail tender",
+          "Agent 2",
+          "Agent 3",
+          "Agent 5",
+          "Bitrix24",
+          "analytics"
+        ],
+        "artifact": "raw_lead + qualified_lead + crm_event"
+      },
+      {
+        "name": "Контентный сигнал",
+        "steps": [
+          "Agent 1 Scout",
+          "Agent 4 Publisher",
+          "content event",
+          "Agent 5",
+          "ROMI later"
+        ],
+        "artifact": "source_signal_card + content_draft/content_event"
+      },
+      {
+        "name": "CRM hygiene",
+        "steps": [
+          "Bitrix24 audit",
+          "Agent 5",
+          "duplicate queue",
+          "human cleanup"
+        ],
+        "artifact": "crm_hygiene_report"
+      },
+      {
+        "name": "ROMI",
+        "steps": [
+          "source",
+          "lead",
+          "deal",
+          "revenue",
+          "channel",
+          "profit",
+          "ROMI"
+        ],
+        "artifact": "channel_report / romi_report"
+      }
+    ],
+    "required_artifacts": [
+      {
+        "stage": "Agent 1 Scout",
+        "artifact": "source_signal_card"
+      },
+      {
+        "stage": "Agent 2 Collector",
+        "artifact": "raw_lead"
+      },
+      {
+        "stage": "Agent 3 Processor",
+        "artifact": "qualified_lead"
+      },
+      {
+        "stage": "AI-менеджер",
+        "artifact": "intake_card"
+      },
+      {
+        "stage": "Agent 4 Publisher",
+        "artifact": "content_draft или published_content_event"
+      },
+      {
+        "stage": "Agent 5 CRM",
+        "artifact": "bitrix_deal или crm_hygiene_report"
+      },
+      {
+        "stage": "Agent 5 Analytics",
+        "artifact": "channel_report или romi_report"
+      },
+      {
+        "stage": "Agent 6 Outreach",
+        "artifact": "approved_reply или outreach_lead"
+      },
+      {
+        "stage": "Checker",
+        "artifact": "agent_okr_contract_check.json"
+      }
+    ],
+    "statuses": [
+      "locked",
+      "manual",
+      "ready",
+      "queued",
+      "running",
+      "needs_review",
+      "failed",
+      "done"
+    ],
+    "osint_rules": [
+      "важный факт подтверждать 2-3 источниками",
+      "хранить URL, дату проверки и уровень доверия",
+      "не использовать серые методы, взлом, утечки и закрытые персональные данные",
+      "не принимать автоматическое решение по крупной сделке без человека",
+      "для крупной сделки отдавать человеку короткий risk-summary"
+    ],
+    "later_locks": [
+      "AI Operator Chat не запускать до правил доступа и контроля стоимости LLM",
+      "POST /api/chat и /api/chat/audio внешнего референса не тестировать без отдельного решения",
+      "OSINT/MCP-интеграции не подключать до первого MVP и preflight"
+    ],
+    "external_calls": {
+      "redis": false,
+      "bitrix24": false,
+      "telegram_send": false,
+      "imap": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    }
+  },
+  "security_agent_control_layer": {
+    "status": "ACTIVE",
+    "source_file": "agents/Агент безопастности/AGENT_SECURITY.md",
+    "control_doc": "docs/security-agent-control-layer.md",
+    "is_product_agent": false,
+    "not_agent_7": true,
+    "purpose": "единый контроль безопасности для всех 6 агентов, checker/dashboard, LLM, MCP/API и будущих интеграций",
+    "required_markers_status": "OK",
+    "missing_markers": [],
+    "applied_to": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      ".claude/rules/security.md",
+      "docs/claude-project-rules.md",
+      "docs/security-agent-control-layer.md",
+      "scripts/check_agent_okr_contract.py",
+      "data/reports/agent_dashboard.json",
+      "data/reports/agent_dashboard.md",
+      "data/reports/agent_dashboard.html"
+    ],
+    "red_lines": [
+      "деньги, лимиты, подписки и платные API только после явного подтверждения",
+      "production, deploy, реальные публикации, outreach и массовые действия только после approval",
+      "секреты, токены, cookies, session-файлы, PII и CRM-данные не показывать и не отправлять наружу",
+      "новые MCP/API, внешняя telemetry и скрытые фоновые действия только через preflight"
+    ],
+    "green_corridor": [
+      "локальные dry-run и read-only проверки",
+      "локальные тесты, compileall, checker и dashboard builder",
+      "синтетические или обезличенные данные",
+      "обычные правки файлов без внешних отправок"
+    ],
+    "ai_specific_risks": [
+      "prompt injection",
+      "lethal trifecta",
+      "SSRF",
+      "slopsquatting",
+      "markdown/image exfiltration",
+      "неструктурированный LLM output",
+      "небезопасные MCP-инструменты"
+    ],
+    "agent_touchpoints": [
+      {
+        "agent": "Agent 1 Scout",
+        "control": "только публичные источники, без закрытых персональных данных"
+      },
+      {
+        "agent": "Agent 2 Collector",
+        "control": "один источник сначала, без массового сбора и без серых методов"
+      },
+      {
+        "agent": "Agent 3 Processor",
+        "control": "structured LLM I/O, prompt injection guard, без PII наружу"
+      },
+      {
+        "agent": "Agent 4 Publisher",
+        "control": "нет публикаций без approval, нет неподтверждённых обещаний"
+      },
+      {
+        "agent": "Agent 5 CRM",
+        "control": "CRM/Bitrix24/Telegram только по разрешённому сценарию, секреты не выводить"
+      },
+      {
+        "agent": "Agent 6 Outreach",
+        "control": "нет массовых отправок и первого касания без approval человека"
+      },
+      {
+        "agent": "Checker/dashboard",
+        "control": "read-only, статусы без секретов, без внешних вызовов"
+      }
+    ],
+    "external_calls": {
+      "redis": false,
+      "bitrix24": false,
+      "telegram_send": false,
+      "imap": false,
+      "llm": false,
+      "scheduler": false,
+      "publisher": false
+    }
+  },
+  "scenario_artifact_contract": {
+    "status": "read_only/local_contract",
+    "source_doc": "docs/agent-scenario-artifact-contract.md",
+    "subroles_doc": "docs/agent-subroles-and-kpi-map.md",
+    "rule": "каждый этап закрыт только если есть вход, выход, статус, next_step и проверяемый артефакт",
+    "statuses": [
+      "locked",
+      "manual",
+      "draft",
+      "approval_ready",
+      "approved",
+      "queued",
+      "running",
+      "needs_review",
+      "failed",
+      "done",
+      "published_manual_unverified_public"
+    ],
+    "scenarios": [
+      {
+        "name": "Первый входящий запрос",
+        "timeline": [
+          "site/MAX/Telegram/email",
+          "intake_card",
+          "Agent 3",
+          "Agent 5",
+          "crm_payload_preview",
+          "human_next_step"
+        ],
+        "required_artifacts": [
+          "intake_card",
+          "qualified_lead",
+          "crm_payload_preview",
+          "human_next_step"
+        ],
+        "mvp_status": "OK_LOCAL_DRY_RUN_READY_FOR_MANUAL_REVIEW"
+      },
+      {
+        "name": "Контент даёт лид",
+        "timeline": [
+          "SignalCard",
+          "content_brief",
+          "content_draft",
+          "approval_card",
+          "content_metric_event",
+          "Agent 5 analytics"
+        ],
+        "required_artifacts": [
+          "SignalCard",
+          "content_brief",
+          "content_draft",
+          "approval_card",
+          "content_metric_event"
+        ],
+        "mvp_status": "draft/manual"
+      },
+      {
+        "name": "Тендерный лид",
+        "timeline": [
+          "Gmail/IMAP tender",
+          "Agent 2",
+          "raw_lead",
+          "Agent 3",
+          "qualified_lead",
+          "Agent 5",
+          "Bitrix24/human"
+        ],
+        "required_artifacts": [
+          "raw_lead",
+          "normalized_raw_lead",
+          "qualified_lead",
+          "crm_payload_preview"
+        ],
+        "mvp_status": "partial_tested"
+      },
+      {
+        "name": "ROMI канала",
+        "timeline": [
+          "source",
+          "cost",
+          "lead",
+          "deal",
+          "revenue",
+          "profit",
+          "ROMI",
+          "channel_decision"
+        ],
+        "required_artifacts": [
+          "channel_registry_row",
+          "channel_cost_row",
+          "channel_fact_row",
+          "channel_report",
+          "channel_decision"
+        ],
+        "mvp_status": "csv_mvp_exists"
+      }
+    ],
+    "forbidden_actions": [
+      "не создавать Agent 7",
+      "не запускать scheduler без отдельного подтверждения",
+      "не запускать массовый сбор",
+      "не публиковать и не отправлять outreach без approval",
+      "не показывать секреты"
+    ]
+  },
+  "agent_map": {
+    "agents_count": 6,
+    "agents": [
+      {
+        "agent_id": "agent1_scout",
+        "title": "Agent 1 Scout",
+        "department": "Разведка источников",
+        "panel_status": "planned/manual",
+        "file": "agents/agent1_scout/__init__.py"
+      },
+      {
+        "agent_id": "agent2_collector",
+        "title": "Agent 2 Collector",
+        "department": "Сбор лидов",
+        "panel_status": "partial",
+        "file": "agents/agent2_collector/__init__.py"
+      },
+      {
+        "agent_id": "agent3_processor",
+        "title": "Agent 3 Processor",
+        "department": "Обработка и скоринг",
+        "panel_status": "tested_partial",
+        "file": "agents/agent3_processor/__init__.py"
+      },
+      {
+        "agent_id": "agent4_publisher",
+        "title": "Agent 4 Publisher",
+        "department": "Контент и доверие",
+        "panel_status": "dry_run/manual",
+        "file": "agents/agent4_publisher/__init__.py"
+      },
+      {
+        "agent_id": "agent5_crm",
+        "title": "Agent 5 CRM",
+        "department": "CRM и аналитика",
+        "panel_status": "tested",
+        "file": "agents/agent5_crm/__init__.py"
+      },
+      {
+        "agent_id": "agent6_outreach",
+        "title": "Agent 6 Outreach",
+        "department": "Первое касание",
+        "panel_status": "planned/locked",
+        "file": "agents/agent6_outreach/__init__.py"
+      }
+    ],
+    "edges": [
+      {
+        "from": "agent1_scout",
+        "to": "agent2_collector",
+        "passes": "source card"
+      },
+      {
+        "from": "agent1_scout",
+        "to": "agent4_publisher",
+        "passes": "боли, темы, конкуренты"
+      },
+      {
+        "from": "agent1_scout",
+        "to": "agent5_crm",
+        "passes": "каналы для аналитики"
+      },
+      {
+        "from": "agent2_collector",
+        "to": "agent3_processor",
+        "passes": "RawLead -> leads:raw"
+      },
+      {
+        "from": "agent3_processor",
+        "to": "agent5_crm",
+        "passes": "QualifiedLead -> leads:qualified"
+      },
+      {
+        "from": "agent4_publisher",
+        "to": "agent5_crm",
+        "passes": "content_published -> content:published"
+      },
+      {
+        "from": "agent6_outreach",
+        "to": "agent5_crm",
+        "passes": "OutreachLead -> leads:outreach"
+      }
+    ]
+  },
+  "agent_details": [
+    {
+      "agent_id": "agent1_scout",
+      "title": "Agent 1 Scout",
+      "department": "Разведка источников",
+      "panel_status": "planned/manual",
+      "file": "agents/agent1_scout/__init__.py",
+      "folder": "agents/agent1_scout",
+      "file_status": "FOUND",
+      "checker_status": {
+        "folder_status": "FOUND",
+        "init_file_status": "FOUND",
+        "okr_block_status": "FOUND",
+        "metric_block_status": "FOUND"
+      },
+      "role": "Разведка источников",
+      "description": "Ищет, где могут появляться будущие заказчики и какие темы важны рынку.",
+      "readiness_percent": 35,
+      "okr_readiness_percent": 67,
+      "main_metric": {
+        "name": "Покрытие карты источников",
+        "current_value": 17,
+        "target_value": 17,
+        "unit": "каналов",
+        "done_when": "все каналы системы есть в справочнике и имеют владельца"
+      },
+      "okr_metrics": [
+        {
+          "name": "Учтены все каналы системы",
+          "current_value": 17,
+          "target_value": 17,
+          "unit": "каналов"
+        },
+        {
+          "name": "Каналы первой волны разложены по агентам",
+          "current_value": 9,
+          "target_value": 9,
+          "unit": "каналов"
+        },
+        {
+          "name": "Planned-каналы из дашборда лектора учтены",
+          "current_value": 8,
+          "target_value": 8,
+          "unit": "каналов"
+        },
+        {
+          "name": "Конкурентные и рыночные источники в watchlist",
+          "current_value": 15,
+          "target_value": 15,
+          "unit": "строк"
+        },
+        {
+          "name": "Source cards первой волны готовы",
+          "current_value": 0,
+          "target_value": 9,
+          "unit": "карточек"
+        },
+        {
+          "name": "Личные каналы Яники заполнены",
+          "current_value": 0,
+          "target_value": 5,
+          "unit": "ссылок"
+        }
+      ],
+      "guard_metrics": [
+        "0 источников переводятся в активный сбор без владельца, next_action и проверки риска",
+        "0 неподтверждённых утверждений о конкурентах попадает в итоговые рекомендации"
+      ],
+      "todo": "Сделать первую source card для одного выбранного источника и передать её Agent 2.",
+      "inputs": [
+        "рынок",
+        "конкуренты",
+        "отзывы",
+        "карты",
+        "тендерные площадки"
+      ],
+      "outputs": [
+        "source cards для Agent 2",
+        "темы и боли для Agent 4",
+        "каналы для Agent 5"
+      ],
+      "okr": "Дать системе понятный список перспективных источников и первый следующий шаг по каждому источнику.",
+      "source_okr_status": "FOUND",
+      "source_scope": {
+        "summary": "Смотрит весь рынок: 17 системных каналов, конкурентов, каналы Яники и backlog-источники.",
+        "primary_sources": [
+          {
+            "channel_id": "tender_email",
+            "channel_name": "Gmail tenders",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "tender",
+            "traffic_channel": "tender",
+            "utm_source": "gmail",
+            "utm_medium": "email",
+            "first_touch": "email",
+            "last_touch": "email",
+            "owner_agent": "agent2_collector",
+            "flow": "B",
+            "notes": "Current MVP source for engineering tenders"
+          },
+          {
+            "channel_id": "tg_chat",
+            "channel_name": "Telegram chats",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "outbound",
+            "traffic_channel": "outbound",
+            "utm_source": "telegram",
+            "utm_medium": "social",
+            "first_touch": "public_chat",
+            "last_touch": "private_message",
+            "owner_agent": "agent6_outreach",
+            "flow": "A_B",
+            "notes": "Current MVP source for Telegram demand signals"
+          },
+          {
+            "channel_id": "outbound",
+            "channel_name": "Outbound manual",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "outbound",
+            "traffic_channel": "outbound",
+            "utm_source": "manual",
+            "utm_medium": "outbound",
+            "first_touch": "manual_outreach",
+            "last_touch": "reply",
+            "owner_agent": "agent6_outreach",
+            "flow": "A_B",
+            "notes": "Manual and agent-assisted outbound touchpoints"
+          },
+          {
+            "channel_id": "avito",
+            "channel_name": "Avito",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "avito",
+            "utm_medium": "marketplace",
+            "first_touch": "marketplace_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A_B",
+            "notes": "Track manually before automation"
+          },
+          {
+            "channel_id": "profi",
+            "channel_name": "Profi.ru",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "profi",
+            "utm_medium": "marketplace",
+            "first_touch": "platform_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A",
+            "notes": "Track manually before collector"
+          },
+          {
+            "channel_id": "yandex_services",
+            "channel_name": "Yandex Services",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "yandex_services",
+            "utm_medium": "marketplace",
+            "first_touch": "platform_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A_B",
+            "notes": "Track manually before collector"
+          },
+          {
+            "channel_id": "yandex_maps",
+            "channel_name": "Yandex Maps",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "maps",
+            "traffic_channel": "maps",
+            "utm_source": "yandex_maps",
+            "utm_medium": "local_search",
+            "first_touch": "map_card",
+            "last_touch": "call_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "Manual calls and messages from map card"
+          },
+          {
+            "channel_id": "referral",
+            "channel_name": "Referrals",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "partner",
+            "traffic_channel": "referral",
+            "utm_source": "referral",
+            "utm_medium": "referral",
+            "first_touch": "partner_intro",
+            "last_touch": "manager_contact",
+            "owner_agent": "agent5_crm",
+            "flow": "A_B",
+            "notes": "Track who referred the client"
+          },
+          {
+            "channel_id": "old_inquiry",
+            "channel_name": "Old inquiries",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "owned_base",
+            "traffic_channel": "owned_base",
+            "utm_source": "crm",
+            "utm_medium": "reactivation",
+            "first_touch": "old_lead",
+            "last_touch": "manager_contact",
+            "owner_agent": "agent5_crm",
+            "flow": "A_B",
+            "notes": "Reactivation of old leads and existing contacts"
+          },
+          {
+            "channel_id": "yandex_direct",
+            "channel_name": "Yandex Direct",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "yandex",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires landing UTM budget and goals"
+          },
+          {
+            "channel_id": "google_ads",
+            "channel_name": "Google Ads",
+            "status": "planned",
+            "priority_wave": "wave_3",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "google",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Later after geo and landing decisions"
+          },
+          {
+            "channel_id": "vk_ads",
+            "channel_name": "VK Ads",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "vk",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires landing and UTM"
+          },
+          {
+            "channel_id": "meta_ads",
+            "channel_name": "Meta Ads",
+            "status": "planned",
+            "priority_wave": "wave_3",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "meta",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires legal and geo check"
+          },
+          {
+            "channel_id": "telegram_ads",
+            "channel_name": "Telegram Ads",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "telegram",
+            "utm_medium": "cpc",
+            "first_touch": "landing_or_bot",
+            "last_touch": "form_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires UTM or bot entry"
+          },
+          {
+            "channel_id": "dzen_rsy",
+            "channel_name": "Dzen and RSY",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "dzen",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Separate paid traffic from organic content"
+          },
+          {
+            "channel_id": "influencer_tg",
+            "channel_name": "Influencer TG",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "influencer",
+            "traffic_channel": "paid",
+            "utm_source": "telegram",
+            "utm_medium": "influencer",
+            "first_touch": "influencer_post",
+            "last_touch": "landing_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Use unique link or promo per placement"
+          },
+          {
+            "channel_id": "seo_organic",
+            "channel_name": "SEO organic",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "organic",
+            "traffic_channel": "organic",
+            "utm_source": "seo",
+            "utm_medium": "organic",
+            "first_touch": "search",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Needs site or landing pages"
+          }
+        ],
+        "source_count": 17,
+        "watchlist_sources": [
+          {
+            "source_id": "tg_prozru",
+            "source_name": "Проектирование зданий",
+            "source_url": "https://t.me/prozru",
+            "platform": "telegram",
+            "segment": "B",
+            "source_type": "channel",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "B2B-аудитория проектировщиков ГИПов и руководителей проектных компаний"
+          },
+          {
+            "source_id": "tg_rupor_gip",
+            "source_name": "Рупор ГИП",
+            "source_url": "https://t.me/rupor_project",
+            "platform": "telegram",
+            "segment": "B",
+            "source_type": "channel",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Новости нормы и проектная документация для ГИПов"
+          },
+          {
+            "source_id": "tg_gipkurs_chat",
+            "source_name": "ПРОЕКТИРОВАНИЕ ЗДАНИЙ ЧАТ",
+            "source_url": "https://t.me/GIPkurs",
+            "platform": "telegram",
+            "segment": "B",
+            "source_type": "chat",
+            "owner_agent": "agent1_scout",
+            "status": "planned_manual",
+            "why_watch": "Чат проектировщиков и вакансий как источник боли и спроса"
+          },
+          {
+            "source_id": "tg_pereplan_one",
+            "source_name": "PEREPLAN. Перепланировка и согласование",
+            "source_url": "https://t.me/pereplan_one",
+            "platform": "telegram",
+            "segment": "A",
+            "source_type": "channel",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Крупный B2C/B2B канал по перепланировкам Москвы и Петербурга"
+          },
+          {
+            "source_id": "tg_pereplan_mos_mo",
+            "source_name": "Согласование перепланировки в Москве и МО",
+            "source_url": "https://t.me/pereplan_mos_mo",
+            "platform": "telegram",
+            "segment": "A",
+            "source_type": "channel",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Узкая аудитория дизайнеров ремонтников риелторов"
+          },
+          {
+            "source_id": "site_mostpr",
+            "source_name": "МОСтройпроект",
+            "source_url": "https://mostpr.ru/",
+            "platform": "website",
+            "segment": "A",
+            "source_type": "competitor_site",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Сильная упаковка с кейсами сроками стоимостью и документами"
+          },
+          {
+            "source_id": "site_resog",
+            "source_name": "Ресог",
+            "source_url": "https://resog.ru/",
+            "platform": "website",
+            "segment": "A",
+            "source_type": "competitor_site",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Перепланировки с фокусом на требования 2026 и бывших сотрудников Жилинспекции"
+          },
+          {
+            "source_id": "site_replanestate",
+            "source_name": "Replan Estate",
+            "source_url": "https://replanestate.ru/",
+            "platform": "website",
+            "segment": "A+B",
+            "source_type": "competitor_site",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Нежилые помещения проектная документация согласования ремонт под ключ"
+          },
+          {
+            "source_id": "site_archistrutt",
+            "source_name": "Архитектоника",
+            "source_url": "https://archistrutt.ru/",
+            "platform": "website",
+            "segment": "A",
+            "source_type": "competitor_site",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Перепланировки под ключ Москва"
+          },
+          {
+            "source_id": "site_soglasuem",
+            "source_name": "Согласуем",
+            "source_url": "https://soglasuem.com/",
+            "platform": "website",
+            "segment": "A",
+            "source_type": "competitor_site",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Перепланировки под ключ Москва"
+          },
+          {
+            "source_id": "vk_documentall",
+            "source_name": "DOCUMENTALL",
+            "source_url": "https://vk.com/documentall",
+            "platform": "vk",
+            "segment": "A+B",
+            "source_type": "community",
+            "owner_agent": "agent1_scout",
+            "status": "planned_manual",
+            "why_watch": "СПб и ЛО перепланировка реконструкция полный цикл"
+          },
+          {
+            "source_id": "vk_replan54",
+            "source_name": "REPLAN Новосибирск",
+            "source_url": "https://vk.com/replan54",
+            "platform": "vk",
+            "segment": "A",
+            "source_type": "community",
+            "owner_agent": "agent1_scout",
+            "status": "planned_manual",
+            "why_watch": "Региональный конкурент по перепланировкам"
+          },
+          {
+            "source_id": "vk_mstpr",
+            "source_name": "МОСтройпроект VK",
+            "source_url": "https://vk.com/mstpr",
+            "platform": "vk",
+            "segment": "A",
+            "source_type": "community",
+            "owner_agent": "agent1_scout",
+            "status": "planned_manual",
+            "why_watch": "VK-упаковка крупного конкурента"
+          },
+          {
+            "source_id": "vk_pkstroi",
+            "source_name": "ПКСтрой",
+            "source_url": "https://vk.com/pkstroi",
+            "platform": "vk",
+            "segment": "A",
+            "source_type": "community",
+            "owner_agent": "agent1_scout",
+            "status": "planned_manual",
+            "why_watch": "Перепланировки Москва опыт с 2008"
+          },
+          {
+            "source_id": "industry_yandex_realty",
+            "source_name": "Яндекс Недвижимость: перепланировка",
+            "source_url": "https://realty.yandex.ru/journal/post/kak-soglasovat-pereplanirovku-v-kvartire/",
+            "platform": "website",
+            "segment": "A",
+            "source_type": "industry_media",
+            "owner_agent": "agent1_scout",
+            "status": "active_manual",
+            "why_watch": "Поисковая статья с понятной структурой для B2C"
+          }
+        ],
+        "watchlist_count": 15,
+        "yanika_pending_sources": [
+          {
+            "source_id": "yanika_channel_001",
+            "source_name": "",
+            "source_url": "",
+            "platform": "telegram|vk|max|dzen|website|other",
+            "segment": "A|B|A+B",
+            "source_type": "",
+            "owner_agent": "agent1_scout",
+            "status": "pending_yanika_input",
+            "why_watch": ""
+          },
+          {
+            "source_id": "yanika_channel_002",
+            "source_name": "",
+            "source_url": "",
+            "platform": "telegram|vk|max|dzen|website|other",
+            "segment": "A|B|A+B",
+            "source_type": "",
+            "owner_agent": "agent1_scout",
+            "status": "pending_yanika_input",
+            "why_watch": ""
+          },
+          {
+            "source_id": "yanika_channel_003",
+            "source_name": "",
+            "source_url": "",
+            "platform": "telegram|vk|max|dzen|website|other",
+            "segment": "A|B|A+B",
+            "source_type": "",
+            "owner_agent": "agent1_scout",
+            "status": "pending_yanika_input",
+            "why_watch": ""
+          },
+          {
+            "source_id": "yanika_channel_004",
+            "source_name": "",
+            "source_url": "",
+            "platform": "telegram|vk|max|dzen|website|other",
+            "segment": "A|B|A+B",
+            "source_type": "",
+            "owner_agent": "agent1_scout",
+            "status": "pending_yanika_input",
+            "why_watch": ""
+          },
+          {
+            "source_id": "yanika_channel_005",
+            "source_name": "",
+            "source_url": "",
+            "platform": "telegram|vk|max|dzen|website|other",
+            "segment": "A|B|A+B",
+            "source_type": "",
+            "owner_agent": "agent1_scout",
+            "status": "pending_yanika_input",
+            "why_watch": ""
+          }
+        ],
+        "yanika_pending_count": 5,
+        "backlog_sources": [
+          "2GIS как отдельный lead/referrer source",
+          "VK-группы и обсуждения",
+          "коммерческие тендерные площадки",
+          "HH.ru вакансии как сигнал спроса на проектирование",
+          "партнёры: риелторы, дизайнеры, юристы, кадастровые инженеры",
+          "сайт / лендинги / SEO-страницы услуг",
+          "лид-магнит ПРОВЕРКА перепланировки",
+          "ЕИС и госзакупки",
+          "закупки девелоперов и сетевых компаний",
+          "каталоги франшиз и коммерческой недвижимости",
+          "банки, ипотечные брокеры, оценщики и страховые",
+          "БТИ / кадастровые / юридические партнёры",
+          "поставщики, подрядчики fit-out и вывесок",
+          "форумы, Яндекс Q, TenChat",
+          "GEO/AI visibility: ChatGPT, Perplexity, Яндекс/Алиса и нейропоиск",
+          "Reels/shorts radar и ROMI по контенту позже"
+        ]
+      },
+      "metrics": [
+        "Учтены все каналы системы: 17 из 17 каналов есть в справочнике источников.",
+        "Каналы первой волны разложены по агентам: 9 из 9 wave_1 каналов имеют владельца и маршрут.",
+        "Planned-каналы из дашборда лектора учтены: 8 из 8 каналов оставлены на wave_2/wave_3.",
+        "Конкурентные и рыночные источники в watchlist: 15 из 15 строк учтены как материал для разведки.",
+        "SignalCard первой волны готовы: цель 9 из 9, текущий ручной MVP Radar дал 10 карточек.",
+        "Личные каналы Яники заполнены: цель 5 из 5 после получения ссылок от Яники.",
+        "Защитная метрика: 0 источников переводятся в активный сбор без владельца, handoff_to, next_action и проверки риска."
+      ],
+      "skills": [
+        "поиск источников",
+        "анализ конкурентов",
+        "анализ отзывов",
+        "поиск тендерного спроса"
+      ],
+      "subroles": [
+        {
+          "name": "Market Research Agent",
+          "responsibility": "рыночный спрос, сегменты, темы",
+          "artifact": "SignalCard",
+          "kpi": "5+ полезных сигналов перед запуском нового источника"
+        },
+        {
+          "name": "Competitor Analyst",
+          "responsibility": "конкуренты, упаковка, доказательства",
+          "artifact": "competitor_note",
+          "kpi": "у каждого конкурента есть ссылка, сегмент, сильная сторона и risk_notes"
+        },
+        {
+          "name": "Source Radar",
+          "responsibility": "новые каналы лидов и контента",
+          "artifact": "source_signal_card",
+          "kpi": "100% новых источников имеют owner_agent и next_action"
+        },
+        {
+          "name": "Reviews/Maps Monitor",
+          "responsibility": "карты, отзывы, вопросы клиентов",
+          "artifact": "review_signal",
+          "kpi": "отзывы превращаются в боли, FAQ и темы, без копирования"
+        },
+        {
+          "name": "Demand Signal Curator",
+          "responsibility": "отбор сигналов и handoff",
+          "artifact": "handoff_recommendation",
+          "kpi": "100% SignalCard имеют recommended_action, handoff_to, risk_notes"
+        }
+      ],
+      "mcp_api": [
+        "Browser Use позже",
+        "Context7",
+        "Firecrawl/Apify позже"
+      ],
+      "next_action": "Сделать первую source card для одного выбранного источника и передать её Agent 2."
+    },
+    {
+      "agent_id": "agent2_collector",
+      "title": "Agent 2 Collector",
+      "department": "Сбор лидов",
+      "panel_status": "partial",
+      "file": "agents/agent2_collector/__init__.py",
+      "folder": "agents/agent2_collector",
+      "file_status": "FOUND",
+      "checker_status": {
+        "folder_status": "FOUND",
+        "init_file_status": "FOUND",
+        "okr_block_status": "FOUND",
+        "metric_block_status": "FOUND"
+      },
+      "role": "Сбор лидов",
+      "description": "Забирает лиды из разрешённого источника и превращает их в сырые карточки.",
+      "readiness_percent": 45,
+      "okr_readiness_percent": 50,
+      "main_metric": {
+        "name": "Покрытие источников сбора Agent 2",
+        "current_value": 1,
+        "target_value": 4,
+        "unit": "источников",
+        "done_when": "по каждому источнику Agent 2 есть хотя бы один тестовый RawLead или ручной сигнал"
+      },
+      "okr_metrics": [
+        {
+          "name": "Источники сбора Agent 2 учтены",
+          "current_value": 4,
+          "target_value": 4,
+          "unit": "каналов"
+        },
+        {
+          "name": "Автоматизированный или проверенный сбор",
+          "current_value": 1,
+          "target_value": 4,
+          "unit": "источников"
+        },
+        {
+          "name": "Тестовые RawLead для покрытия Agent 2",
+          "current_value": 1,
+          "target_value": 4,
+          "unit": "лидов"
+        },
+        {
+          "name": "Месячный пилот сбора",
+          "current_value": 0,
+          "target_value": 20,
+          "unit": "RawLead"
+        },
+        {
+          "name": "Redis-передача RawLead доказана",
+          "current_value": 1,
+          "target_value": 1,
+          "unit": "тест"
+        }
+      ],
+      "guard_metrics": [
+        "0 массовых сборов, парсингов и реальных площадок без отдельного подтверждения",
+        "дубли должны отсекаться до передачи дальше; целевой порог дублей после фильтра — 0"
+      ],
+      "todo": "Провести один безопасный тест сбора из одного источника без массового парсинга.",
+      "inputs": [
+        "один разрешённый источник",
+        "IMAP/tender email",
+        "future marketplace signals"
+      ],
+      "outputs": [
+        "RawLead в Redis leads:raw"
+      ],
+      "okr": "Безопасно получить первый тестовый лид из одного источника и передать его на квалификацию.",
+      "source_okr_status": "FOUND",
+      "source_scope": {
+        "summary": "Собирает входящие лиды из разрешённых площадок первой волны.",
+        "primary_sources": [
+          {
+            "channel_id": "tender_email",
+            "channel_name": "Gmail tenders",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "tender",
+            "traffic_channel": "tender",
+            "utm_source": "gmail",
+            "utm_medium": "email",
+            "first_touch": "email",
+            "last_touch": "email",
+            "owner_agent": "agent2_collector",
+            "flow": "B",
+            "notes": "Current MVP source for engineering tenders"
+          },
+          {
+            "channel_id": "avito",
+            "channel_name": "Avito",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "avito",
+            "utm_medium": "marketplace",
+            "first_touch": "marketplace_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A_B",
+            "notes": "Track manually before automation"
+          },
+          {
+            "channel_id": "profi",
+            "channel_name": "Profi.ru",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "profi",
+            "utm_medium": "marketplace",
+            "first_touch": "platform_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A",
+            "notes": "Track manually before collector"
+          },
+          {
+            "channel_id": "yandex_services",
+            "channel_name": "Yandex Services",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "yandex_services",
+            "utm_medium": "marketplace",
+            "first_touch": "platform_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A_B",
+            "notes": "Track manually before collector"
+          }
+        ],
+        "source_count": 4,
+        "watchlist_sources": [],
+        "watchlist_count": 0,
+        "yanika_pending_sources": [],
+        "yanika_pending_count": 0,
+        "backlog_sources": []
+      },
+      "metrics": [
+        "Источники сбора Agent 2 учтены: 4 из 4 каналов первой волны — Gmail тендеры, Avito, Profi.ru, Яндекс Услуги.",
+        "Автоматизированный/проверенный сбор: цель 4 из 4, сейчас реально проверен только Gmail тендерный поток.",
+        "Тестовые RawLead для покрытия Agent 2: цель 4 из 4, по одному тестовому сигналу на каждый источник.",
+        "Месячный пилот сбора: 20 RawLead за месяц, то есть по 5 сигналов на каждый из 4 источников Agent 2.",
+        "Redis-передача RawLead: цель 1 из 1 сквозной безопасный тест уже доказал, что очередь работает.",
+        "Защитная метрика: 0 массовых сборов, парсингов и реальных площадок без отдельного подтверждения."
+      ],
+      "skills": [
+        "разбор писем",
+        "разметка источника",
+        "нормализация данных"
+      ],
+      "subroles": [
+        {
+          "name": "Tender/Email Collector",
+          "responsibility": "почта и тендерные письма",
+          "artifact": "raw_lead",
+          "kpi": "RawLead создаётся без потери source и raw_text"
+        },
+        {
+          "name": "Marketplace Collector",
+          "responsibility": "Avito, Profi, Яндекс Услуги позже",
+          "artifact": "marketplace_raw_lead",
+          "kpi": "один источник за раз, не все платформы сразу"
+        },
+        {
+          "name": "Directory Collector",
+          "responsibility": "карты и каталоги позже",
+          "artifact": "directory_signal",
+          "kpi": "только разрешённые публичные сигналы"
+        },
+        {
+          "name": "Lead Normalizer",
+          "responsibility": "единый формат RawLead",
+          "artifact": "normalized_raw_lead",
+          "kpi": "100% RawLead имеют source, flow, raw_text, created_at"
+        },
+        {
+          "name": "Duplicate Guard",
+          "responsibility": "дубли до передачи дальше",
+          "artifact": "duplicate_decision",
+          "kpi": "явные дубли не уходят в Agent 3"
+        }
+      ],
+      "mcp_api": [
+        "IMAP",
+        "Redis",
+        "Playwright/Apify позже"
+      ],
+      "next_action": "Провести один безопасный тест сбора из одного источника без массового парсинга."
+    },
+    {
+      "agent_id": "agent3_processor",
+      "title": "Agent 3 Processor",
+      "department": "Обработка и скоринг",
+      "panel_status": "tested_partial",
+      "file": "agents/agent3_processor/__init__.py",
+      "folder": "agents/agent3_processor",
+      "file_status": "FOUND",
+      "checker_status": {
+        "folder_status": "FOUND",
+        "init_file_status": "FOUND",
+        "okr_block_status": "FOUND",
+        "metric_block_status": "FOUND"
+      },
+      "role": "Обработка и скоринг",
+      "description": "Очищает лид, понимает его смысл, ставит приоритет и предлагает следующий шаг.",
+      "readiness_percent": 70,
+      "okr_readiness_percent": 67,
+      "main_metric": {
+        "name": "Обработанные тестовые лиды по первой волне",
+        "current_value": 1,
+        "target_value": 9,
+        "unit": "лидов",
+        "done_when": "по одному тестовому лиду из каждого wave_1 канала проходит score и next_action"
+      },
+      "okr_metrics": [
+        {
+          "name": "Сквозной тест лида обработан",
+          "current_value": 1,
+          "target_value": 1,
+          "unit": "тест"
+        },
+        {
+          "name": "Покрытие первой волны источников",
+          "current_value": 1,
+          "target_value": 9,
+          "unit": "лидов"
+        },
+        {
+          "name": "Режимы скоринга проверены",
+          "current_value": 2,
+          "target_value": 2,
+          "unit": "режима"
+        },
+        {
+          "name": "CRM-handoff проверен",
+          "current_value": 1,
+          "target_value": 1,
+          "unit": "тест"
+        },
+        {
+          "name": "Категории score проверены",
+          "current_value": 1,
+          "target_value": 4,
+          "unit": "категорий"
+        }
+      ],
+      "guard_metrics": [
+        "ошибочные hot-лиды после появления реальной выборки — не выше 10%",
+        "0 QualifiedLead без source, score_reason и recommended_action"
+      ],
+      "todo": "Закрыть полный handoff: Agent 3 -> Agent 5 на одном тестовом лиде.",
+      "inputs": [
+        "RawLead из Redis leads:raw"
+      ],
+      "outputs": [
+        "QualifiedLead в Redis leads:qualified"
+      ],
+      "okr": "Отделить сильные заявки от слабых и дать менеджеру понятное действие по каждому лиду.",
+      "source_okr_status": "FOUND",
+      "source_scope": {
+        "summary": "Не ходит наружу: принимает RawLead от Agent 2/6 и должен уметь обработать лиды из всех каналов первой волны.",
+        "primary_sources": [
+          {
+            "channel_id": "tender_email",
+            "channel_name": "Gmail tenders",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "tender",
+            "traffic_channel": "tender",
+            "utm_source": "gmail",
+            "utm_medium": "email",
+            "first_touch": "email",
+            "last_touch": "email",
+            "owner_agent": "agent2_collector",
+            "flow": "B",
+            "notes": "Current MVP source for engineering tenders"
+          },
+          {
+            "channel_id": "tg_chat",
+            "channel_name": "Telegram chats",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "outbound",
+            "traffic_channel": "outbound",
+            "utm_source": "telegram",
+            "utm_medium": "social",
+            "first_touch": "public_chat",
+            "last_touch": "private_message",
+            "owner_agent": "agent6_outreach",
+            "flow": "A_B",
+            "notes": "Current MVP source for Telegram demand signals"
+          },
+          {
+            "channel_id": "outbound",
+            "channel_name": "Outbound manual",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "outbound",
+            "traffic_channel": "outbound",
+            "utm_source": "manual",
+            "utm_medium": "outbound",
+            "first_touch": "manual_outreach",
+            "last_touch": "reply",
+            "owner_agent": "agent6_outreach",
+            "flow": "A_B",
+            "notes": "Manual and agent-assisted outbound touchpoints"
+          },
+          {
+            "channel_id": "avito",
+            "channel_name": "Avito",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "avito",
+            "utm_medium": "marketplace",
+            "first_touch": "marketplace_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A_B",
+            "notes": "Track manually before automation"
+          },
+          {
+            "channel_id": "profi",
+            "channel_name": "Profi.ru",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "profi",
+            "utm_medium": "marketplace",
+            "first_touch": "platform_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A",
+            "notes": "Track manually before collector"
+          },
+          {
+            "channel_id": "yandex_services",
+            "channel_name": "Yandex Services",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "yandex_services",
+            "utm_medium": "marketplace",
+            "first_touch": "platform_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A_B",
+            "notes": "Track manually before collector"
+          },
+          {
+            "channel_id": "yandex_maps",
+            "channel_name": "Yandex Maps",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "maps",
+            "traffic_channel": "maps",
+            "utm_source": "yandex_maps",
+            "utm_medium": "local_search",
+            "first_touch": "map_card",
+            "last_touch": "call_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "Manual calls and messages from map card"
+          },
+          {
+            "channel_id": "referral",
+            "channel_name": "Referrals",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "partner",
+            "traffic_channel": "referral",
+            "utm_source": "referral",
+            "utm_medium": "referral",
+            "first_touch": "partner_intro",
+            "last_touch": "manager_contact",
+            "owner_agent": "agent5_crm",
+            "flow": "A_B",
+            "notes": "Track who referred the client"
+          },
+          {
+            "channel_id": "old_inquiry",
+            "channel_name": "Old inquiries",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "owned_base",
+            "traffic_channel": "owned_base",
+            "utm_source": "crm",
+            "utm_medium": "reactivation",
+            "first_touch": "old_lead",
+            "last_touch": "manager_contact",
+            "owner_agent": "agent5_crm",
+            "flow": "A_B",
+            "notes": "Reactivation of old leads and existing contacts"
+          }
+        ],
+        "source_count": 9,
+        "watchlist_sources": [],
+        "watchlist_count": 0,
+        "yanika_pending_sources": [],
+        "yanika_pending_count": 0,
+        "backlog_sources": [
+          "после MVP обработка всех 17 каналов, а не только wave_1"
+        ]
+      },
+      "metrics": [
+        "Сквозной тест лида обработан: 1 из 1 тестов закрыт по маршруту RawLead -> QualifiedLead -> Agent 5.",
+        "Покрытие первой волны источников: цель 9 из 9 тестовых лидов, по одному на каждый wave_1 канал.",
+        "Режимы скоринга проверены: 2 из 2 — dry_run и настоящий LLM-тест.",
+        "CRM-handoff проверен: 1 из 1 — Agent 3 передал QualifiedLead в Agent 5.",
+        "Категории score проверены: цель 4 из 4 — hot, warm, cold, off; сейчас доказан минимум hot.",
+        "Защитная метрика: доля ошибочных hot-лидов должна быть не выше 10% после появления реальной выборки."
+      ],
+      "skills": [
+        "очистка данных",
+        "выделение сути",
+        "скоринг лида",
+        "подготовка оффера"
+      ],
+      "subroles": [
+        {
+          "name": "Cleaner",
+          "responsibility": "шум, мусор, оффтопик",
+          "artifact": "clean_lead",
+          "kpi": "оффтопик не попадает в CRM"
+        },
+        {
+          "name": "Enricher",
+          "responsibility": "город, объект, площадь, контакт",
+          "artifact": "lead_enrichment",
+          "kpi": "доступные поля извлекаются из текста"
+        },
+        {
+          "name": "Scorer",
+          "responsibility": "hot/warm/cold/off",
+          "artifact": "score_result",
+          "kpi": "каждый score имеет score_reason"
+        },
+        {
+          "name": "Offer/Next-Step Architect",
+          "responsibility": "оффер и следующий шаг",
+          "artifact": "qualified_lead",
+          "kpi": "каждый QualifiedLead имеет recommended_action"
+        },
+        {
+          "name": "QA Classifier",
+          "responsibility": "проверка завышенного score",
+          "artifact": "processor_quality_note",
+          "kpi": "после выборки ошибочные hot-лиды не выше 10%"
+        }
+      ],
+      "mcp_api": [
+        "Redis",
+        "shared/llm_client.py",
+        "OpenRouter/Anthropic/dry_run"
+      ],
+      "next_action": "Закрыть полный handoff: Agent 3 -> Agent 5 на одном тестовом лиде."
+    },
+    {
+      "agent_id": "agent4_publisher",
+      "title": "Agent 4 Publisher",
+      "department": "Контент и доверие",
+      "panel_status": "dry_run/manual",
+      "file": "agents/agent4_publisher/__init__.py",
+      "folder": "agents/agent4_publisher",
+      "file_status": "FOUND",
+      "checker_status": {
+        "folder_status": "FOUND",
+        "init_file_status": "FOUND",
+        "okr_block_status": "FOUND",
+        "metric_block_status": "FOUND"
+      },
+      "role": "Контент и доверие",
+      "description": "Готовит контент, который объясняет экспертизу студии и усиливает доверие.",
+      "readiness_percent": 40,
+      "okr_readiness_percent": 34,
+      "main_metric": {
+        "name": "Контентные поверхности учтены",
+        "current_value": 5,
+        "target_value": 7,
+        "unit": "поверхностей",
+        "done_when": "MAX, Telegram, VK, Дзен, Яндекс Карты, 2GIS и сайт/блог учитываются отдельно"
+      },
+      "okr_metrics": [
+        {
+          "name": "Контентные поверхности учтены",
+          "current_value": 5,
+          "target_value": 7,
+          "unit": "поверхностей"
+        },
+        {
+          "name": "Черновики первой недели",
+          "current_value": 0,
+          "target_value": 5,
+          "unit": "материалов"
+        },
+        {
+          "name": "Ядро месячного плана",
+          "current_value": 0,
+          "target_value": 20,
+          "unit": "тем"
+        },
+        {
+          "name": "Полный адаптированный план после MVP",
+          "current_value": 0,
+          "target_value": 52,
+          "unit": "материала"
+        },
+        {
+          "name": "Поля согласования в шаблоне",
+          "current_value": 3,
+          "target_value": 3,
+          "unit": "поля"
+        }
+      ],
+      "guard_metrics": [
+        "0 реальных публикаций без отдельного подтверждения Яники",
+        "0 материалов с персональными данными или обещаниями без доказательств",
+        "стоимость генерации должна быть заполнена у 100% материалов перед публикацией"
+      ],
+      "todo": "Держать публикации в dry-run и позже связать контент-события с аналитикой Agent 5.",
+      "inputs": [
+        "темы",
+        "бренд",
+        "контент-план",
+        "approval человека"
+      ],
+      "outputs": [
+        "черновики",
+        "dry-run материалы",
+        "content:published позже"
+      ],
+      "okr": "Стабильно готовить черновики контента и материалы доверия без автопубликации.",
+      "source_okr_status": "FOUND",
+      "source_scope": {
+        "summary": "Отвечает за каналы доверия, контентные поверхности, сайт, карты и будущие платные/органические источники.",
+        "primary_sources": [
+          {
+            "channel_id": "yandex_maps",
+            "channel_name": "Yandex Maps",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "maps",
+            "traffic_channel": "maps",
+            "utm_source": "yandex_maps",
+            "utm_medium": "local_search",
+            "first_touch": "map_card",
+            "last_touch": "call_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "Manual calls and messages from map card"
+          },
+          {
+            "channel_id": "yandex_direct",
+            "channel_name": "Yandex Direct",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "yandex",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires landing UTM budget and goals"
+          },
+          {
+            "channel_id": "google_ads",
+            "channel_name": "Google Ads",
+            "status": "planned",
+            "priority_wave": "wave_3",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "google",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Later after geo and landing decisions"
+          },
+          {
+            "channel_id": "vk_ads",
+            "channel_name": "VK Ads",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "vk",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires landing and UTM"
+          },
+          {
+            "channel_id": "meta_ads",
+            "channel_name": "Meta Ads",
+            "status": "planned",
+            "priority_wave": "wave_3",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "meta",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires legal and geo check"
+          },
+          {
+            "channel_id": "telegram_ads",
+            "channel_name": "Telegram Ads",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "telegram",
+            "utm_medium": "cpc",
+            "first_touch": "landing_or_bot",
+            "last_touch": "form_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires UTM or bot entry"
+          },
+          {
+            "channel_id": "dzen_rsy",
+            "channel_name": "Dzen and RSY",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "dzen",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Separate paid traffic from organic content"
+          },
+          {
+            "channel_id": "influencer_tg",
+            "channel_name": "Influencer TG",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "influencer",
+            "traffic_channel": "paid",
+            "utm_source": "telegram",
+            "utm_medium": "influencer",
+            "first_touch": "influencer_post",
+            "last_touch": "landing_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Use unique link or promo per placement"
+          },
+          {
+            "channel_id": "seo_organic",
+            "channel_name": "SEO organic",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "organic",
+            "traffic_channel": "organic",
+            "utm_source": "seo",
+            "utm_medium": "organic",
+            "first_touch": "search",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Needs site or landing pages"
+          }
+        ],
+        "source_count": 9,
+        "content_surfaces": [
+          "MAX-канал СИЛА Проекта",
+          "Telegram",
+          "VK",
+          "Дзен",
+          "Яндекс Карты",
+          "2GIS",
+          "новый сайт / блог"
+        ],
+        "content_surface_count": 7,
+        "watchlist_sources": [],
+        "watchlist_count": 0,
+        "yanika_pending_sources": [],
+        "yanika_pending_count": 0,
+        "backlog_sources": [
+          "новый сайт / SEO-страницы",
+          "лид-магнит ПРОВЕРКА",
+          "GEO/AI visibility",
+          "Reels/shorts radar",
+          "ROMI по контенту"
+        ]
+      },
+      "metrics": [
+        "Контентные поверхности учтены: цель 7 из 7 — MAX, Telegram, VK, Дзен, Яндекс Карты, 2GIS, сайт/блог.",
+        "Черновики первой недели: цель 5 материалов, чтобы проверить стиль без автопубликации.",
+        "Ядро месячного плана: цель 20 тем в месяц, примерно 1 базовая тема на рабочий день.",
+        "Полный адаптированный план: цель 52 материала в месяц после MVP, если ведём все 7 поверхностей.",
+        "Поля согласования есть: 3 из 3 — стоимость генерации, статус согласования, причина перегенерации.",
+        "Защитная метрика: 0 реальных публикаций без отдельного подтверждения Яники."
+      ],
+      "skills": [
+        "копирайтинг",
+        "SEO-темы",
+        "визуальные промпты",
+        "UTM-логика"
+      ],
+      "subroles": [
+        {
+          "name": "Content Strategist",
+          "responsibility": "рубрика, формат, этап воронки",
+          "artifact": "content_brief",
+          "kpi": "у каждого материала есть формат, воронка и канал"
+        },
+        {
+          "name": "Copywriter",
+          "responsibility": "черновик в стиле СИЛА Проекта",
+          "artifact": "content_draft",
+          "kpi": "посты не повторяют одну структуру подряд"
+        },
+        {
+          "name": "Editor",
+          "responsibility": "стиль, доказательства, запреты",
+          "artifact": "editor_check",
+          "kpi": "0 неподтверждённых обещаний и общих рекламных фраз"
+        },
+        {
+          "name": "Visual/Media Brief Creator",
+          "responsibility": "ТЗ на визуал, анимацию, видео позже",
+          "artifact": "media_brief",
+          "kpi": "медиа только как ТЗ или dry-run до approval"
+        },
+        {
+          "name": "Approval Coordinator",
+          "responsibility": "согласование и правки",
+          "artifact": "approval_card",
+          "kpi": "100% материалов имеют статус, стоимость, причину перегенерации при правках"
+        },
+        {
+          "name": "Content Metrics Analyst",
+          "responsibility": "связь постов с метриками и лидами позже",
+          "artifact": "content_metric_event",
+          "kpi": "каждый опубликованный материал позже получает content_metric_event"
+        }
+      ],
+      "mcp_api": [
+        "shared/llm_client.py -> OpenRouter/Anthropic/dry_run",
+        "imagegen/OpenAI image позже",
+        "MAX/PostMyPost позже"
+      ],
+      "next_action": "Держать публикации в dry-run и позже связать контент-события с аналитикой Agent 5."
+    },
+    {
+      "agent_id": "agent5_crm",
+      "title": "Agent 5 CRM",
+      "department": "CRM и аналитика",
+      "panel_status": "tested",
+      "file": "agents/agent5_crm/__init__.py",
+      "folder": "agents/agent5_crm",
+      "file_status": "FOUND",
+      "checker_status": {
+        "folder_status": "FOUND",
+        "init_file_status": "FOUND",
+        "okr_block_status": "FOUND",
+        "metric_block_status": "FOUND"
+      },
+      "role": "CRM и аналитика",
+      "description": "Создаёт лид в CRM, отправляет уведомление и считает результативность каналов.",
+      "readiness_percent": 80,
+      "okr_readiness_percent": 81,
+      "main_metric": {
+        "name": "Каналы в сквозной аналитике",
+        "current_value": 17,
+        "target_value": 17,
+        "unit": "каналов",
+        "done_when": "каждый канал есть в registry, costs, facts и итоговом channel_report"
+      },
+      "okr_metrics": [
+        {
+          "name": "Каналы в сквозной аналитике",
+          "current_value": 17,
+          "target_value": 17,
+          "unit": "каналов"
+        },
+        {
+          "name": "Каналы первой волны отслеживаются",
+          "current_value": 9,
+          "target_value": 9,
+          "unit": "каналов"
+        },
+        {
+          "name": "Сквозной CRM-тест закрыт",
+          "current_value": 1,
+          "target_value": 1,
+          "unit": "тест"
+        },
+        {
+          "name": "CRM-цепочка урока 5 покрыта",
+          "current_value": 5,
+          "target_value": 6,
+          "unit": "шагов"
+        },
+        {
+          "name": "Тестовые Bitrix24-создания",
+          "current_value": 4,
+          "target_value": 3,
+          "unit": "теста"
+        },
+        {
+          "name": "Метрика лектора CR visit->deal",
+          "current_value": 0,
+          "target_value": 1,
+          "unit": "метрика"
+        }
+      ],
+      "guard_metrics": [
+        "0 секретов, webhook и token-значений в отчётах",
+        "0 реальных клиентских данных в тестовых лидах",
+        "доля лидов без source в реальной работе должна быть не выше 10%"
+      ],
+      "todo": "Закрыть один сквозной тест: квалифицированный лид -> Bitrix24 -> Telegram -> отчёт.",
+      "inputs": [
+        "QualifiedLead",
+        "OutreachLead",
+        "content:published"
+      ],
+      "outputs": [
+        "Bitrix24 лид",
+        "Telegram alert",
+        "CSV/ROMI отчёт"
+      ],
+      "okr": "Довести квалифицированный лид до CRM, уведомления и отчёта по результативности.",
+      "source_okr_status": "FOUND",
+      "source_scope": {
+        "summary": "Считает всю сквозную аналитику по 17 каналам и принимает CRM-события.",
+        "primary_sources": [
+          {
+            "channel_id": "tender_email",
+            "channel_name": "Gmail tenders",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "tender",
+            "traffic_channel": "tender",
+            "utm_source": "gmail",
+            "utm_medium": "email",
+            "first_touch": "email",
+            "last_touch": "email",
+            "owner_agent": "agent2_collector",
+            "flow": "B",
+            "notes": "Current MVP source for engineering tenders"
+          },
+          {
+            "channel_id": "tg_chat",
+            "channel_name": "Telegram chats",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "outbound",
+            "traffic_channel": "outbound",
+            "utm_source": "telegram",
+            "utm_medium": "social",
+            "first_touch": "public_chat",
+            "last_touch": "private_message",
+            "owner_agent": "agent6_outreach",
+            "flow": "A_B",
+            "notes": "Current MVP source for Telegram demand signals"
+          },
+          {
+            "channel_id": "outbound",
+            "channel_name": "Outbound manual",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "outbound",
+            "traffic_channel": "outbound",
+            "utm_source": "manual",
+            "utm_medium": "outbound",
+            "first_touch": "manual_outreach",
+            "last_touch": "reply",
+            "owner_agent": "agent6_outreach",
+            "flow": "A_B",
+            "notes": "Manual and agent-assisted outbound touchpoints"
+          },
+          {
+            "channel_id": "avito",
+            "channel_name": "Avito",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "avito",
+            "utm_medium": "marketplace",
+            "first_touch": "marketplace_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A_B",
+            "notes": "Track manually before automation"
+          },
+          {
+            "channel_id": "profi",
+            "channel_name": "Profi.ru",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "profi",
+            "utm_medium": "marketplace",
+            "first_touch": "platform_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A",
+            "notes": "Track manually before collector"
+          },
+          {
+            "channel_id": "yandex_services",
+            "channel_name": "Yandex Services",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "marketplace",
+            "traffic_channel": "marketplace",
+            "utm_source": "yandex_services",
+            "utm_medium": "marketplace",
+            "first_touch": "platform_message",
+            "last_touch": "platform_reply",
+            "owner_agent": "agent2_collector",
+            "flow": "A_B",
+            "notes": "Track manually before collector"
+          },
+          {
+            "channel_id": "yandex_maps",
+            "channel_name": "Yandex Maps",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "maps",
+            "traffic_channel": "maps",
+            "utm_source": "yandex_maps",
+            "utm_medium": "local_search",
+            "first_touch": "map_card",
+            "last_touch": "call_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "Manual calls and messages from map card"
+          },
+          {
+            "channel_id": "referral",
+            "channel_name": "Referrals",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "partner",
+            "traffic_channel": "referral",
+            "utm_source": "referral",
+            "utm_medium": "referral",
+            "first_touch": "partner_intro",
+            "last_touch": "manager_contact",
+            "owner_agent": "agent5_crm",
+            "flow": "A_B",
+            "notes": "Track who referred the client"
+          },
+          {
+            "channel_id": "old_inquiry",
+            "channel_name": "Old inquiries",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "owned_base",
+            "traffic_channel": "owned_base",
+            "utm_source": "crm",
+            "utm_medium": "reactivation",
+            "first_touch": "old_lead",
+            "last_touch": "manager_contact",
+            "owner_agent": "agent5_crm",
+            "flow": "A_B",
+            "notes": "Reactivation of old leads and existing contacts"
+          },
+          {
+            "channel_id": "yandex_direct",
+            "channel_name": "Yandex Direct",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "yandex",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires landing UTM budget and goals"
+          },
+          {
+            "channel_id": "google_ads",
+            "channel_name": "Google Ads",
+            "status": "planned",
+            "priority_wave": "wave_3",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "google",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Later after geo and landing decisions"
+          },
+          {
+            "channel_id": "vk_ads",
+            "channel_name": "VK Ads",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "vk",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires landing and UTM"
+          },
+          {
+            "channel_id": "meta_ads",
+            "channel_name": "Meta Ads",
+            "status": "planned",
+            "priority_wave": "wave_3",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "meta",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires legal and geo check"
+          },
+          {
+            "channel_id": "telegram_ads",
+            "channel_name": "Telegram Ads",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "telegram",
+            "utm_medium": "cpc",
+            "first_touch": "landing_or_bot",
+            "last_touch": "form_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Requires UTM or bot entry"
+          },
+          {
+            "channel_id": "dzen_rsy",
+            "channel_name": "Dzen and RSY",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "paid_ads",
+            "traffic_channel": "paid",
+            "utm_source": "dzen",
+            "utm_medium": "cpc",
+            "first_touch": "landing",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Separate paid traffic from organic content"
+          },
+          {
+            "channel_id": "influencer_tg",
+            "channel_name": "Influencer TG",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "influencer",
+            "traffic_channel": "paid",
+            "utm_source": "telegram",
+            "utm_medium": "influencer",
+            "first_touch": "influencer_post",
+            "last_touch": "landing_or_message",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Use unique link or promo per placement"
+          },
+          {
+            "channel_id": "seo_organic",
+            "channel_name": "SEO organic",
+            "status": "planned",
+            "priority_wave": "wave_2",
+            "source_type": "organic",
+            "traffic_channel": "organic",
+            "utm_source": "seo",
+            "utm_medium": "organic",
+            "first_touch": "search",
+            "last_touch": "form",
+            "owner_agent": "agent4_publisher",
+            "flow": "A_B",
+            "notes": "From lecturer dashboard. Needs site or landing pages"
+          }
+        ],
+        "source_count": 17,
+        "direct_owner_sources": [
+          {
+            "channel_id": "referral",
+            "channel_name": "Referrals",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "partner",
+            "traffic_channel": "referral",
+            "utm_source": "referral",
+            "utm_medium": "referral",
+            "first_touch": "partner_intro",
+            "last_touch": "manager_contact",
+            "owner_agent": "agent5_crm",
+            "flow": "A_B",
+            "notes": "Track who referred the client"
+          },
+          {
+            "channel_id": "old_inquiry",
+            "channel_name": "Old inquiries",
+            "status": "manual",
+            "priority_wave": "wave_1",
+            "source_type": "owned_base",
+            "traffic_channel": "owned_base",
+            "utm_source": "crm",
+            "utm_medium": "reactivation",
+            "first_touch": "old_lead",
+            "last_touch": "manager_contact",
+            "owner_agent": "agent5_crm",
+            "flow": "A_B",
+            "notes": "Reactivation of old leads and existing contacts"
+          }
+        ],
+        "direct_owner_count": 2,
+        "watchlist_sources": [],
+        "watchlist_count": 0,
+        "yanika_pending_sources": [],
+        "yanika_pending_count": 0,
+        "backlog_sources": [
+          "visit_count",
+          "visitor_id",
+          "CR visit->deal",
+          "ROMI по контенту"
+        ]
+      },
+      "metrics": [
+        "Каналы в сквозной аналитике: 17 из 17 каналов есть в registry, costs, facts и channel_report.",
+        "Каналы первой волны отслеживаются: 9 из 9 wave_1 каналов есть в отчёте.",
+        "Сквозной CRM-тест закрыт: 1 из 1 — QualifiedLead -> Bitrix24 -> Telegram -> отчёт.",
+        "CRM-цепочка урока 5 покрыта: цель 6 шагов — новый лид, квалификация, КП/лендинг, CRM-карточка, следующий шаг, аналитика.",
+        "Тестовые Bitrix24-создания: 4 успешных теста зафиксированы в локальных отчётах.",
+        "Метрика лектора CR visit->deal: цель 1 из 1, сейчас не закрыта, потому что нет visit_count/visitor_id.",
+        "Защитная метрика: 0 секретов/webhook/tokens в отчётах и 0 реальных клиентских данных в тестах."
+      ],
+      "skills": [
+        "Bitrix24",
+        "воронка CRM",
+        "сквозная аналитика",
+        "отчёты"
+      ],
+      "subroles": [
+        {
+          "name": "CRM Router",
+          "responsibility": "Bitrix24 payload для лида/сделки",
+          "artifact": "crm_payload_preview",
+          "kpi": "payload создаётся локально до реальной отправки"
+        },
+        {
+          "name": "Notifier",
+          "responsibility": "уведомление человека",
+          "artifact": "notification_event",
+          "kpi": "уведомления без секретов и лишних персональных данных"
+        },
+        {
+          "name": "Attribution Agent",
+          "responsibility": "first_touch, last_touch, канал, UTM",
+          "artifact": "attribution_record",
+          "kpi": "100% тестовых лидов имеют first_touch_channel и last_touch_channel"
+        },
+        {
+          "name": "ROMI Reporter",
+          "responsibility": "CPL, CAC, profit, ROMI",
+          "artifact": "channel_report",
+          "kpi": "spend -> leads -> deals -> revenue -> profit -> ROMI"
+        },
+        {
+          "name": "CRM Hygiene Analyst",
+          "responsibility": "дубли, пустые поля, слабые карточки",
+          "artifact": "crm_hygiene_report",
+          "kpi": "дубли и пустые поля попадают в очередь ручной чистки"
+        },
+        {
+          "name": "Weekly Digest Owner",
+          "responsibility": "недельный итог системы позже",
+          "artifact": "weekly_digest",
+          "kpi": "лиды, CRM, контент, ROMI и блокеры раз в неделю"
+        }
+      ],
+      "mcp_api": [
+        "Bitrix24 REST",
+        "Telegram Bot API",
+        "CSV",
+        "Supabase/Sheets позже"
+      ],
+      "next_action": "Закрыть один сквозной тест: квалифицированный лид -> Bitrix24 -> Telegram -> отчёт."
+    },
+    {
+      "agent_id": "agent6_outreach",
+      "title": "Agent 6 Outreach",
+      "department": "Первое касание",
+      "panel_status": "planned/locked",
+      "file": "agents/agent6_outreach/__init__.py",
+      "folder": "agents/agent6_outreach",
+      "file_status": "FOUND",
+      "checker_status": {
+        "folder_status": "FOUND",
+        "init_file_status": "FOUND",
+        "okr_block_status": "FOUND",
+        "metric_block_status": "FOUND"
+      },
+      "role": "Первое касание",
+      "description": "Готовит аккуратное первое касание, но не отправляет его без согласования человека.",
+      "readiness_percent": 25,
+      "okr_readiness_percent": 40,
+      "main_metric": {
+        "name": "Outreach-источники первой волны проверены",
+        "current_value": 0,
+        "target_value": 2,
+        "unit": "источников",
+        "done_when": "Telegram-чаты и outbound manual прошли ручной кандидат-тест без отправки спама"
+      },
+      "okr_metrics": [
+        {
+          "name": "Outreach-источники первой волны учтены",
+          "current_value": 2,
+          "target_value": 2,
+          "unit": "источника"
+        },
+        {
+          "name": "Кандидаты для ручной проверки",
+          "current_value": 0,
+          "target_value": 10,
+          "unit": "кандидатов"
+        },
+        {
+          "name": "Черновики первых ответов",
+          "current_value": 0,
+          "target_value": 5,
+          "unit": "ответов"
+        },
+        {
+          "name": "Outreach -> CRM тест",
+          "current_value": 0,
+          "target_value": 1,
+          "unit": "тест"
+        },
+        {
+          "name": "Реальные отправки до approval",
+          "current_value": 0,
+          "target_value": 0,
+          "unit": "сообщений",
+          "direction": "at_most"
+        }
+      ],
+      "guard_metrics": [
+        "0 сообщений без approval",
+        "после разрешения пилотный лимит — не больше 5 отправок в день",
+        "0 жалоб/спам-сигналов"
+      ],
+      "todo": "Сначала сделать approval-flow на черновике без реальной отправки сообщений.",
+      "inputs": [
+        "Telegram/VK/forum/MAX/TenChat/Yandex Q candidates",
+        "approval человека"
+      ],
+      "outputs": [
+        "approved reply",
+        "OutreachLead",
+        "интерес в Agent 5"
+      ],
+      "okr": "Подготовить безопасный первый контакт по найденному диалогу, но отправлять только после одобрения.",
+      "source_okr_status": "FOUND",
+      "source_scope": {
+        "summary": "Готовит первое касание по диалогам и ручному outbound, но ничего не отправляет без approval.",
+        "primary_sources": [
+          {
+            "channel_id": "tg_chat",
+            "channel_name": "Telegram chats",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "outbound",
+            "traffic_channel": "outbound",
+            "utm_source": "telegram",
+            "utm_medium": "social",
+            "first_touch": "public_chat",
+            "last_touch": "private_message",
+            "owner_agent": "agent6_outreach",
+            "flow": "A_B",
+            "notes": "Current MVP source for Telegram demand signals"
+          },
+          {
+            "channel_id": "outbound",
+            "channel_name": "Outbound manual",
+            "status": "active",
+            "priority_wave": "wave_1",
+            "source_type": "outbound",
+            "traffic_channel": "outbound",
+            "utm_source": "manual",
+            "utm_medium": "outbound",
+            "first_touch": "manual_outreach",
+            "last_touch": "reply",
+            "owner_agent": "agent6_outreach",
+            "flow": "A_B",
+            "notes": "Manual and agent-assisted outbound touchpoints"
+          }
+        ],
+        "source_count": 2,
+        "watchlist_sources": [],
+        "watchlist_count": 0,
+        "yanika_pending_sources": [],
+        "yanika_pending_count": 0,
+        "backlog_sources": []
+      },
+      "metrics": [
+        "Outreach-источники первой волны учтены: 2 из 2 — Telegram-чаты и outbound manual.",
+        "Кандидаты для ручной проверки: цель 10 кандидатов, по 5 на каждый источник первой волны.",
+        "Черновики первых ответов: цель 5 согласуемых ответов без отправки.",
+        "Outreach -> CRM тест: цель 1 из 1, заинтересованный ответ должен попасть в Agent 5.",
+        "Реальные отправки: 0 до отдельного подтверждения Яники.",
+        "Защитная метрика: 0 сообщений без approval и не больше 5 отправок в день на пилоте после разрешения."
+      ],
+      "skills": [
+        "поиск диалогов",
+        "текст первого касания",
+        "согласование",
+        "продажный диалог"
+      ],
+      "subroles": [
+        {
+          "name": "Social Listening Monitor",
+          "responsibility": "релевантные обсуждения",
+          "artifact": "outreach_candidate",
+          "kpi": "кандидат не создаётся без URL/контекста и причины релевантности"
+        },
+        {
+          "name": "Candidate Qualifier",
+          "responsibility": "риск спама и релевантность",
+          "artifact": "outreach_decision",
+          "kpi": "спорные кандидаты идут в escalation-to-yana"
+        },
+        {
+          "name": "Reply Draft Writer",
+          "responsibility": "человеческий ответ",
+          "artifact": "reply_draft",
+          "kpi": "ответ полезный, не спамный, без давления"
+        },
+        {
+          "name": "Approval Gatekeeper",
+          "responsibility": "запрет отправки без человека",
+          "artifact": "approval_required",
+          "kpi": "0 реальных отправок без approval"
+        },
+        {
+          "name": "Outreach Sender",
+          "responsibility": "отправка после approval",
+          "artifact": "sent_outreach_event",
+          "kpi": "после разрешения не больше 5 отправок в день на пилоте"
+        },
+        {
+          "name": "Dialog Converter",
+          "responsibility": "интерес -> OutreachLead",
+          "artifact": "outreach_lead",
+          "kpi": "заинтересованный ответ уходит в Agent 5"
+        }
+      ],
+      "mcp_api": [
+        "Telethon",
+        "Telegram Bot API",
+        "VK API позже",
+        "MAX/TenChat позже"
+      ],
+      "next_action": "Сначала сделать approval-flow на черновике без реальной отправки сообщений."
+    }
+  ],
+  "event_stream": [
+    {
+      "event_id": "agent_okr_contract_check",
+      "created_at": "2026-05-16T23:16:40Z",
+      "event_type": "agent_okr_contract_check",
+      "status": "OK",
+      "summary": "agent_okr_contract_check.json: OK",
+      "report_file": "data/reports/agent_okr_contract_check.json",
+      "safe_statuses": {
+        "test_type": "agent_okr_contract_check",
+        "agent_contract_status": "OK",
+        "agent4_readme_status": "FOUND",
+        "claude_folder_map_status": "OK",
+        "redis_queue_status": "OK",
+        "canonical_test_status": "FOUND",
+        "visual_map_status": "OK",
+        "admin_dashboard_spec_status": "OK",
+        "dashboard_builder_status": "FOUND",
+        "dashboard_report_status": "OK",
+        "dashboard_viewer_builder_status": "FOUND",
+        "dashboard_viewer_status": "OK",
+        "dashboard_markdown_builder_status": "FOUND",
+        "dashboard_markdown_status": "OK",
+        "security_agent_status": "OK",
+        "security_reference_status": "OK",
+        "report_write_status": "OK"
+      },
+      "external_calls": {
+        "redis": false,
+        "bitrix24": false,
+        "telegram_send": false,
+        "imap": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "agent_dashboard",
+      "created_at": "2026-05-16T23:16:40Z",
+      "event_type": "agent_dashboard",
+      "status": "OK",
+      "summary": "agent_dashboard.json: OK",
+      "report_file": "data/reports/agent_dashboard.json",
+      "safe_statuses": {
+        "dashboard_build_status": "OK"
+      },
+      "external_calls": {
+        "redis": false,
+        "bitrix24": false,
+        "telegram_send": false,
+        "imap": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false
+      },
+      "next_action": "обновляется этим скриптом"
+    },
+    {
+      "event_id": "first_inbound_scenario_handoff_to_human",
+      "created_at": "2026-05-16T22:48:40Z",
+      "event_type": "task-handoff",
+      "status": "task-handoff",
+      "summary": "first_inbound_scenario_handoff_to_human.json: task-handoff",
+      "report_file": "data/reports/first_inbound_scenario_handoff_to_human.json",
+      "safe_statuses": {
+        "test_type": "task-handoff",
+        "handoff_status": "READY_FOR_MANUAL_REVIEW"
+      },
+      "external_calls": {
+        "redis": false,
+        "bitrix24": false,
+        "telegram_send": false,
+        "imap": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false,
+        "max": false,
+        "vk": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "first_inbound_scenario_artifact_check",
+      "created_at": "2026-05-16T22:43:44Z",
+      "event_type": "first_inbound_scenario_artifact_check",
+      "status": "first_inbound_scenario_artifact_check",
+      "summary": "first_inbound_scenario_artifact_check.json: first_inbound_scenario_artifact_check",
+      "report_file": "data/reports/first_inbound_scenario_artifact_check.json",
+      "safe_statuses": {
+        "test_type": "first_inbound_scenario_artifact_check",
+        "scenario_status": "OK_LOCAL_DRY_RUN_READY_FOR_MANUAL_REVIEW"
+      },
+      "external_calls": {
+        "redis": false,
+        "bitrix24": false,
+        "telegram_send": false,
+        "imap": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false,
+        "max": false,
+        "vk": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "content_funnel_contract_check",
+      "created_at": "2026-05-16T22:10:22Z",
+      "event_type": "content_funnel_contract_check",
+      "status": "нет данных",
+      "summary": "content_funnel_contract_check.json: нет данных",
+      "report_file": "data/reports/content_funnel_contract_check.json",
+      "safe_statuses": {},
+      "external_calls": {
+        "redis": false,
+        "bitrix24": false,
+        "telegram": false,
+        "max": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false,
+        "paid_api": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "three_qualified_leads_sprint",
+      "created_at": "2026-05-16T22:10:22Z",
+      "event_type": "three_qualified_leads_sprint",
+      "status": "нет данных",
+      "summary": "three_qualified_leads_sprint.json: нет данных",
+      "report_file": "data/reports/three_qualified_leads_sprint.json",
+      "safe_statuses": {},
+      "external_calls": {
+        "bitrix24": false,
+        "max": false,
+        "telegram_send": false,
+        "vk": false,
+        "tender_platform": false,
+        "ads": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "max_b2b_002_public_metrics_attempt",
+      "created_at": "2026-05-16T22:10:04Z",
+      "event_type": "max_b2b_002_public_metrics_attempt",
+      "status": "нет данных",
+      "summary": "max_b2b_002_public_metrics_attempt.json: нет данных",
+      "report_file": "data/reports/max_b2b_002_public_metrics_attempt.json",
+      "safe_statuses": {},
+      "external_calls": {
+        "maxstat_public_page": true,
+        "max_public_page": true,
+        "max_app": false,
+        "max_api": false,
+        "paid_api": false,
+        "publisher": false,
+        "scheduler": false,
+        "bitrix24": false,
+        "telegram": false,
+        "redis": false,
+        "llm": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "agent4_unified_llm_router_test",
+      "created_at": "2026-05-16T20:44:49Z",
+      "event_type": "agent4_unified_llm_router_test",
+      "status": "agent4_unified_llm_router_test",
+      "summary": "agent4_unified_llm_router_test.json: agent4_unified_llm_router_test",
+      "report_file": "data/reports/agent4_unified_llm_router_test.json",
+      "safe_statuses": {
+        "test_type": "agent4_unified_llm_router_test",
+        "llm_status": "OK"
+      },
+      "external_calls": {
+        "llm": true,
+        "bitrix24": false,
+        "redis": false,
+        "telegram_send": false,
+        "max_publish": false,
+        "vk_publish": false,
+        "dzen_publish": false,
+        "scheduler": false,
+        "publisher": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "client_acquisition_pack_dry_run",
+      "created_at": "2026-05-16T14:07:17Z",
+      "event_type": "client_acquisition_pack_dry_run",
+      "status": "нет данных",
+      "summary": "client_acquisition_pack_dry_run.json: нет данных",
+      "report_file": "data/reports/client_acquisition_pack_dry_run.json",
+      "safe_statuses": {},
+      "external_calls": {
+        "bitrix24": false,
+        "max": false,
+        "telegram_send": false,
+        "vk": false,
+        "tender_platform": false,
+        "ads": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "tender_filter_pack_dry_run",
+      "created_at": "2026-05-16T13:57:37Z",
+      "event_type": "tender_filter_pack_dry_run",
+      "status": "нет данных",
+      "summary": "tender_filter_pack_dry_run.json: нет данных",
+      "report_file": "data/reports/tender_filter_pack_dry_run.json",
+      "safe_statuses": {},
+      "external_calls": {
+        "tender_platform": false,
+        "bitrix24": false,
+        "ads": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "bitrix_reactivation_readonly_plan",
+      "created_at": "2026-05-16T13:55:17Z",
+      "event_type": "bitrix_reactivation_readonly_plan",
+      "status": "нет данных",
+      "summary": "bitrix_reactivation_readonly_plan.json: нет данных",
+      "report_file": "data/reports/bitrix_reactivation_readonly_plan.json",
+      "safe_statuses": {},
+      "external_calls": {
+        "bitrix24": false,
+        "telegram_send": false,
+        "max": false,
+        "vk": false,
+        "ads": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false
+      },
+      "next_action": "см. REPORT.md"
+    },
+    {
+      "event_id": "first_safe_growth_tests",
+      "created_at": "2026-05-16T11:41:58Z",
+      "event_type": "first_safe_growth_tests",
+      "status": "нет данных",
+      "summary": "first_safe_growth_tests.json: нет данных",
+      "report_file": "data/reports/first_safe_growth_tests.json",
+      "safe_statuses": {},
+      "external_calls": {
+        "redis": false,
+        "bitrix24": false,
+        "telegram_send": false,
+        "max": false,
+        "vk": false,
+        "ads": false,
+        "llm": false,
+        "scheduler": false,
+        "publisher": false
+      },
+      "next_action": "см. REPORT.md"
+    }
+  ],
+  "metrics_dashboard": {
+    "agent_health": {
+      "agent_contract_status": "OK",
+      "visual_map_status": "OK",
+      "admin_dashboard_spec_status": "OK",
+      "dashboard_viewer_status": "OK",
+      "agents_count": 6
+    },
+    "system_scope": {
+      "total_channels": 17,
+      "wave_1_channels": 9,
+      "wave_2_channels": 6,
+      "wave_3_channels": 2,
+      "active_channels": 3,
+      "manual_channels": 6,
+      "planned_channels": 8,
+      "competitor_watchlist_sources": 15,
+      "yanika_pending_sources": 5,
+      "agent2_collection_channels": 4,
+      "agent6_outreach_channels": 2,
+      "content_surfaces_target": 7,
+      "crm_lesson_5_chain_steps": 6
+    },
+    "lead_funnel": {
+      "pipeline_health_test_leads": "1/1",
+      "wave_1_source_coverage_target": "1/9",
+      "agent2_source_coverage_target": "1/4",
+      "monthly_pilot_raw_leads_target": "0/20",
+      "bitrix_test_creations": "4"
+    },
+    "quality": {
+      "score_categories_checked": "1/4",
+      "llm_modes_checked": "2/2",
+      "max_false_hot_rate_after_real_sample": "<=10%",
+      "qualified_without_source_target": "0"
+    },
+    "crm_sla": {
+      "lesson_5_crm_chain_covered": "5/6",
+      "bitrix24_send_status": "OK",
+      "telegram_send_status": "OK",
+      "missing_crm_layer": "personal КП/landing status + visit_count/visitor_id"
+    },
+    "crm_hygiene": {
+      "status": "LIMITED_AUDIT",
+      "contacts": 150,
+      "leads_total": 150,
+      "leads_active": 0,
+      "deals_total": 150,
+      "contacts_without_phone_or_email": 37,
+      "leads_without_phone_or_email": 24,
+      "contact_phone_duplicate_groups": 2,
+      "contact_email_duplicate_groups": 2,
+      "lead_phone_duplicate_groups": 3,
+      "lead_email_duplicate_groups": 4,
+      "report_file": "data/reports/bitrix_readonly_audit.json"
+    },
+    "vpp_ai_manager": {
+      "status": "READY",
+      "scenario_count": 3,
+      "enough_for_kp": 1,
+      "need_missing_data": 2,
+      "bitrix_dry_run_not_sent": 3,
+      "report_file": "data/reports/vpp_ai_manager_dry_run.json"
+    },
+    "content": {
+      "content_surfaces_tracked_now": "5/7",
+      "first_week_drafts_target": "0/5",
+      "monthly_core_topics_target": "0/20",
+      "monthly_adapted_items_later": "0/52",
+      "approval_fields_in_template": "3/3"
+    },
+    "outreach": {
+      "wave_1_outreach_sources": "2/2",
+      "candidate_review_target": "0/10",
+      "reply_drafts_target": "0/5",
+      "outreach_to_crm_test": "0/1",
+      "real_sends_without_approval": 0
+    },
+    "romi": {
+      "status": "CSV MVP есть; visit->deal из дашборда лектора ещё не закрыт",
+      "report_file": "data/reports/channel_report_mvp.csv",
+      "registry_channels": "17/17",
+      "cost_rows": "17/17",
+      "fact_rows": "17/17",
+      "report_rows": "17/17",
+      "missing_visit_to_deal": "visit_count + visitor_id + CR_visit_to_deal"
+    },
+    "safety": {
+      "security_agent_status": "ACTIVE",
+      "security_agent_file": "agents/Агент безопастности/AGENT_SECURITY.md",
+      "locked_actions": [
+        "scheduler",
+        "mass_collection",
+        "real_publish",
+        "real_outreach"
+      ],
+      "secrets_visible": false
+    }
+  },
+  "checker": {
+    "script": "scripts/check_agent_okr_contract.py",
+    "report_file": "data/reports/agent_okr_contract_check.json",
+    "agent_contract_status": "OK",
+    "visual_map_status": "OK",
+    "admin_dashboard_spec_status": "OK",
+    "security_agent_status": "OK",
+    "dashboard_viewer_builder_status": "FOUND",
+    "dashboard_viewer_status": "OK",
+    "dashboard_viewer_file": "data/reports/agent_dashboard.html"
+  },
+  "next_small_step": "открыть `data/reports/agent_dashboard.html` и глазами проверить новый блок `Security Agent Control Layer` рядом с управленческими блоками.",
+  "external_calls": {
+    "redis": false,
+    "bitrix24": false,
+    "telegram_send": false,
+    "imap": false,
+    "llm": false,
+    "scheduler": false,
+    "publisher": false
+  }
+}

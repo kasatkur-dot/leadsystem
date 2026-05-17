@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-05-16T22:10:22Z",
+  "status": "OK",
+  "external_calls": {
+    "redis": false,
+    "bitrix24": false,
+    "telegram": false,
+    "max": false,
+    "llm": false,
+    "scheduler": false,
+    "publisher": false,
+    "paid_api": false
+  },
+  "files": {
+    "publication_tracker_exists": true,
+    "topic_response_tracker_exists": true,
+    "funnel_arcs_exists": true,
+    "offer_readiness_exists": true,
+    "slot_matrix_exists": true,
+    "future_backlog_exists": true
+  },
+  "counts": {
+    "publication_rows": 10,
+    "topic_response_rows": 5,
+    "funnel_arc_rows": 5,
+    "offer_rows": 6
+  },
+  "missing_fields": {
+    "publication_tracker": [],
+    "topic_response_tracker": [],
+    "funnel_arcs": [],
+    "offer_readiness": []
+  },
+  "row_issues": [],
+  "missing_text_markers": {}
+}

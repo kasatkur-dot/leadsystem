@@ -28,6 +28,9 @@ output/
 output/site-check/
 output/playwright/
 
+# Local original visual prototype copied into frontend/agent-system-visual
+Многоагентная система-визуал/
+
 # Operational CRM test artifacts - keep local
 data/reports/bitrix_close_test_lead_*.json
 data/reports/bitrix_*.json

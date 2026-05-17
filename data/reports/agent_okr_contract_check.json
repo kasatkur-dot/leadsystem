@@ -1,0 +1,90 @@
+{
+  "test_type": "agent_okr_contract_check",
+  "agent_contract_status": "OK",
+  "checked_agents": {
+    "agent1_scout": {
+      "folder_status": "FOUND",
+      "init_file_status": "FOUND",
+      "okr_block_status": "FOUND",
+      "metric_block_status": "FOUND"
+    },
+    "agent2_collector": {
+      "folder_status": "FOUND",
+      "init_file_status": "FOUND",
+      "okr_block_status": "FOUND",
+      "metric_block_status": "FOUND"
+    },
+    "agent3_processor": {
+      "folder_status": "FOUND",
+      "init_file_status": "FOUND",
+      "okr_block_status": "FOUND",
+      "metric_block_status": "FOUND"
+    },
+    "agent4_publisher": {
+      "folder_status": "FOUND",
+      "init_file_status": "FOUND",
+      "okr_block_status": "FOUND",
+      "metric_block_status": "FOUND"
+    },
+    "agent5_crm": {
+      "folder_status": "FOUND",
+      "init_file_status": "FOUND",
+      "okr_block_status": "FOUND",
+      "metric_block_status": "FOUND"
+    },
+    "agent6_outreach": {
+      "folder_status": "FOUND",
+      "init_file_status": "FOUND",
+      "okr_block_status": "FOUND",
+      "metric_block_status": "FOUND"
+    }
+  },
+  "missing_agent_files": [],
+  "missing_okr_blocks": [],
+  "missing_metric_blocks": [],
+  "agent4_readme_status": "FOUND",
+  "claude_folder_map_status": "OK",
+  "missing_claude_folder_mentions": [],
+  "redis_queue_status": "OK",
+  "missing_redis_queues": [],
+  "canonical_test_status": "FOUND",
+  "canonical_test_file": "scripts/test_agent3_to_agent5_handoff_local.py",
+  "visual_map_status": "OK",
+  "visual_map_file": "docs/multi-agent-visual-control-map.md",
+  "missing_visual_map_items": [],
+  "admin_dashboard_spec_status": "OK",
+  "admin_dashboard_spec_file": "docs/admin-dashboard-spec.md",
+  "missing_admin_dashboard_items": [],
+  "dashboard_builder_status": "FOUND",
+  "dashboard_builder_file": "scripts/build_agent_dashboard.py",
+  "dashboard_report_status": "OK",
+  "dashboard_report_file": "data/reports/agent_dashboard.json",
+  "missing_dashboard_report_items": [],
+  "dashboard_viewer_builder_status": "FOUND",
+  "dashboard_viewer_builder_file": "scripts/build_agent_dashboard_viewer.py",
+  "dashboard_viewer_status": "OK",
+  "dashboard_viewer_file": "data/reports/agent_dashboard.html",
+  "missing_dashboard_viewer_items": [],
+  "dashboard_markdown_builder_status": "FOUND",
+  "dashboard_markdown_builder_file": "scripts/build_agent_dashboard_markdown.py",
+  "dashboard_markdown_status": "OK",
+  "dashboard_markdown_file": "data/reports/agent_dashboard.md",
+  "missing_dashboard_markdown_items": [],
+  "security_agent_status": "OK",
+  "security_agent_file": "agents/Агент безопастности/AGENT_SECURITY.md",
+  "missing_security_agent_items": [],
+  "security_reference_status": "OK",
+  "security_control_doc_file": "docs/security-agent-control-layer.md",
+  "missing_security_reference_items": {},
+  "external_calls": {
+    "redis": false,
+    "bitrix24": false,
+    "telegram_send": false,
+    "imap": false,
+    "llm": false,
+    "scheduler": false,
+    "publisher": false
+  },
+  "report_write_status": "OK",
+  "created_at": "2026-05-16T23:17:05Z"
+}

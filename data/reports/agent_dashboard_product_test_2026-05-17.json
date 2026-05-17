@@ -1,0 +1,89 @@
+{
+  "created_at": "2026-05-17",
+  "status": "INTERNAL_MVP_TECH_DEMO_READY",
+  "scope": [
+    "backend/agent_dashboard_api",
+    "frontend/agent-system-visual",
+    "http://127.0.0.1:8788",
+    "agent-control chat in openrouter_free_test"
+  ],
+  "testers": [
+    "main_codex_test_pass",
+    "backend_tester_subagent",
+    "frontend_tester_subagent",
+    "playwright_ui_pass"
+  ],
+  "runtime": {
+    "runtime_mode": "openrouter_free_test",
+    "provider": "openrouter",
+    "text_llm_model": "deepseek/deepseek-v4-flash:free",
+    "live_text_llm_enabled": true
+  },
+  "dashboard_counts": {
+    "agents": 6,
+    "subroles": 33,
+    "services": 7,
+    "artifacts": 29,
+    "visual_nodes": 47,
+    "scenarios": 4,
+    "edges": 54
+  },
+  "backend_checks": {
+    "api_health": "OK",
+    "data_js": "OK",
+    "api_dashboard": "OK",
+    "api_agent_system_data": "OK",
+    "cors_preflight": "OK",
+    "unknown_post_endpoint_json_404": "OK",
+    "chat_manage": "OK_LIVE_OPENROUTER",
+    "chat_default": "OK_LIVE_OPENROUTER",
+    "chat_develop": "OK_LIVE_OPENROUTER",
+    "chat_marketing": "OK_LIVE_OPENROUTER",
+    "knowledge_search": "DRY_RUN_NOT_EMBEDDED",
+    "image_generation": "DRY_RUN_IMAGE_NOT_GENERATED",
+    "voice_transcription": "DRY_RUN_NOT_TRANSCRIBED"
+  },
+  "frontend_checks": {
+    "page_load": "OK",
+    "console_errors": "NONE",
+    "console_warnings": "BABEL_DEV_WARNING_ONLY",
+    "graph_render": "OK",
+    "inspector_agent3_agent5": "OK",
+    "scenario_playback": "OK",
+    "chat_dock": "OK",
+    "chat_readability": "IMPROVED",
+    "mobile_layout": "NEEDS_FIX"
+  },
+  "fixed_during_test": [
+    "html_instead_of_json_error",
+    "cors_duplicate_access_control_header",
+    "chat_dock_too_small",
+    "agent_control_generic_agent_names"
+  ],
+  "current_chain_reaches": [
+    "local_dashboard",
+    "real_agent_map",
+    "inspector",
+    "scenario_playback",
+    "local_chat_command",
+    "openrouter_free_text_response",
+    "safe_handoff_preview"
+  ],
+  "not_reached_yet": [
+    "redis_queue_execution",
+    "real_agent_execution_from_dashboard",
+    "bitrix24_or_telegram_action",
+    "publisher_action",
+    "voice_transcription",
+    "image_generation",
+    "knowledge_embeddings",
+    "analytics_update_from_real_event"
+  ],
+  "risks": [
+    "health_external_calls_llm_label_can_confuse",
+    "mobile_layout_overflow",
+    "frontend_cdn_babel_mvp_not_production_ready",
+    "agent_control_prompt_needs_more_determinism"
+  ],
+  "next_step": "Harden agent-control responses and mobile layout before server publication."
+}
