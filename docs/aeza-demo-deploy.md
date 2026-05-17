@@ -14,6 +14,7 @@
 
 ```bash
 export AEZA_SSH_TARGET="root@SERVER_IP"
+export AEZA_SSH_KEY="$HOME/.ssh/aeza_vpp_leadsystem"
 export AEZA_APP_PORT="8787"
 export AEZA_OPENROUTER_API_KEY="..."
 ./scripts/deploy-aeza-demo.sh

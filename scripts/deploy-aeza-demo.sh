@@ -3,6 +3,7 @@
 # Required local env:
 #   AEZA_SSH_TARGET=root@SERVER_IP
 # Optional:
+#   AEZA_SSH_KEY=~/.ssh/aeza_vpp_leadsystem
 #   AEZA_PROJECT_DIR=/opt/design-studio-lead-engine
 #   AEZA_APP_PORT=8787
 #   AEZA_OPENROUTER_API_KEY=...  # if omitted, server runs dry-run dashboard mode
@@ -16,6 +17,10 @@ fi
 PROJECT_DIR="${AEZA_PROJECT_DIR:-/opt/design-studio-lead-engine}"
 APP_PORT="${AEZA_APP_PORT:-8787}"
 GIT_REPO="${AEZA_GIT_REPO:-https://github.com/kasatkur-dot/leadsystem.git}"
+SSH_ARGS=()
+if [ -n "${AEZA_SSH_KEY:-}" ]; then
+  SSH_ARGS=(-i "$AEZA_SSH_KEY")
+fi
 OPENROUTER_STATUS="EMPTY"
 if [ -n "${AEZA_OPENROUTER_API_KEY:-}" ]; then
   OPENROUTER_STATUS="SET"
@@ -26,22 +31,27 @@ echo "Project dir: ${PROJECT_DIR}"
 echo "App port: ${APP_PORT}"
 echo "OPENROUTER_API_KEY: ${OPENROUTER_STATUS}"
 
-ssh "$AEZA_SSH_TARGET" \
+ssh "${SSH_ARGS[@]}" "$AEZA_SSH_TARGET" \
   "PROJECT_DIR='$PROJECT_DIR' APP_PORT='$APP_PORT' GIT_REPO='$GIT_REPO' OPENROUTER_STATUS='$OPENROUTER_STATUS' bash -s" <<'REMOTE'
 set -euo pipefail
 
+SUDO="sudo"
+if [ "$(id -u)" = "0" ]; then
+  SUDO=""
+fi
+
 echo "== Installing base packages =="
 if command -v apt-get >/dev/null 2>&1; then
-  sudo apt-get update
-  sudo apt-get install -y git python3 python3-venv python3-pip curl
+  $SUDO apt-get update
+  $SUDO apt-get install -y git python3 python3-venv python3-pip curl
 else
   echo "ERROR: this deploy script expects Debian/Ubuntu with apt-get."
   exit 1
 fi
 
 echo "== Syncing repository =="
-sudo mkdir -p "$PROJECT_DIR"
-sudo chown -R "$USER":"$USER" "$PROJECT_DIR"
+$SUDO mkdir -p "$PROJECT_DIR"
+$SUDO chown -R "$USER":"$USER" "$PROJECT_DIR"
 if [ -d "$PROJECT_DIR/.git" ]; then
   cd "$PROJECT_DIR"
   git fetch origin main
@@ -82,7 +92,7 @@ fi
 chmod +x scripts/start-server.sh
 
 echo "== Installing systemd service =="
-sudo tee /etc/systemd/system/vpp-dashboard.service >/dev/null <<UNIT
+$SUDO tee /etc/systemd/system/vpp-dashboard.service >/dev/null <<UNIT
 [Unit]
 Description=VPP Lead Engine Dashboard Demo
 After=network.target
@@ -99,12 +109,12 @@ Environment=PYTHONUNBUFFERED=1
 WantedBy=multi-user.target
 UNIT
 
-sudo systemctl daemon-reload
-sudo systemctl enable vpp-dashboard
+$SUDO systemctl daemon-reload
+$SUDO systemctl enable vpp-dashboard
 REMOTE
 
 if [ -n "${AEZA_OPENROUTER_API_KEY:-}" ]; then
-  printf '%s' "$AEZA_OPENROUTER_API_KEY" | ssh "$AEZA_SSH_TARGET" \
+  printf '%s' "$AEZA_OPENROUTER_API_KEY" | ssh "${SSH_ARGS[@]}" "$AEZA_SSH_TARGET" \
     "PROJECT_DIR='$PROJECT_DIR' python3 - <<'PY'
 from pathlib import Path
 import os
@@ -131,13 +141,17 @@ print('OPENROUTER_API_KEY=SET')
 PY"
 fi
 
-ssh "$AEZA_SSH_TARGET" \
+ssh "${SSH_ARGS[@]}" "$AEZA_SSH_TARGET" \
   "APP_PORT='$APP_PORT' bash -s" <<'REMOTE'
 set -euo pipefail
+SUDO="sudo"
+if [ "$(id -u)" = "0" ]; then
+  SUDO=""
+fi
 echo "== Starting service =="
-sudo systemctl restart vpp-dashboard
+$SUDO systemctl restart vpp-dashboard
 sleep 2
-sudo systemctl --no-pager --full status vpp-dashboard || true
+$SUDO systemctl --no-pager --full status vpp-dashboard || true
 
 echo "== Health check =="
 curl -fsS "http://127.0.0.1:${APP_PORT}/api/health"
