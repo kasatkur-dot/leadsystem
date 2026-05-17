@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Архитектура агентов — Lead Intelligence Pipeline</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --paper: #fffaf0;
+      --ink: #211b15;
+      --muted: #6f6255;
+      --line: #d8c7ad;
+      --accent: #9b3f2f;
+      --accent-2: #2e6f62;
+      --accent-3: #1f5f85;
+      --card: #fffdf7;
+      --shadow: 0 18px 45px rgba(70, 45, 20, 0.13);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(155, 63, 47, 0.18), transparent 32rem),
+        radial-gradient(circle at bottom right, rgba(46, 111, 98, 0.18), transparent 34rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.45;
+    }
+
+    main {
+      width: min(1380px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 36px 0 56px;
+    }
+
+    .hero {
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 250, 240, 0.82);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(34px, 4vw, 62px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      max-width: 920px;
+    }
+
+    .subtitle {
+      margin-top: 18px;
+      max-width: 840px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(190px, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .top-card,
+    .agent-card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 10px 26px rgba(70, 45, 20, 0.08);
+      overflow: hidden;
+    }
+
+    .top-card {
+      padding: 18px;
+      min-height: 142px;
+    }
+
+    .top-card::before,
+    .agent-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 7px;
+      background: var(--accent);
+    }
+
+    .top-card:nth-child(2)::before {
+      background: #b67b2d;
+    }
+
+    .top-card:nth-child(3)::before {
+      background: var(--accent-3);
+    }
+
+    .top-card:nth-child(4)::before {
+      background: var(--accent-2);
+    }
+
+    .label {
+      display: inline-flex;
+      margin-bottom: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #efe0c8;
+      color: #6b352b;
+      font-size: 12px;
+      font-family: Verdana, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .top-card h2 {
+      font-size: 21px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .top-card p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .section-title {
+      margin: 38px 0 18px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(28px, 3vw, 42px);
+      letter-spacing: -0.035em;
+    }
+
+    .section-title p {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .agent-card {
+      padding: 22px;
+      min-height: 470px;
+    }
+
+    .agent-card:nth-child(1)::before {
+      background: #734c9a;
+    }
+
+    .agent-card:nth-child(2)::before {
+      background: #1f7a6d;
+    }
+
+    .agent-card:nth-child(3)::before {
+      background: #b56825;
+    }
+
+    .agent-card:nth-child(4)::before {
+      background: #276fa3;
+    }
+
+    .agent-card:nth-child(5)::before {
+      background: #9b3f2f;
+    }
+
+    .agent-card:nth-child(6)::before {
+      background: #5f6f2e;
+    }
+
+    .agent-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .agent-number {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #f3e5cf;
+      color: var(--accent);
+      font: 800 20px Verdana, sans-serif;
+    }
+
+    .agent-title h3 {
+      font-size: 24px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .agent-title p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-family: Verdana, sans-serif;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 9px 0;
+      border-top: 1px dashed rgba(111, 98, 85, 0.28);
+      color: #352a20;
+      font-size: 15px;
+    }
+
+    li::before {
+      content: "";
+      flex: 0 0 auto;
+      width: 8px;
+      height: 8px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--accent-2);
+    }
+
+    .runtime {
+      margin-top: 28px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #2a2119;
+      color: #fff7e6;
+      box-shadow: var(--shadow);
+    }
+
+    .runtime h2 {
+      font-size: 28px;
+      letter-spacing: -0.03em;
+    }
+
+    .runtime p {
+      margin-top: 8px;
+      color: #d8c7ad;
+    }
+
+    .runtime-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .runtime-item {
+      padding: 14px;
+      border: 1px solid rgba(255, 250, 240, 0.18);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      font-family: Verdana, sans-serif;
+      font-size: 14px;
+    }
+
+    .note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-family: Verdana, sans-serif;
+    }
+
+    @media (max-width: 1040px) {
+      .top-grid,
+      .agents-grid,
+      .runtime-grid {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      main {
+        width: min(100% - 24px, 1380px);
+        padding-top: 18px;
+      }
+
+      .hero {
+        padding: 22px;
+        border-radius: 22px;
+      }
+
+      .top-grid,
+      .agents-grid,
+      .runtime-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        display: block;
+      }
+
+      .section-title p {
+        margin-top: 8px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      main {
+        width: 100%;
+        padding: 0;
+      }
+
+      .hero,
+      .top-card,
+      .agent-card,
+      .runtime {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <span class="label">Lead Intelligence Pipeline</span>
+      <h1>Архитектура многоагентной системы лидогенерации</h1>
+      <p class="subtitle">
+        Карта показывает, кто главный, где технический запускатель, какие есть 6 агентских отделов
+        и какие источники, каналы или действия относятся к каждому агенту.
+      </p>
+
+      <div class="top-grid">
+        <article class="top-card">
+          <span class="label">Главный</span>
+          <h2>CLAUDE.md</h2>
+          <p>Главный оркестратор проекта: правила, роли, архитектура, порядок ремонта.</p>
+        </article>
+        <article class="top-card">
+          <span class="label">Память</span>
+          <h2>REPORT.md</h2>
+          <p>Журнал состояния: что сделано, что проверено, что осталось, следующий шаг.</p>
+        </article>
+        <article class="top-card">
+          <span class="label">Запуск</span>
+          <h2>orchestrator/scheduler.py</h2>
+          <p>Технический запускатель MVP-цепочки. Не выше CLAUDE.md, а исполнитель расписания.</p>
+        </article>
+        <article class="top-card">
+          <span class="label">Отделы</span>
+          <h2>agents/</h2>
+          <p>Шесть агентских отделов: разведка, сбор, обработка, публикации, CRM, аутрич.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-title">
+      <h2>6 агентов и их зоны ответственности</h2>
+      <p>Под каждым агентом перечислены источники, каналы или действия, которые относятся именно к нему.</p>
+    </section>
+
+    <section class="agents-grid">
+      <article class="agent-card">
+        <div class="agent-head">
+          <div class="agent-title">
+            <h3>Скаут / разведка</h3>
+            <p>agent1_scout</p>
+          </div>
+          <div class="agent-number">1</div>
+        </div>
+        <ul>
+          <li>Конкуренты на Avito.</li>
+          <li>Конкуренты в Яндекс Картах.</li>
+          <li>Конкуренты в 2GIS.</li>
+          <li>Отзывы конкурентов и слабые места.</li>
+          <li>B2B-Center, Фабрикант, KomTender.</li>
+          <li>Цены, офферы, тексты и рыночные наблюдения.</li>
+        </ul>
+      </article>
+
+      <article class="agent-card">
+        <div class="agent-head">
+          <div class="agent-title">
+            <h3>Коллектор / сбор лидов</h3>
+            <p>agent2_collector</p>
+          </div>
+          <div class="agent-number">2</div>
+        </div>
+        <ul>
+          <li>Gmail-папка с тендерами.</li>
+          <li>Avito: заявки, сообщения, релевантные запросы.</li>
+          <li>Profi.ru и Яндекс Услуги.</li>
+          <li>Яндекс Карты и 2GIS: входящие, звонки, сообщения.</li>
+          <li>HH.ru: вакансии как B2B-сигнал спроса.</li>
+          <li>YouDo, ЦИАН, Авито Недвижимость.</li>
+          <li>Старые заявки и существующие тендерные контакты.</li>
+        </ul>
+      </article>
+
+      <article class="agent-card">
+        <div class="agent-head">
+          <div class="agent-title">
+            <h3>Процессор / скоринг</h3>
+            <p>agent3_processor</p>
+          </div>
+          <div class="agent-number">3</div>
+        </div>
+        <ul>
+          <li>Сырые лиды из Агента 2.</li>
+          <li>Кандидаты из Агента 6 после интереса.</li>
+          <li>Дедупликация и стоп-слова.</li>
+          <li>Определение потока: перепланировки или инженерное проектирование.</li>
+          <li>Обогащение: город, объект, площадь, телефон, email, Telegram, компания.</li>
+          <li>Скоринг: горячий, тёплый, холодный, нецелевой.</li>
+          <li>Персональный оффер и следующий шаг.</li>
+        </ul>
+      </article>
+
+      <article class="agent-card">
+        <div class="agent-head">
+          <div class="agent-title">
+            <h3>Паблишер / доверие</h3>
+            <p>agent4_publisher</p>
+          </div>
+          <div class="agent-number">4</div>
+        </div>
+        <ul>
+          <li>Avito-объявления.</li>
+          <li>Яндекс Карты и 2GIS: карточки, фото, новости, отзывы.</li>
+          <li>Telegram-канал и VK-группа.</li>
+          <li>Яндекс Дзен.</li>
+          <li>MAX-канал и бот ПРОВЕРКА.</li>
+          <li>Региональные доски объявлений.</li>
+          <li>Сайт, лендинги и лид-магниты.</li>
+        </ul>
+      </article>
+
+      <article class="agent-card">
+        <div class="agent-head">
+          <div class="agent-title">
+            <h3>CRM / контроль</h3>
+            <p>agent5_crm</p>
+          </div>
+          <div class="agent-number">5</div>
+        </div>
+        <ul>
+          <li>Bitrix24: лиды, сделки, задачи, заметки.</li>
+          <li>Telegram-уведомления менеджеру.</li>
+          <li>KP-генератор при горячем лиде.</li>
+          <li>admin_bot: /status, /restart, /stop, /logs, /pause.</li>
+          <li>Отчёты: источники, конверсия, потоки, ошибки.</li>
+          <li>Контроль, дошёл ли лид до бизнес-результата.</li>
+        </ul>
+      </article>
+
+      <article class="agent-card">
+        <div class="agent-head">
+          <div class="agent-title">
+            <h3>Аутрич / первое касание</h3>
+            <p>agent6_outreach</p>
+          </div>
+          <div class="agent-number">6</div>
+        </div>
+        <ul>
+          <li>Telegram-чаты и история Telegram.</li>
+          <li>VK-комментарии и поиск по VK.</li>
+          <li>Строительные форумы, включая forumhouse.ru.</li>
+          <li>MAX, TenChat, Яндекс Кью.</li>
+          <li>Cold email B2B: застройщики, архитекторы, подрядчики.</li>
+          <li>approver: согласование ответа.</li>
+          <li>sender: отправка, lead_detector: интерес -> Агент 5.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="runtime">
+      <h2>Что технически запускается сейчас в MVP</h2>
+      <p>
+        Агент 1 и Агент 4 уже есть в полной архитектуре, но пока не подключены к runtime-расписанию.
+        Сейчас технический запускатель ведёт MVP-цепочку.
+      </p>
+      <div class="runtime-grid">
+        <div class="runtime-item">Агент 2: tender_collector каждые 15 минут</div>
+        <div class="runtime-item">Агент 3: processor каждые 5 минут</div>
+        <div class="runtime-item">Агент 5: crm_router каждые 5 минут</div>
+        <div class="runtime-item">Агент 6: tg_monitor, approver, sender, relevance_pipeline</div>
+      </div>
+    </section>
+
+    <p class="note">
+      Файл хранится как проектный визуальный материал. Его можно открыть на Mac через Safari обычным двойным кликом.
+    </p>
+  </main>
+</body>
+</html>
